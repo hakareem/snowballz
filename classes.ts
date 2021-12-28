@@ -70,9 +70,7 @@ class Player {
     pctx?.translate(-r,-r)    
     pctx?.drawImage(this.img,r*.2, r*.2,r*1.8, r*1.8)
     pctx?.restore()
-   
     ctx!.translate(this.position.x,this.position.y)
-   
     //  ctx?.beginPath();
     //  ctx?.arc(0, 0, this.radius, 0, Math.PI * 2);
     //  ctx!.fillStyle = this.color;
@@ -89,7 +87,7 @@ class Player {
 
   drawAndMoveSnowballs() {
     for (let i = 0; i < this.snowballs.length; i++) {
-     if(this.snowballs[i].active){
+    if(this.snowballs[i].active){
 
       this.snowballs[i].move();
       this.snowballs[i].draw();
@@ -163,7 +161,6 @@ class Player {
           this.runToPoint(this.destination)
         // }
       }
-   
     }
   }
 checkSnowballs() {
@@ -187,7 +184,6 @@ class Game {
     Camera.update(Game.players[0].position);
     for (let i = 0; i < Game.players.length; i++) {
       const p = Game.players[i];
-   
       p.draw();
       p.move();
       p.drawAndMoveSnowballs();
