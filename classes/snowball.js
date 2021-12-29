@@ -1,5 +1,4 @@
-import { Game } from './game.js';
-import { distanceBetween, ctx, snowballRadius, myIndex } from '../script.js';
+import { Vector } from './vector.js';
 export class Snowball {
     constructor(position, velocity) {
         this.color = "";
@@ -9,46 +8,52 @@ export class Snowball {
         this.position = position;
         this.velocity = velocity;
     }
-    draw() {
-        ctx === null || ctx === void 0 ? void 0 : ctx.save();
-        ctx === null || ctx === void 0 ? void 0 : ctx.translate(this.position.x, this.position.y);
-        ctx === null || ctx === void 0 ? void 0 : ctx.beginPath();
-        ctx === null || ctx === void 0 ? void 0 : ctx.arc(0, 0, 8, 0, Math.PI * 2);
-        ctx === null || ctx === void 0 ? void 0 : ctx.stroke();
-        ctx.fillStyle = "lightblue";
-        ctx === null || ctx === void 0 ? void 0 : ctx.fill();
-        ctx === null || ctx === void 0 ? void 0 : ctx.closePath;
-        ctx === null || ctx === void 0 ? void 0 : ctx.restore();
+    draw(game) {
+        var _a, _b, _c, _d, _e, _f, _g, _h;
+        (_a = game.ctx) === null || _a === void 0 ? void 0 : _a.save();
+        (_b = game.ctx) === null || _b === void 0 ? void 0 : _b.translate(this.position.x, this.position.y);
+        (_c = game.ctx) === null || _c === void 0 ? void 0 : _c.beginPath();
+        (_d = game.ctx) === null || _d === void 0 ? void 0 : _d.arc(0, 0, 8, 0, Math.PI * 2);
+        (_e = game.ctx) === null || _e === void 0 ? void 0 : _e.stroke();
+        game.ctx.fillStyle = "lightblue";
+        (_f = game.ctx) === null || _f === void 0 ? void 0 : _f.fill();
+        (_g = game.ctx) === null || _g === void 0 ? void 0 : _g.closePath;
+        (_h = game.ctx) === null || _h === void 0 ? void 0 : _h.restore();
     }
     move() {
         this.position = this.position.add(this.velocity);
     }
-    checkAgainstPlayers() {
-        for (let i = 0; i < Game.players.length; i++) {
-            if (i != myIndex) {
-                const p = Game.players[i];
-                let playerToSnowball = distanceBetween(p.position, this.position);
-                if (playerToSnowball < p.radius + snowballRadius) {
+    checkAgainstPlayers(game) {
+        for (let i = 0; i < game.players.length; i++) {
+            if (i != game.myIndex) {
+                const p = game.players[i];
+                let playerToSnowball = Vector.distanceBetween(p.position, this.position);
+                if (playerToSnowball < p.radius + game.snowballRadius) {
                     this.active = false;
                     p.hp -= 10;
                 }
             }
         }
     }
-    checkAgainstObstacles() {
-        for (let i = 0; i < Game.obstacles.length; i++) {
-            const obstacle = Game.obstacles[i];
-            let snowballToObstacle = distanceBetween(obstacle.position, this.position);
-            if (snowballToObstacle < obstacle.radius + snowballRadius) {
+    checkAgainstObstacles(game) {
+        for (let i = 0; i < game.obstacles.length; i++) {
+            const obstacle = game.obstacles[i];
+            let snowballToObstacle = Vector.distanceBetween(obstacle.position, this.position);
+            if (snowballToObstacle < obstacle.radius + game.snowballRadius) {
                 this.active = false;
             }
         }
     }
-    limitDistance() {
-        for (let e = 0; e < Game.players.length; e++) {
-            const p = Game.players[e];
-            let distance = distanceBetween(p.position, this.position);
-            if (distance > 1500) {
+    // mouseDown hold will no longer put u in aimMode unless u drag 
+    // username at the bottom
+    //healthbar above head
+    // snowballs removed at a certain distant
+    //random img
+    limitDistance(game) {
+        for (let e = 0; e < game.players.length; e++) {
+            const p = game.players[e];
+            let distance = Vector.distanceBetween(p.position, this.position);
+            if (distance > 5000) {
                 this.active = false;
                 console.log("snowball removed");
             }

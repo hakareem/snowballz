@@ -1,9 +1,7 @@
 import { Vector } from './vector.js';
 import { Snowball } from './snowball.js';
-import { Game } from './game.js';
-import { distanceBetween, ctx, pctx, pCanvas, hypo } from '../script.js';
 export class Player {
-    constructor(username, position, color, hp, hpMax, img, radius) {
+    constructor(username, position, hp, hpMax, img, radius) {
         this.username = "";
         this.position = new Vector(50, 50);
         this.velocity = new Vector(0, 0); // the direction the player is currently moving in
@@ -11,107 +9,103 @@ export class Player {
         this.direction = new Vector(0, 0); // the last direction this player was known to be running in
         this.snowballs = [];
         this.angle = 0; // rotation angle of the player(for drawing)
-        this.color = "";
         this.target = new Vector(0, 0); // populate that during mouse movement
         this.hp = 0;
         this.hpMax = 0;
         this.username = username;
         this.position = position;
         this.destination = this.position;
-        this.color = color;
         this.hp = hp;
         this.hpMax = hpMax;
         this.img = img;
         this.radius = radius;
     }
-    drawHealth() {
-        ctx === null || ctx === void 0 ? void 0 : ctx.save();
-        ctx === null || ctx === void 0 ? void 0 : ctx.translate(this.position.x, this.position.y);
-        ctx === null || ctx === void 0 ? void 0 : ctx.scale(1, -1);
-        ctx.fillStyle = "red";
+    drawHealth(game) {
+        var _a, _b, _c, _d, _e, _f;
+        (_a = game.ctx) === null || _a === void 0 ? void 0 : _a.save();
+        (_b = game.ctx) === null || _b === void 0 ? void 0 : _b.translate(this.position.x, this.position.y);
+        (_c = game.ctx) === null || _c === void 0 ? void 0 : _c.scale(1, -1);
+        game.ctx.fillStyle = "red";
         let width = (60 * this.hp) / this.hpMax;
         if (width < 0) {
             width = 0;
         }
-        ctx === null || ctx === void 0 ? void 0 : ctx.fillRect(-30, 30, width, 10);
-        ctx.strokeStyle = "black";
-        ctx === null || ctx === void 0 ? void 0 : ctx.strokeRect(-30, 30, 60, 10);
-        ctx === null || ctx === void 0 ? void 0 : ctx.restore();
+        (_d = game.ctx) === null || _d === void 0 ? void 0 : _d.fillRect(-30, 30, width, 10);
+        game.ctx.strokeStyle = "black";
+        (_e = game.ctx) === null || _e === void 0 ? void 0 : _e.strokeRect(-30, 30, 60, 10);
+        (_f = game.ctx) === null || _f === void 0 ? void 0 : _f.restore();
     }
-    drawUsername() {
-        ctx.textAlign = "center";
-        ctx.font = "25px Arial";
-        ctx.fillStyle = "black";
-        ctx === null || ctx === void 0 ? void 0 : ctx.fillText(this.username, this.position.x + 5, this.position.y + 50);
+    drawUsername(game) {
+        var _a;
+        game.ctx.textAlign = "center";
+        game.ctx.font = "25px Arial";
+        game.ctx.fillStyle = "black";
+        (_a = game.ctx) === null || _a === void 0 ? void 0 : _a.fillText(this.username, this.position.x + 5, this.position.y + 50);
     }
-    draw() {
-        ctx === null || ctx === void 0 ? void 0 : ctx.save();
+    draw(game) {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        (_a = game.ctx) === null || _a === void 0 ? void 0 : _a.save();
         let r = this.radius; //*1.4
-        //pctx is s second canvas/context we use to pre-rotate the player
-        pctx === null || pctx === void 0 ? void 0 : pctx.save();
-        pctx === null || pctx === void 0 ? void 0 : pctx.clearRect(0, 0, r * 2, r * 2);
-        pctx === null || pctx === void 0 ? void 0 : pctx.translate(r, r);
-        pctx === null || pctx === void 0 ? void 0 : pctx.rotate(this.angle);
-        pctx === null || pctx === void 0 ? void 0 : pctx.translate(-r, -r);
-        pctx === null || pctx === void 0 ? void 0 : pctx.drawImage(this.img, r * .2, r * .2, r * 1.8, r * 1.8);
-        pctx === null || pctx === void 0 ? void 0 : pctx.restore();
-        ctx.translate(this.position.x, this.position.y);
-        //  ctx?.beginPath();
-        //  ctx?.arc(0, 0, this.radius, 0, Math.PI * 2);
-        //  ctx!.fillStyle = this.color;
-        //  ctx?.fill();
-        //  ctx?.stroke();
-        // ctx?.closePath;
-        ctx === null || ctx === void 0 ? void 0 : ctx.drawImage(pCanvas, -r, -r, r * 2, r * 2);
-        ctx === null || ctx === void 0 ? void 0 : ctx.restore();
+        //game.pctx is s second canvas/context we use to pre-rotate the player
+        (_b = game.pctx) === null || _b === void 0 ? void 0 : _b.save();
+        (_c = game.pctx) === null || _c === void 0 ? void 0 : _c.clearRect(0, 0, r * 2, r * 2);
+        (_d = game.pctx) === null || _d === void 0 ? void 0 : _d.translate(r, r);
+        (_e = game.pctx) === null || _e === void 0 ? void 0 : _e.rotate(this.angle);
+        (_f = game.pctx) === null || _f === void 0 ? void 0 : _f.translate(-r, -r);
+        (_g = game.pctx) === null || _g === void 0 ? void 0 : _g.drawImage(this.img, r * .2, r * .2, r * 1.8, r * 1.8);
+        (_h = game.pctx) === null || _h === void 0 ? void 0 : _h.restore();
+        game.ctx.translate(this.position.x, this.position.y);
+        (_j = game.ctx) === null || _j === void 0 ? void 0 : _j.drawImage(game.pCanvas, -r, -r, r * 2, r * 2);
+        (_k = game.ctx) === null || _k === void 0 ? void 0 : _k.restore();
     }
     move() {
         this.position = this.position.add(this.velocity);
     }
-    drawAndMoveSnowballs() {
+    drawAndMoveSnowballs(game) {
         for (let i = 0; i < this.snowballs.length; i++) {
             if (this.snowballs[i].active) {
                 this.snowballs[i].move();
-                this.snowballs[i].draw();
+                this.snowballs[i].draw(game);
             }
         }
     }
-    drawAimLine() {
-        ctx === null || ctx === void 0 ? void 0 : ctx.beginPath();
-        ctx === null || ctx === void 0 ? void 0 : ctx.moveTo(this.target.x, this.target.y);
-        ctx === null || ctx === void 0 ? void 0 : ctx.lineTo(this.position.x, this.position.y);
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 2;
-        ctx === null || ctx === void 0 ? void 0 : ctx.stroke();
+    drawAimLine(game) {
+        var _a, _b, _c, _d;
+        (_a = game.ctx) === null || _a === void 0 ? void 0 : _a.beginPath();
+        (_b = game.ctx) === null || _b === void 0 ? void 0 : _b.moveTo(this.target.x, this.target.y);
+        (_c = game.ctx) === null || _c === void 0 ? void 0 : _c.lineTo(this.position.x, this.position.y);
+        game.ctx.strokeStyle = "black";
+        game.ctx.lineWidth = 2;
+        (_d = game.ctx) === null || _d === void 0 ? void 0 : _d.stroke();
     }
     runToPoint(destination) {
         let p = this;
         p.destination = destination;
         // Do nothing if we are already at the point, otherwise we would get an division by 0 error
-        if (distanceBetween(p.position, p.destination) < 0.01) {
+        if (Vector.distanceBetween(p.position, p.destination) < 0.01) {
             return;
         }
         let adjacent = p.destination.x - p.position.x;
         let opposite = p.destination.y - p.position.y;
         p.angle = -Math.atan2(-opposite, adjacent) - Math.PI / 2;
-        let hypotenuse = hypo(adjacent, opposite);
+        let hypotenuse = Vector.hypo(adjacent, opposite);
         p.velocity.x = (adjacent / hypotenuse) * 5;
         p.velocity.y = (opposite / hypotenuse) * 5;
         p.direction = new Vector(p.velocity.x, p.velocity.y);
     }
-    shootSnowball(target) {
-        const p = Game.players[0];
+    shootSnowball(target, game) {
+        const p = game.players[0];
         const mouseCoord = new Vector(target.x, target.y);
-        if (distanceBetween(mouseCoord, p.position) <= 20) {
+        if (Vector.distanceBetween(mouseCoord, p.position) <= 20) {
             p.snowballs.push(new Snowball(p.position, p.direction));
         }
     }
-    pushOtherPlayersAway() {
+    pushOtherPlayersAway(game) {
         let isOverlap = false;
-        for (let i = 0; i < Game.players.length; i++) {
-            const otherPlayer = Game.players[i];
+        for (let i = 0; i < game.players.length; i++) {
+            const otherPlayer = game.players[i];
             if (otherPlayer != this) {
-                let dbt = distanceBetween(this.position, otherPlayer.position);
+                let dbt = Vector.distanceBetween(this.position, otherPlayer.position);
                 if (dbt < 0.01) {
                     otherPlayer.position.x += 2;
                 }
@@ -126,11 +120,11 @@ export class Player {
         }
         return isOverlap;
     }
-    movePlayerAroundObstacles() {
-        for (let i = 0; i < Game.obstacles.length; i++) {
-            const obstacle = Game.obstacles[i];
-            let dbt = distanceBetween(this.position, obstacle.position);
-            let overlap = obstacle.radius * 2 - dbt;
+    movePlayerAroundObstacles(game) {
+        for (let i = 0; i < game.obstacles.length; i++) {
+            const obstacle = game.obstacles[i];
+            let dbt = Vector.distanceBetween(this.position, obstacle.position);
+            let overlap = obstacle.radius * 1.7 - dbt;
             if (overlap > 0) {
                 let vectorBetween = this.position.subtract(obstacle.position);
                 let directionBetween = vectorBetween.normalise();
@@ -139,12 +133,12 @@ export class Player {
             }
         }
     }
-    checkSnowballs() {
+    checkSnowballs(game) {
         for (let s = 0; s < this.snowballs.length; s++) {
             let snowball = this.snowballs[s];
             if (snowball.active == true) {
-                snowball.checkAgainstPlayers();
-                snowball.checkAgainstObstacles();
+                snowball.checkAgainstPlayers(game);
+                snowball.checkAgainstObstacles(game);
             }
         }
     }

@@ -1,9 +1,9 @@
 import { Vector } from './vector.js';
-import { ctx, canvas } from '../script.js';
 export class Camera {
-    static update(v) {
+    static update(v, game) {
+        var _a;
         Camera.focus = v;
-        ctx === null || ctx === void 0 ? void 0 : ctx.translate(-v.x + canvas.width / 2, -v.y + canvas.height / 2);
+        (_a = game.ctx) === null || _a === void 0 ? void 0 : _a.translate(-v.x + game.canvas.width / 2, -v.y + game.canvas.height / 2);
     }
 }
 Camera.focus = new Vector(0, 0);

@@ -1,4 +1,3 @@
-import { hypo } from "../script.js";
 export class Vector {
     constructor(x, y) {
         this.x = 0;
@@ -19,7 +18,13 @@ export class Vector {
         return new Vector(this.x / this.length, this.y / this.length);
     }
     get length() {
-        return hypo(this.x, this.y);
+        return Vector.hypo(this.x, this.y);
+    }
+    static hypo(adjacent, opposite) {
+        return Math.sqrt(Math.pow(adjacent, 2) + Math.pow(opposite, 2));
+    }
+    static distanceBetween(a, b) {
+        return Vector.hypo(Math.abs(b.x - a.x), Math.abs(b.y - a.y));
     }
 }
 //# sourceMappingURL=vector.js.map
