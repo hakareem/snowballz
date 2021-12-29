@@ -15,6 +15,7 @@ export class Game {
             p.drawUsername();
             p.movePlayerAroundObstacles();
             while (p.pushOtherPlayersAway()) { }
+            p.ghostMode();
             if (distanceBetween(p.position, p.destination) < 50 && mouseBtnDown == true) {
                 p.drawAimLine();
                 p.velocity.x = 0;

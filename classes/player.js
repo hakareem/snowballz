@@ -56,12 +56,6 @@ export class Player {
         pctx === null || pctx === void 0 ? void 0 : pctx.drawImage(this.img, r * .2, r * .2, r * 1.8, r * 1.8);
         pctx === null || pctx === void 0 ? void 0 : pctx.restore();
         ctx.translate(this.position.x, this.position.y);
-        //  ctx?.beginPath();
-        //  ctx?.arc(0, 0, this.radius, 0, Math.PI * 2);
-        //  ctx!.fillStyle = this.color;
-        //  ctx?.fill();
-        //  ctx?.stroke();
-        // ctx?.closePath;
         ctx === null || ctx === void 0 ? void 0 : ctx.drawImage(pCanvas, -r, -r, r * 2, r * 2);
         ctx === null || ctx === void 0 ? void 0 : ctx.restore();
     }
@@ -85,7 +79,7 @@ export class Player {
         ctx === null || ctx === void 0 ? void 0 : ctx.stroke();
     }
     runToPoint(destination) {
-        let p = Game.players[0];
+        let p = this;
         p.destination = destination;
         // Do nothing if we are already at the point, otherwise we would get an division by 0 error
         if (distanceBetween(p.position, p.destination) < 0.01) {
@@ -131,15 +125,11 @@ export class Player {
             const obstacle = Game.obstacles[i];
             let dbt = distanceBetween(this.position, obstacle.position);
             let overlap = obstacle.radius * 2 - dbt;
-            // let isObstacle = false
             if (overlap > 0) {
-                // isObstacle = true
                 let vectorBetween = this.position.subtract(obstacle.position);
                 let directionBetween = vectorBetween.normalise();
                 this.position = this.position.add(directionBetween.multiply(overlap));
-                // if (isObstacle) {
                 this.runToPoint(this.destination);
-                // }
             }
         }
     }
@@ -151,6 +141,11 @@ export class Player {
                 snowball.checkAgainstPlayers();
                 snowball.checkAgainstObstacles();
             }
+        }
+    }
+    ghostMode() {
+        if (this.hp <= 0) {
+            this.runToPoint(new Vector(0, 0));
         }
     }
 }
