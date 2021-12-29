@@ -59,9 +59,9 @@ let colors: string[] = [
 let username: string = prompt("Enter your username")!;
 
 let numPlayers = 4;
-let playerRadius = 30;
-export let snowballRadius = 8
-export let myIndex = 0
+let playerRadius = 38;
+export let snowballRadius = 10;
+export let myIndex = 0;
 
 export const pCanvas=document.createElement("canvas")
 pCanvas.width=playerRadius*2
@@ -69,21 +69,40 @@ pCanvas.height=playerRadius*2
 export const pctx = pCanvas.getContext("2d");
 
 
+
+let pictures = [];
+pictures.push("player images/PLAYER1.png")
+pictures.push("player images/PLAYER2.png")
+pictures.push("player images/PLAYER3.png")
+pictures.push("player images/PLAYER4.png")
+pictures.push("player images/PLAYER5.png")
+pictures.push("player images/PLAYER6.png")
+pictures.push("player images/PLAYER8.png")
+pictures.push("player images/PLAYER9.png")
+pictures.push("player images/PLAYER10.png")
+pictures.push("player images/PLAYER11.png")
+pictures.push("player images/PLAYER12.png")
+pictures.push("player images/PLAYER13.png")
+pictures.push("player images/PLAYER14.png")
+
 for (let i = 0; i < numPlayers; i++) {
 
   let img = document.createElement("img")
-  img.src = "player images/clipart3304.png"
+  let randomPic = Math.floor(Math.random() * pictures.length)
+  img.src = pictures[randomPic]
 
   Game.players.push(new Player(username, new Vector(Math.floor(Math.random() * 400), Math.floor(Math.random() * 400)), colors[i], 100, 100, img, playerRadius));
 }
 
 let images = [];
-images.push("obstacle images/tree_12.png");
-images.push("obstacle images/tree_17.png");
-images.push("obstacle images/tree_23.png");
-images.push("obstacle images/tree_28.png");
-images.push("obstacle images/tree_43.png");
-images.push("obstacle images/tree_52.png");
+images.push("obstacle images/TREES.png");
+images.push("obstacle images/TREES1.png");
+images.push("obstacle images/TREES2.png");
+images.push("obstacle images/TREES3.png");
+images.push("obstacle images/TREES4.png");
+images.push("obstacle images/TREES6.png");
+images.push("obstacle images/TREES7.png");
+images.push("obstacle images/TREES8.png");
 
 let numObstacles = 100;
 for (let i = 0; i < numObstacles; i++) {
@@ -116,27 +135,33 @@ let isAiming = false;
 function mouseDown(_e: MouseEvent) {
   const p = Game.players[0];
   // startBackgroundMusic();
+
   if (distanceBetween(p.position, p.target) < 40) {
     isAiming = true;
+  mouseBtnDown = true;
+
   } else {
     p.runToPoint(p.target);
+
   }
-  mouseBtnDown = true;
 }
 
 function mouseUp(_e: MouseEvent) {
   const p = Game.players[0];
-  mouseBtnDown = false;
+
   if (isAiming) {
     p.snowballs.push(
       new Snowball(
         p.position,
         p.target.subtract(p.position).normalise().multiply(5)
       )
+      
     );
     // startThrowSound();
   }
+  mouseBtnDown = false;
   isAiming = false;
+
 }
 
 function mouseMovement(e: MouseEvent) {

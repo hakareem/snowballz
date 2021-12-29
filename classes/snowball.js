@@ -15,7 +15,7 @@ export class Snowball {
         ctx === null || ctx === void 0 ? void 0 : ctx.beginPath();
         ctx === null || ctx === void 0 ? void 0 : ctx.arc(0, 0, 8, 0, Math.PI * 2);
         ctx === null || ctx === void 0 ? void 0 : ctx.stroke();
-        ctx.fillStyle = "snow";
+        ctx.fillStyle = "lightblue";
         ctx === null || ctx === void 0 ? void 0 : ctx.fill();
         ctx === null || ctx === void 0 ? void 0 : ctx.closePath;
         ctx === null || ctx === void 0 ? void 0 : ctx.restore();
@@ -41,6 +41,21 @@ export class Snowball {
             let snowballToObstacle = distanceBetween(obstacle.position, this.position);
             if (snowballToObstacle < obstacle.radius + snowballRadius) {
                 this.active = false;
+            }
+        }
+    }
+    // mouseDown hold will no longer put u in aimMode unless u drag 
+    // username at the bottom
+    //healthbar above head
+    // snowballs removed at a certain distant
+    //random img
+    limitDistance() {
+        for (let e = 0; e < Game.players.length; e++) {
+            const p = Game.players[e];
+            let distance = distanceBetween(p.position, this.position);
+            if (distance > 5000) {
+                this.active = false;
+                console.log("snowball removed");
             }
         }
     }

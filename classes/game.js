@@ -10,8 +10,8 @@ export class Game {
             p.draw();
             p.move();
             p.drawAndMoveSnowballs();
-            p.drawHealth();
             p.checkSnowballs();
+            p.drawHealth();
             p.drawUsername();
             p.movePlayerAroundObstacles();
             while (p.pushOtherPlayersAway()) { }

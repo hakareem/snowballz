@@ -42,23 +42,24 @@ export class Player {
     drawHealth() {
       ctx?.save();
       ctx?.translate(this.position.x, this.position.y);
+      ctx?.scale(1,-1);
   
       ctx!.fillStyle = "red";
       let width = (60 * this.hp) / this.hpMax;
       if (width < 0) {
         width = 0;
       }
-      ctx?.fillRect(-28, 30, width, 10);
+      ctx?.fillRect(-30, 30, width, 10);
       ctx!.strokeStyle = "black";
-      ctx?.strokeRect(-28, 30, 60, 10);
+      ctx?.strokeRect(-30, 30, 60, 10);
       ctx?.restore();
     }
   
-    drawUsername() {
+    drawUsername() { 
       ctx!.textAlign = "center";
-      ctx!.font = "18px Arial";
+      ctx!.font = "25px Arial";
       ctx!.fillStyle = "black";
-      ctx?.fillText(this.username, this.position.x, this.position.y);
+      ctx?.fillText(this.username, this.position.x + 5 , this.position.y + 50);
     }
   
   
@@ -178,10 +179,15 @@ export class Player {
           for (let s = 0; s < this.snowballs.length; s++) {
             let snowball = this.snowballs[s]
             if (snowball.active == true) {
+              snowball.limitDistance()
+
               snowball.checkAgainstPlayers()
               snowball.checkAgainstObstacles()
+
             }
           }
         }
-  
+
+
+    
   }
