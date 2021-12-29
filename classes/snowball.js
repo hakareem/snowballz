@@ -53,7 +53,7 @@ export class Snowball {
         for (let e = 0; e < Game.players.length; e++) {
             const p = Game.players[e];
             let distance = distanceBetween(p.position, this.position);
-            if (distance > 5000) {
+            if (distance > 1500) {
                 this.active = false;
                 console.log("snowball removed");
             }

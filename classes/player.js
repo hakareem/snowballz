@@ -56,6 +56,12 @@ export class Player {
         pctx === null || pctx === void 0 ? void 0 : pctx.drawImage(this.img, r * .2, r * .2, r * 1.8, r * 1.8);
         pctx === null || pctx === void 0 ? void 0 : pctx.restore();
         ctx.translate(this.position.x, this.position.y);
+        //  ctx?.beginPath();
+        //  ctx?.arc(0, 0, this.radius, 0, Math.PI * 2);
+        //  ctx!.fillStyle = this.color;
+        //  ctx?.fill();
+        //  ctx?.stroke();
+        // ctx?.closePath;
         ctx === null || ctx === void 0 ? void 0 : ctx.drawImage(pCanvas, -r, -r, r * 2, r * 2);
         ctx === null || ctx === void 0 ? void 0 : ctx.restore();
     }
@@ -137,7 +143,6 @@ export class Player {
         for (let s = 0; s < this.snowballs.length; s++) {
             let snowball = this.snowballs[s];
             if (snowball.active == true) {
-                snowball.limitDistance();
                 snowball.checkAgainstPlayers();
                 snowball.checkAgainstObstacles();
             }
