@@ -44,11 +44,6 @@ export class Snowball {
             }
         }
     }
-    // mouseDown hold will no longer put u in aimMode unless u drag 
-    // username at the bottom
-    //healthbar above head
-    // snowballs removed at a certain distant
-    //random img
     limitDistance() {
         for (let e = 0; e < Game.players.length; e++) {
             const p = Game.players[e];
