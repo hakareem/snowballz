@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="style.css" />
   <!-- <script src="classes.js" defer></script> -->
   <!-- <script src="utility.js" defer></script> -->
+  <script type="module" src="classes/client.js" defer></script>
   <script type="module" src="script.js" defer></script>
 </head>
 
@@ -23,6 +24,31 @@
           </snow>
           <canvas id="myCanvas"></canvas> -->
   <!-- <img id="trees"/> -->
+  <div id="lobby">
+    <p>Choose a player name..
+    <input id="playerName">
+    <hr>
+    <br>
+    Game PIN: <input id='gameToShare'></input>
+    <button onclick='game.create()'>Create a game</button>
+
+    <hr>
+    
+    
+    <p>Enter game PIN 
+        <input id='gameToJoin'></input>        
+        <p>and
+    <button onclick='joinGameHTML()'>Join the game</button>
+    
+    
+    <hr>
+    <p>Then ...
+
+    <button onclick=runTo()>Run somewhere</button> 
+    <div id='rxd'>
+    
+    </div>  
+</div>
 </body>
 
 </html>

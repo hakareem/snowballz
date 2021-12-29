@@ -1,4 +1,3 @@
-import { ctx } from '../script.js';
 export class Obstacle {
     constructor(position, radius, color, img) {
         this.color = "";
@@ -7,18 +6,13 @@ export class Obstacle {
         this.color = color;
         this.img = img;
     }
-    draw() {
-        ctx === null || ctx === void 0 ? void 0 : ctx.save();
-        ctx === null || ctx === void 0 ? void 0 : ctx.translate(this.position.x, this.position.y);
-        // ctx?.beginPath();
-        // ctx?.arc(0, 0, this.radius, 0, Math.PI * 2);
-        // ctx!.fillStyle = this.color;
-        // ctx?.fill();
-        // ctx?.stroke();
-        // ctx?.closePath;
+    draw(game) {
+        var _a, _b, _c, _d;
+        (_a = game.ctx) === null || _a === void 0 ? void 0 : _a.save();
+        (_b = game.ctx) === null || _b === void 0 ? void 0 : _b.translate(this.position.x, this.position.y);
         let r = this.radius * 1.4;
-        ctx === null || ctx === void 0 ? void 0 : ctx.drawImage(this.img, -r, -r, r * 2, r * 2);
-        ctx === null || ctx === void 0 ? void 0 : ctx.restore();
+        (_c = game.ctx) === null || _c === void 0 ? void 0 : _c.drawImage(this.img, -r, -r, r * 2, r * 2);
+        (_d = game.ctx) === null || _d === void 0 ? void 0 : _d.restore();
     }
 }
 //# sourceMappingURL=obstacle.js.map

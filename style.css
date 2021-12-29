@@ -8,6 +8,21 @@ body {
   width: 100vw;
 }
 
+#lobby{
+  background-color: blue;
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  width: 50%;
+  height: 50%;
+  box-shadow: 10px 10px 10px rgba(0,0,0,0.5);
+  color: white;
+  font-size: 30px;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+
 /* .backg {
   height: 510px;
   width: 350px;

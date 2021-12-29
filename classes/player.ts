@@ -113,8 +113,9 @@ export class Player {
   }
   pushOtherPlayersAway(game: Game) {
     let isOverlap = false;
-    for (let i = 0; i < game.players.length; i++) {
-      const otherPlayer = game.players[i];
+    // for (let i = 0; i < game.players.length; i++) 
+    for (let pName in game.players){
+      const otherPlayer = game.players[pName];
       if (otherPlayer != this) {
         let dbt = Vector.distanceBetween(this.position, otherPlayer.position);
         if (dbt < 0.01) {

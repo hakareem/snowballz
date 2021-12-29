@@ -33,9 +33,10 @@ export class Snowball {
     this.position = this.position.add(this.velocity);
   }
   checkAgainstPlayers(game: Game) {
-    for (let i = 0; i < game.players.length; i++) {
-      if (i != game.myIndex) {
-        const p = game.players[i];
+    // for (let i = 0; i < game.players.length; i++)
+     for (let pName in game.players){
+      if (pName != game.myName) {
+        const p = game.players[pName];
         let playerToSnowball = Vector.distanceBetween(p.position, this.position)
         if (playerToSnowball < p.radius + game.snowballRadius) {
           this.active = false
@@ -63,12 +64,13 @@ export class Snowball {
 
 
   limitDistance(game: Game) {
-    for (let e = 0; e < game.players.length; e++) {
-      const p = game.players[e]
+    // for (let e = 0; e < game.players.length; e++)
+     for (let pName in game.players){
+      const p = game.players[pName]
       let distance = Vector.distanceBetween(p.position, this.position)
       if (distance > 5000) {
         this.active = false
-        console.log("snowball removed");
+        // console.log("snowball removed");
       }
     }
   }

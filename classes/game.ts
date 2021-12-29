@@ -3,10 +3,12 @@ import { Obstacle } from './obstacle.js'
 import { Camera } from './camera.js'
 import { Vector } from './vector.js'
 import { Snowball } from './snowball.js'
+import { fetchObject, endpoint } from './client.js'
 
 
 export class Game {
-  players: Player[] = [];
+  id: number = 0;
+  players: Record <string, Player>= {}
   obstacles: Obstacle[] = [];
   numPlayers: number;
   playerRadius: number;
@@ -17,9 +19,10 @@ export class Game {
   mouseBtnDown: boolean = false;
   isAiming: boolean = false;
   snowballRadius: number;
-  myIndex: number;
+  myName: string;
+  private pictures: string[] = [];
 
-  constructor(numPlayers: number, playerRadius: number, snowballRadius: number, numObstacles: number, width: number, height: number, myIndex: number) {
+  constructor(numPlayers: number, playerRadius: number, snowballRadius: number, numObstacles: number, width: number, height: number, myName: string) {
     this.numPlayers = numPlayers
     this.playerRadius = playerRadius
     this.snowballRadius = snowballRadius
@@ -32,9 +35,10 @@ export class Game {
     this.pCanvas.width = playerRadius * 2
     this.pCanvas.height = playerRadius * 2
     this.pctx = this.pCanvas.getContext("2d")!;
-    this.myIndex = myIndex
-    this.setupPlayers(this.numPlayers, this.playerRadius)
+    this.myName = myName
+    // this.setupPlayers(this.numPlayers, this.playerRadius)
     this.setupObstacles(numObstacles)
+    this.setupPictures()
     this.canvas.addEventListener("mousedown", (e) => this.mouseDown(e));
     this.canvas.addEventListener("mouseup", (e) => this.mouseUp(e));
     this.canvas.addEventListener("mousemove", (e) => this.mouseMovement(e));
@@ -43,9 +47,12 @@ export class Game {
   cycle() {
     this.ctx?.resetTransform();
     this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    Camera.update(this.players[0].position, this);
-    for (let i = 0; i < this.players.length; i++) {
-      const p = this.players[i];
+    if(this.players.length){
+      Camera.update(this.players[0].position, this);
+    }
+    // for (let i = 0; i < this.players.length; i++) 
+    for (let pName in this.players){
+      const p = this.players[pName];
       p.draw(this);
       p.move();
       p.drawAndMoveSnowballs(this);
@@ -73,29 +80,30 @@ export class Game {
       this.obstacles[i].draw(this);
     }
   }
+  setupPictures(){
+    this.pictures.push("player images/PLAYER1.png")
+    this.pictures.push("player images/PLAYER2.png")
+    this.pictures.push("player images/PLAYER3.png")
+    this.pictures.push("player images/PLAYER4.png")
+    this.pictures.push("player images/PLAYER5.png")
+    this.pictures.push("player images/PLAYER6.png")
+    this.pictures.push("player images/PLAYER8.png")
+    this.pictures.push("player images/PLAYER9.png")
+    this.pictures.push("player images/PLAYER10.png")
+    this.pictures.push("player images/PLAYER11.png")
+    this.pictures.push("player images/PLAYER12.png")
+    this.pictures.push("player images/PLAYER13.png")
+    this.pictures.push("player images/PLAYER14.png")
+  }
   setupPlayers(numPlayers: number, playerRadius: number) {
-
-    let pictures = [];
-
-    pictures.push("player images/PLAYER1.png")
-    pictures.push("player images/PLAYER2.png")
-    pictures.push("player images/PLAYER3.png")
-    pictures.push("player images/PLAYER4.png")
-    pictures.push("player images/PLAYER5.png")
-    pictures.push("player images/PLAYER6.png")
-    pictures.push("player images/PLAYER8.png")
-    pictures.push("player images/PLAYER9.png")
-    pictures.push("player images/PLAYER10.png")
-    pictures.push("player images/PLAYER11.png")
-    pictures.push("player images/PLAYER12.png")
-    pictures.push("player images/PLAYER13.png")
-    pictures.push("player images/PLAYER14.png")
 
     for (let i = 0; i < numPlayers; i++) {
       let img = document.createElement("img")
-      let randomPic = Math.floor(Math.random() * pictures.length)
-      img.src = pictures[randomPic]
-      this.players.push(new Player("player", new Vector(Math.floor(Math.random() * 400), Math.floor(Math.random() * 400)), 100, 100, img, playerRadius));
+      let randomPic = Math.floor(Math.random() * this.pictures.length)
+      img.src = this.pictures[randomPic]
+      let pName = "player " + i
+
+      this.players[pName]= (new Player(pName, new Vector(Math.floor(Math.random() * 400), Math.floor(Math.random() * 400)), 100, 100, img, playerRadius));
     }
   }
   setupObstacles(numObstacles: number) {
@@ -120,15 +128,16 @@ export class Game {
     }
   }
   mouseDown(_e: MouseEvent) {
-    const p = this.players[0];
+    if(this.players.length){
+     const p = this.players[0];
     // startBackgroundMusic();
-    console.log("x")
     if (Vector.distanceBetween(p.position, p.target) < 40) {
       this.isAiming = true;
       this.mouseBtnDown = true;
     }
     else {
       p.runToPoint(p.target);
+    }
     }
   }
 
@@ -148,10 +157,32 @@ export class Game {
   }
 
   mouseMovement(e: MouseEvent) {
-    let p = this.players[0];
-    p.target = new Vector(
+    if(this.players.length){
+      let p = this.players[0];
+      p.target = new Vector(
       e.clientX + Camera.focus.x - this.canvas.width / 2,
       e.clientY + Camera.focus.y - this.canvas.height / 2
     );
+    }
   }
+
+
+  addPlayer(playerName:string, position: Vector){
+    let img = document.createElement("img")
+    img.src = this.pictures[Object.keys(this.players).length % this.pictures.length]
+    console.log("img.src" + img.src);
+    
+    this.players[playerName]= new Player(playerName, position,100,100,img, this.playerRadius)
+  }
+ async create(){
+   this.myName=(<HTMLInputElement>document.getElementById("playerName")).value
+    let cmd={cmd:"createGame",playerName:this.myName}
+    let gameInfo= await fetchObject(endpoint,cmd)
+    
+    // processMsgs(msgs)
+    
+    this.id=gameInfo.gameId;  //we now know which game WE have joined (the creator)
+    (<HTMLInputElement>document.getElementById("gameToShare")).value=this.id.toString() 
+    // joinGame(this.id)
+}
 }
