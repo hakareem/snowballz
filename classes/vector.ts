@@ -28,4 +28,9 @@ export class Vector {
   static distanceBetween(a: Vector, b: Vector) {
     return Vector.hypo(Math.abs(b.x - a.x), Math.abs(b.y - a.y));
   }
+
+  static trueVector(o: any){
+    return new Vector(o.x,o.y)
+  }
+
 }

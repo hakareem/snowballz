@@ -38,5 +38,5 @@ import { Game } from './classes/game.js';
 //   "BlueViolet",
 //   "Ivory",
 // ];
-export let game = new Game(9, 38, 10, 100, window.innerWidth, window.innerHeight, "");
+window.game = new Game(9, 38, 10, 100, window.innerWidth, window.innerHeight, "");
 //# sourceMappingURL=script.js.map

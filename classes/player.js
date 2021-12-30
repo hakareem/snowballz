@@ -1,5 +1,4 @@
 import { Vector } from './vector.js';
-import { Snowball } from './snowball.js';
 export class Player {
     constructor(username, position, hp, hpMax, img, radius) {
         this.username = "";
@@ -93,13 +92,13 @@ export class Player {
         p.velocity.y = (opposite / hypotenuse) * 5;
         p.direction = new Vector(p.velocity.x, p.velocity.y);
     }
-    shootSnowball(target, game) {
-        const p = game.players[0];
-        const mouseCoord = new Vector(target.x, target.y);
-        if (Vector.distanceBetween(mouseCoord, p.position) <= 20) {
-            p.snowballs.push(new Snowball(p.position, p.direction));
-        }
-    }
+    // shootSnowball(target: Vector, game: Game) {
+    //   const p = game.players[0];
+    //   const mouseCoord: Vector = new Vector(target.x, target.y);
+    //   if (Vector.distanceBetween(mouseCoord, p.position) <= 20) {
+    //     p.snowballs.push(new Snowball(p.position, p.direction));
+    //   }
+    // }
     pushOtherPlayersAway(game) {
         let isOverlap = false;
         // for (let i = 0; i < game.players.length; i++) 
@@ -138,7 +137,7 @@ export class Player {
         for (let s = 0; s < this.snowballs.length; s++) {
             let snowball = this.snowballs[s];
             if (snowball.active == true) {
-                snowball.checkAgainstPlayers(game);
+                snowball.checkAgainstPlayers(game, this);
                 snowball.checkAgainstObstacles(game);
             }
         }

@@ -32,18 +32,17 @@ export class Snowball {
   move() {
     this.position = this.position.add(this.velocity);
   }
-  checkAgainstPlayers(game: Game) {
+  checkAgainstPlayers(game: Game, owner: Player) {
     // for (let i = 0; i < game.players.length; i++)
-     for (let pName in game.players){
-      if (pName != game.myName) {
-        const p = game.players[pName];
+    for (let pName in game.players){
+      const p = game.players[pName];
+      if (p != owner) {
         let playerToSnowball = Vector.distanceBetween(p.position, this.position)
         if (playerToSnowball < p.radius + game.snowballRadius) {
           this.active = false
           p.hp -= 10
         }
       }
-
     }
   }
   checkAgainstObstacles(game: Game) {
@@ -55,13 +54,6 @@ export class Snowball {
       }
     }
   }
-
-  // mouseDown hold will no longer put u in aimMode unless u drag 
-  // username at the bottom
-  //healthbar above head
-  // snowballs removed at a certain distant
-  //random img
-
 
   limitDistance(game: Game) {
     // for (let e = 0; e < game.players.length; e++)

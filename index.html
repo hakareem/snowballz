@@ -11,9 +11,30 @@
   <!-- <script src="utility.js" defer></script> -->
   <script type="module" src="classes/client.js" defer></script>
   <script type="module" src="script.js" defer></script>
+  <script>
+ function joinGameHTML(){
+    let playerName=(document.getElementById("playerName")).value
+    let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
+    window.game.joinServerGame(gameToJoin, playerName) 
+    document.getElementById("lobby").style.display = "none"
+}
+
+
+async function HTMLCreateAndJoinGame(){
+  await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
+  document.getElementById("gameToShare").value = window.game.id
+}
+
+function hideLobby(){
+    document.getElementById("lobby").style.display = "none"
+}
+
+</script>
+
 </head>
 
 <body>
+  
   <!-- <div class="ground"></div>
   <section>
     <div class="snow1">
@@ -25,30 +46,24 @@
           <canvas id="myCanvas"></canvas> -->
   <!-- <img id="trees"/> -->
   <div id="lobby">
-    <p>Choose a player name..
-    <input id="playerName">
+    <p>Choose a player name: <input id="playerName">
     <hr>
     <br>
     Game PIN: <input id='gameToShare'></input>
-    <button onclick='game.create()'>Create a game</button>
+    <button onclick="HTMLCreateAndJoinGame()">Create a game</button>
 
     <hr>
     
     
-    <p>Enter game PIN 
-        <input id='gameToJoin'></input>        
-        <p>and
-    <button onclick='joinGameHTML()'>Join the game</button>
+    <p>Enter game PIN : <input id='gameToJoin'></input> <button onclick='joinGameHTML()'>Join the game</button>
     
     
     <hr>
-    <p>Then ...
-
-    <button onclick=runTo()>Run somewhere</button> 
+    <p>Move: <button onclick=runTo()>Run somewhere</button> 
     <div id='rxd'>
-    
+    <button onclick="hideLobby()">Close</button>
     </div>  
-</div>
+  </div>
 </body>
 
 </html>

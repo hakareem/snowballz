@@ -26,5 +26,8 @@ export class Vector {
     static distanceBetween(a, b) {
         return Vector.hypo(Math.abs(b.x - a.x), Math.abs(b.y - a.y));
     }
+    static trueVector(o) {
+        return new Vector(o.x, o.y);
+    }
 }
 //# sourceMappingURL=vector.js.map

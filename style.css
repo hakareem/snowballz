@@ -187,6 +187,7 @@ body {
     background-position: 300px 650px;
   }
 }
-#myCanvas {
+canvas {
   border: 1px solid black;
+  background-color: cornsilk;
 }
