@@ -88,8 +88,8 @@ export class Game {
       if (Vector.distanceBetween(p.position, p.destination) < 50 && this.mouseBtnDown == true) {
         p.velocity.x = 0;
         p.velocity.y = 0;
+        p.angle = -Math.atan2(p.position.x - p.target.x, p.position.y - p.target.y);
         p.drawAimLine(this);
-
       }
       else if (Vector.distanceBetween(p.position, p.destination) < 20) {
         p.velocity.x = 0;
@@ -176,7 +176,8 @@ export class Game {
       const p = this.players[this.myName];
       if (Vector.distanceBetween(p.position, p.target) < 40) {
         this.isAiming = true;
-        this.mouseBtnDown = true;
+        this.mouseBtnDown = true; 
+
       }
       else {
         // p.runToPoint(p.target);
