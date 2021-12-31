@@ -4,6 +4,7 @@ import { Camera } from './camera.js'
 import { Vector } from './vector.js'
 import { Snowball } from './snowball.js'
 import { fetchObject, endpoint } from './client.js'
+import { Sound } from './sounds.js'
 
 
 export class Game {
@@ -43,6 +44,7 @@ export class Game {
     this.canvas.addEventListener("mousedown", (e) => this.mouseDown(e));
     this.canvas.addEventListener("mouseup", (e) => this.mouseUp(e));
     this.canvas.addEventListener("mousemove", (e) => this.mouseMovement(e));
+    Sound.setup(['impact','playerGasp','throw'])
     requestAnimationFrame(() => this.cycle());
   }
   cycle() {
@@ -271,6 +273,8 @@ export class Game {
         else if (m.cmd == "shootSnowball") {
           let player = this.players[m.playerName]
           player.snowballs.push(new Snowball(Vector.trueVector(m.params.position), Vector.negate(m.params.velocity)))
+          // player.shootSnowball(Vector.trueVector(m.params.target), this)
+          Sound.play('throw', 0.5)
         }
       }
     }
