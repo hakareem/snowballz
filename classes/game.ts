@@ -243,8 +243,9 @@ export class Game {
   processMsgs(msgs: any[]) {
     if (msgs != undefined) {
       let rxd = document.getElementById("rxd")
+      let check = msgs.length
       for (let i = 0; i < msgs.length; i++) {
-        console.log(msgs[i].cmd)  //You will want to actually *do things* here .. like run players to points, and launch snowballs
+        console.log(msgs[i].sqn)  //You will want to actually *do things* here .. like run players to points, and launch snowballs
         let m = msgs[i]
         if (m.cmd == "playerJoined") {
           this.addPlayer(m.playerName, m.params.position)
@@ -267,11 +268,14 @@ export class Game {
           player.snowballs.push(new Snowball(Vector.trueVector(m.params.position), Vector.negate(m.params.velocity)))
         }
       }
+      if(msgs.length != check){
+        alert("its all wrong oh noo")
+      }
+
     }
   }
   async poll() {
-    console.log("polling ");
-
+    // console.log("polling ");
     //periodically called, to fetch pending messages from the server
     let cmd = { cmd: "poll", playerName: this.myName, gameId: this.id } //will return (assign to you)a player ID -
     let msgs = await fetchObject(endpoint, cmd) //result is an object containing an array of messages

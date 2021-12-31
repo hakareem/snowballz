@@ -22,7 +22,7 @@ export class Snowball {
     game.ctx?.save();
     game.ctx?.translate(this.position.x, this.position.y);
     game.ctx?.beginPath();
-    game.ctx?.arc(0, 0, 8, 0, Math.PI * 2);
+    game.ctx?.arc(0, 0, 10, 0, Math.PI * 2);
     game.ctx?.stroke();
     game.ctx!.fillStyle = "lightblue";
     game.ctx?.fill();
