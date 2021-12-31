@@ -77,15 +77,23 @@ export class Player {
   move() {
     this.position = this.position.add(this.velocity);
   }
-  drawAndMoveSnowballs(game: Game) {
+
+  drawSnowballs(game:Game){
     for (let i = 0; i < this.snowballs.length; i++) {
-      if (this.snowballs[i].active) {
-        this.snowballs[i].move();
+      if (this.snowballs[i].active) { 
         this.snowballs[i].draw(game);
       }
     }
   }
   	highlight = new Array(Math.round(Math.random()*255), Math.round(Math.random()*255), Math.round(Math.random()*255));
+
+  moveSnowballs() {
+    for (let i = 0; i < this.snowballs.length; i++) {
+      if (this.snowballs[i].active) {
+        this.snowballs[i].move();        
+      }
+    }
+  }
   drawAimLine(game: Game) {
     	for(let i=5; i>=0; i--)	{
 		  game.ctx?.beginPath();

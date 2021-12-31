@@ -46,6 +46,16 @@ export class Game {
     this.canvas.addEventListener("mousemove", (e) => this.mouseMovement(e));
     Sound.setup(['impact','playerGasp','throw'])
     requestAnimationFrame(() => this.cycle());
+    setInterval(()=>{this.moveAll()},1/120 * 1000) //do our movement at 60fps (regardless of the device frame-rate)
+  }
+  moveAll(){
+    //for more consistent gameplay accross deveices that might be running at very different frame rates,
+    //we move players and snowballs on a setInterval - rather than in RequestAnimationFrame
+    for (let pName in this.players) {
+      const p = this.players[pName];
+      p.move()
+      p.moveSnowballs()
+    }
   }
   cycle() {
     this.ctx?.resetTransform();
@@ -59,13 +69,12 @@ export class Game {
         Camera.update(me.position, this);
       }
     }
-
     // for (let i = 0; i < this.players.length; i++) 
     for (let pName in this.players) {
       const p = this.players[pName];
       p.draw(this);
-      p.move();
-      p.drawAndMoveSnowballs(this);
+      //p.move();
+      p.drawSnowballs(this);
       p.drawHealth(this);
       p.checkSnowballs(this);
       p.drawUsername(this);
@@ -175,11 +184,9 @@ export class Game {
         let msgs = await fetchObject(endpoint, payload)
 
         this.processMsgs(msgs) //just to display them
-
       }
     }
   }
-
   async mouseUp(_e: MouseEvent) {
     if (this.anyPlayers()) {
       const p = this.players[this.myName];
@@ -197,25 +204,18 @@ export class Game {
       this.isAiming = false;
     }
   }
-
   mouseMovement(e: MouseEvent) {
     if (this.anyPlayers()) {
       let p = this.players[this.myName];
       p.target = new Vector(e.clientX + Camera.focus.x - this.canvas.width / 2, e.clientY + Camera.focus.y - this.canvas.height / 2);
     }
   }
-
-
   addPlayer(playerName: string, p: Vector) {
     let position = new Vector(p.x, p.y)  // p is not a true vector at this point and we need to reinstance a true vector from x and y values
-
-
     let img = document.createElement("img")
     img.src = this.playerPics[Object.keys(this.players).length % this.playerPics.length]
     this.players[playerName] = new Player(playerName, position, 100, 100, img, this.playerRadius)
   }
-
-
   async createAndJoinServerGame(playerName: string) {
     this.myName = playerName
     let cmd = { cmd: "createGame", playerName: this.myName, params: { trees: this.obstacles } }
@@ -225,7 +225,6 @@ export class Game {
     // return this.id
     // joinGame(this.id)
   }
-
   async joinServerGame(gameId: number, playerName: string) {
     let position: Vector = new Vector(Math.random() * 100, Math.random() * 100)
     this.myName = playerName
@@ -245,8 +244,6 @@ export class Game {
     setInterval(() => this.poll(), 250) //start polling for incomming data
     // }
   }
-
-
   processMsgs(msgs: any[]) {
     if (msgs != undefined) {
       let rxd = document.getElementById("rxd")
@@ -286,12 +283,9 @@ export class Game {
     let msgs = await fetchObject(endpoint, cmd) //result is an object containing an array of messages
     this.processMsgs(msgs)
   }
-
-
   anyPlayers(): boolean {
     return (Object.keys(this.players).length > 0)
   }
-
   img(fileName: string): HTMLImageElement {
     let img = document.createElement("img")
     img.src = fileName

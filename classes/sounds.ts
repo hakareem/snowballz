@@ -27,35 +27,34 @@ export module Sound{
         )
     }
 
-export async function resume(){
-    await audioCtx.resume()
-}
+    export async function resume(){
+        await audioCtx.resume()
+    }
+    async function loadAudio(f:string){
 
-async function loadAudio(f:string){
+        const response = await(fetch(`./sfx/${f}.mp3`))
+        console.log ("fetched "+f)
+        const arrayBuffer = await response.arrayBuffer();
+        console.log ("got buffer "+f)
 
-    const response = await(fetch(`./sfx/${f}.mp3`))
-    console.log ("fetched "+f)
-    const arrayBuffer = await response.arrayBuffer();
-    console.log ("got buffer "+f)
+        audioCtx.decodeAudioData(arrayBuffer,audioBuffer=>{
+            audio[f]=audioBuffer;
+            console.log("decoded "+f)}
+            ,e=>alert(e.message));    
+    }
+    export function play(sound:string,v:number){
 
-    audioCtx.decodeAudioData(arrayBuffer,audioBuffer=>{
-        audio[f]=audioBuffer;
-        console.log("decoded "+f)}
-        ,e=>alert(e.message));    
-}
-export function play(sound:string,v:number){
+        var gainNode = audioCtx.createGain();
 
-    var gainNode = audioCtx.createGain();
+        const source = audioCtx.createBufferSource()
+        source.buffer = audio[sound]
 
-    const source = audioCtx.createBufferSource()
-    source.buffer = audio[sound]
+        source.connect(gainNode);
 
-    source.connect(gainNode);
+        gainNode.gain.setValueAtTime(v, audioCtx.currentTime)
 
-    gainNode.gain.setValueAtTime(v, audioCtx.currentTime)
+        gainNode.connect(audioCtx.destination);
 
-    gainNode.connect(audioCtx.destination);
-
-    source.start()
-}
+        source.start()
+    }
 }  //end module

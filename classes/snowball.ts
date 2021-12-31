@@ -18,7 +18,6 @@ export class Snowball {
     this.position = position;
     this.velocity = velocity;
   }
-
   draw(game: Game) {
     game.ctx?.save();
     game.ctx?.translate(this.position.x, this.position.y);
@@ -60,7 +59,6 @@ export class Snowball {
       }
     }
   }
-
   limitDistance(game: Game) {
     // for (let e = 0; e < game.players.length; e++)
     for (let pName in game.players) {
@@ -72,5 +70,4 @@ export class Snowball {
       }
     }
   }
-
 }
