@@ -46,7 +46,7 @@ export class Game {
     this.canvas.addEventListener("mousemove", (e) => this.mouseMovement(e));
     Sound.setup(['impact','playerGasp','throw'])
     requestAnimationFrame(() => this.cycle());
-    setInterval(()=>{this.moveAll()},1/60 * 1000) //do our movement at 60fps (regardless of the device frame-rate)
+    setInterval(()=>{this.moveAll()},1/120 * 1000) //do our movement at 60fps (regardless of the device frame-rate)
   }
 
   moveAll(){
