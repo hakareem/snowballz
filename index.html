@@ -12,31 +12,30 @@
   <script type="module" src="classes/client.js" defer></script>
   <script type="module" src="script.js" defer></script>
   <script>
-    function joinGameHTML() {
-      let playerName = (document.getElementById("playerName")).value
-      let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
-      window.game.joinServerGame(gameToJoin, playerName)
-      document.getElementById("lobby").style.display = "none"
+    function joinGameHTML(){
+        let playerName=(document.getElementById("playerName")).value
+        let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
+        window.game.joinServerGame(gameToJoin, playerName) 
+        document.getElementById("lobby").style.display = "none"
+        document.getElementById("static-pin").innerHTML = "Game PIN: " + gameToJoin
     }
 
-
-    async function HTMLCreateAndJoinGame() {
+    async function HTMLCreateAndJoinGame(){
       await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
       document.getElementById("gameToShare").value = window.game.id
+      document.getElementById("static-pin").innerHTML = "Game PIN: " + window.game.id
     }
 
-    function hideLobby() {
-      document.getElementById("lobby").style.display = "none"
+    function hideLobby(){
+        document.getElementById("lobby").style.display = "none"
     }
 
-// function showLobby(){
-// let b = document.getElementById("lobby").style.display = "block"
-// document.body.appendChild(b)
-// }
-
-
+  window.addEventListener("resize", ()=> window.game.resizeCanvas())
+  
+  // window.addEventListener('orientationchange', () => false);
 
 </script>
+
 
 </head>
 
@@ -49,14 +48,27 @@
     <button id="btn" onclick="HTMLCreateAndJoinGame()">Create a game</button>
     <br>
     <hr>
-    <p>Enter game PIN : <input id='gameToJoin' placeholder="00000"></input> <button id="btn" onclick='joinGameHTML()'>Join the game</button>
+    
+
+    <p>Enter game PIN : <input id='gameToJoin'></input> <button onclick='joinGameHTML()'>Join the game</button>
+    
+    
     <hr>
     <!-- <p>Move: <button onclick=runTo()>Run somewhere</button>  -->
     <div id='rxd'>      
     <button id="btn" onclick="hideLobby()">Close</button>
     <!-- <button id="btn" onclick="showLobby()">Open Game Menu</button> -->
     </div>  
-    </div>
+  </div>
+
+  <div>
+    <p id="static-pin">
+      Game PIN: 
+    
+    </p>
+
+  </div>
+</body>
 
 
     <div class="ground"></div>
