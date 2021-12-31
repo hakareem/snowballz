@@ -49,8 +49,15 @@ export class Game {
     this.ctx?.resetTransform();
     this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
     if (this.anyPlayers()) {
-      Camera.update(this.players[this.myName].position, this);
+      let me = this.players[this.myName]
+      if (me.killer) {
+        Camera.update(me.killer.position, this)
+      }
+      else {
+        Camera.update(me.position, this);
+      }
     }
+
     // for (let i = 0; i < this.players.length; i++) 
     for (let pName in this.players) {
       const p = this.players[pName];
@@ -60,13 +67,12 @@ export class Game {
       p.drawHealth(this);
       p.checkSnowballs(this);
       p.drawUsername(this);
-
-      if (p.hp > 0) {
+      if (p.hp > 0) { //Is the player still alive? 
         while (p.pushOtherPlayersAway(this)) { }
         p.movePlayerAroundObstacles(this);
       }
       else if (p.hp <= 0) {
-        p.ghostMode()
+        p.runToPoint(new Vector(0, 0)) // If this player is dead, it will run home (position 0,0)
       }
       if (Vector.distanceBetween(p.position, p.destination) < 50 && this.mouseBtnDown == true) {
         p.drawAimLine(this);
