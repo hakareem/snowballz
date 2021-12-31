@@ -185,7 +185,7 @@ export class Game {
       }
       else {
         // p.runToPoint(p.target);
-        let payload = { cmd: "runToPoint", playerName: this.myName, gameId: this.id, params: { position: p.target } }
+        let payload = { cmd: "runToPoint", playerName: this.myName, gameId: this.id, params: { destination: p.target,position: p.position, health: p.hp} }
         let msgs = await fetchObject(endpoint, payload)
 
         this.processMsgs(msgs) //just to display them
@@ -275,7 +275,9 @@ export class Game {
         }
         else if (m.cmd == "runToPoint") {
           let player = this.players[m.playerName]
-          player.runToPoint(Vector.trueVector(m.params.position))
+          player.position = Vector.trueVector(m.params.position) // recieve definitive stats from the original player 
+          player.hp = m.params.health // recieve definitive stats from the original player 
+          player.runToPoint(Vector.trueVector(m.params.destination))
         }
 
         else if (m.cmd == "gameData") {
