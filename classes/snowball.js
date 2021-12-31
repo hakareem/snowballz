@@ -1,4 +1,5 @@
 import { Vector } from './vector.js';
+import { Sound } from './sounds.js';
 export class Snowball {
     constructor(position, velocity) {
         this.color = "";
@@ -32,6 +33,7 @@ export class Snowball {
                 if (playerToSnowball < p.radius + game.snowballRadius) {
                     this.active = false;
                     p.hp -= 10;
+                    Sound.play('playerGasp', 0.5);
                 }
             }
         }
@@ -42,6 +44,7 @@ export class Snowball {
             let snowballToObstacle = Vector.distanceBetween(obstacle.position, this.position);
             if (snowballToObstacle < obstacle.radius + game.snowballRadius) {
                 this.active = false;
+                Sound.play('impact', 0.5);
             }
         }
     }

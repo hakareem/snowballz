@@ -44,9 +44,7 @@ export class Game {
     this.canvas.addEventListener("mousedown", (e) => this.mouseDown(e));
     this.canvas.addEventListener("mouseup", (e) => this.mouseUp(e));
     this.canvas.addEventListener("mousemove", (e) => this.mouseMovement(e));
-    Sound.setup(['throw','impact'])
-    
-    
+    Sound.setup(['impact','playerGasp','throw'])
     requestAnimationFrame(() => this.cycle());
   }
   cycle() {

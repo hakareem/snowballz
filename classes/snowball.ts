@@ -2,6 +2,7 @@ import { Vector } from './vector.js'
 import { Game } from './game.js'
 // import { game } from '../script.js';
 import { Player } from './player.js';
+import { Sound } from './sounds.js'
 
 
 export class Snowball {
@@ -41,6 +42,7 @@ export class Snowball {
         if (playerToSnowball < p.radius + game.snowballRadius) {
           this.active = false
           p.hp -= 10
+          Sound.play('playerGasp', 0.5)
         }
       }
     }
@@ -51,6 +53,7 @@ export class Snowball {
       let snowballToObstacle = Vector.distanceBetween(obstacle.position, this.position)
       if (snowballToObstacle < obstacle.radius + game.snowballRadius) {
         this.active = false
+        Sound.play('impact', 0.5)
       }
     }
   }
