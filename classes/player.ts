@@ -1,6 +1,7 @@
 import { Vector } from './vector.js'
 import { Snowball } from './snowball.js'
 import { Game } from './game.js'
+import { Camera } from './camera.js'
 
 
 
@@ -18,6 +19,7 @@ export class Player {
   hpMax: number = 0;
   img: HTMLImageElement;
   radius: number;
+  killer: Player | null = null
 
   constructor(
     username: string,
@@ -119,7 +121,7 @@ export class Player {
   pushOtherPlayersAway(game: Game) {
     let isOverlap = false;
     // for (let i = 0; i < game.players.length; i++) 
-    for (let pName in game.players){
+    for (let pName in game.players) {
       const otherPlayer = game.players[pName];
       if (otherPlayer != this) {
         let dbt = Vector.distanceBetween(this.position, otherPlayer.position);
@@ -159,11 +161,6 @@ export class Player {
         snowball.checkAgainstPlayers(game, this)
         snowball.checkAgainstObstacles(game)
       }
-    }
-  }
-  ghostMode() {
-    if (this.hp <= 0) {
-      this.runToPoint(new Vector(0, 0))
     }
   }
 }
