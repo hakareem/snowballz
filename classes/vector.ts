@@ -34,16 +34,8 @@ export class Vector {
     return Vector.hypo(Math.abs(b.x - a.x), Math.abs(b.y - a.y));
   }
 
-
-
   // reversed shooting
     static negate(r: any){
     return new Vector(-r.x,-r.y)
   }
-
-  //     static reverseShotY(r2: any){
-  //   return new Vector(r2.x,-r2.y)
-  // }
-  
-
 }
