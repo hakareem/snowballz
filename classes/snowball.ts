@@ -22,7 +22,7 @@ export class Snowball {
     game.ctx?.save();
     game.ctx?.translate(this.position.x, this.position.y);
     game.ctx?.beginPath();
-    game.ctx?.arc(0, 0, 8, 0, Math.PI * 2);
+    game.ctx?.arc(0, 0, 10, 0, Math.PI * 2);
     game.ctx?.stroke();
     game.ctx!.fillStyle = "lightblue";
     game.ctx?.fill();
@@ -56,17 +56,6 @@ export class Snowball {
       if (snowballToObstacle < obstacle.radius + game.snowballRadius) {
         this.active = false
         Sound.play('impact', 0.5)
-      }
-    }
-  }
-  limitDistance(game: Game) {
-    // for (let e = 0; e < game.players.length; e++)
-    for (let pName in game.players) {
-      const p = game.players[pName]
-      let distance = Vector.distanceBetween(p.position, this.position)
-      if (distance > 5000) {
-        this.active = false
-        // console.log("snowball removed");
       }
     }
   }
