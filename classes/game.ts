@@ -64,9 +64,10 @@ export class Game {
       while (p.pushOtherPlayersAway(this)) { }
       p.ghostMode()
       if (Vector.distanceBetween(p.position, p.destination) < 50 && this.mouseBtnDown == true) {
-        p.drawAimLine(this);
         p.velocity.x = 0;
         p.velocity.y = 0;
+        p.drawAimLine(this);
+
       }
       else if (Vector.distanceBetween(p.position, p.destination) < 20) {
         p.velocity.x = 0;
@@ -95,6 +96,18 @@ export class Game {
     this.playerPics.push("player images/PLAYER12.png")
     this.playerPics.push("player images/PLAYER13.png")
     this.playerPics.push("player images/PLAYER14.png")
+    this.playerPics.push("player images/PLAYER15.png")
+    this.playerPics.push("player images/PLAYER16.png")
+    this.playerPics.push("player images/PLAYER18.png")
+    this.playerPics.push("player images/PLAYER19.png")
+    this.playerPics.push("player images/PLAYER20.png")
+    this.playerPics.push("player images/PLAYER22.png")
+    this.playerPics.push("player images/PLAYER23.png")
+    this.playerPics.push("player images/PLAYER24.png")
+    this.playerPics.push("player images/PLAYER25.png")
+    this.playerPics.push("player images/PLAYER26.png")
+    this.playerPics.push("player images/PLAYER27.png")
+    this.playerPics.push("player images/PLAYER29.png")
   }
   setupPlayers(numPlayers: number, playerRadius: number) {
 
@@ -117,6 +130,17 @@ export class Game {
     this.obstaclePics.push(this.img("obstacle images/TREES6.png"));
     this.obstaclePics.push(this.img("obstacle images/TREES7.png"));
     this.obstaclePics.push(this.img("obstacle images/TREES8.png"));
+    this.obstaclePics.push(this.img("obstacle images/TREES9.png"));
+    this.obstaclePics.push(this.img("obstacle images/TREES10.png"));
+    this.obstaclePics.push(this.img("obstacle images/TREES11.png"));
+    this.obstaclePics.push(this.img("obstacle images/TREES12.png"));
+    this.obstaclePics.push(this.img("obstacle images/TREES13.png"));
+    this.obstaclePics.push(this.img("obstacle images/TREES14.png"));
+    this.obstaclePics.push(this.img("obstacle images/TREES15.png"));
+    this.obstaclePics.push(this.img("obstacle images/TREES16.png"));
+    this.obstaclePics.push(this.img("obstacle images/TREES17.png"));
+    this.obstaclePics.push(this.img("obstacle images/TREES18.png"));
+    this.obstaclePics.push(this.img("obstacle images/TREES19.png"));
 
     for (let i = 0; i < numObstacles; i++) {
       let p = new Vector(Math.floor(Math.random() * 5000), Math.floor(Math.random() * 5000));
@@ -136,8 +160,7 @@ export class Game {
     else {
       // p.runToPoint(p.target);
     let payload={cmd:"runToPoint",playerName:this.myName,gameId:this.id,params:{position: p.target}} 
-    let msgs= await fetchObject(endpoint,payload)
- 
+    let msgs= await fetchObject(endpoint,payload) 
     this.processMsgs(msgs) //just to display them
 
     }
@@ -163,6 +186,7 @@ export class Game {
   }
 
   mouseMovement(e: MouseEvent) {
+    
     if(this.anyPlayers()){
       let p = this.players[this.myName];
       p.target = new Vector(e.clientX + Camera.focus.x - this.canvas.width / 2,e.clientY + Camera.focus.y - this.canvas.height / 2);
@@ -235,9 +259,7 @@ export class Game {
         }
         else if(m.cmd == "shootSnowball"){
           let player = this.players[m.playerName]
-          // player.shootSnowball(Vector.trueVector(m.params.target), this)
-          player.snowballs.push(new Snowball(Vector.trueVector(m.params.position), Vector.trueVector(m.params.velocity)))
-          //  p.snowballs.push(new Snowball(p.position,p.target.subtract(p.position).normalise().multiply(5)));
+          player.snowballs.push(new Snowball(Vector.trueVector(m.params.position), Vector.negate(m.params.velocity)))
         }
       }
     }  
