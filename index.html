@@ -1,69 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>snow</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- <script src="classes.js" defer></script> -->
+    <!-- <script src="utility.js" defer></script> -->
+    <script type="module" src="classes/client.js" defer></script>
+    <script type="module" src="script.js" defer></script>
+    <script>
+      function joinGameHTML(){
+          let playerName=(document.getElementById("playerName")).value
+          let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
+          window.game.joinServerGame(gameToJoin, playerName) 
+          document.getElementById("lobby").style.display = "none"
+      }
+      async function HTMLCreateAndJoinGame(){
+        await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
+        document.getElementById("gameToShare").value = window.game.id
+      }
+      function hideLobby(){
+          document.getElementById("lobby").style.display = "none"
+      }
+    </script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>snow</title>
-  <link rel="stylesheet" href="style.css" />
-  <!-- <script src="classes.js" defer></script> -->
-  <!-- <script src="utility.js" defer></script> -->
-  <script type="module" src="classes/client.js" defer></script>
-  <script type="module" src="script.js" defer></script>
-  <script>
- function joinGameHTML(){
-    let playerName=(document.getElementById("playerName")).value
-    let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
-    window.game.joinServerGame(gameToJoin, playerName) 
-    document.getElementById("lobby").style.display = "none"
-}
-
-
-async function HTMLCreateAndJoinGame(){
-  await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
-  document.getElementById("gameToShare").value = window.game.id
-}
-
-function hideLobby(){
-    document.getElementById("lobby").style.display = "none"
-}
-
-</script>
-
-</head>
-
-<body>
-  
-  <!-- <div class="ground"></div>
-  <section>
-    <div class="snow1">
-      </snow>
-      <div class="snow2">
+  <body>
+    <!-- <div class="ground"></div>
+    <section>
+      <div class="snow1">
         </snow>
-        <div class="snow3">
+        <div class="snow2">
           </snow>
-          <canvas id="myCanvas"></canvas> -->
-  <!-- <img id="trees"/> -->
-  <div id="lobby">
-    <p>Choose a player name: <input id="playerName">
-    <hr>
-    <br>
-    Game PIN: <input id='gameToShare'></input>
-    <button onclick="HTMLCreateAndJoinGame()">Create a game</button>
+          <div class="snow3">
+            </snow>
+            <canvas id="myCanvas"></canvas> -->
+    <!-- <img id="trees"/> -->
+    <div id="lobby">
+      <p>Choose a player name: <input id="playerName">
+      <hr>
+      <br>
+      Game PIN: <input id='gameToShare'></input>
+      <button onclick="HTMLCreateAndJoinGame()">Create a game</button>
+      <hr>
+      <p>Enter game PIN : <input id='gameToJoin'></input> <button onclick='joinGameHTML()'>Join the game</button>
+      <hr>
+      <p>Move: <button onclick=runTo()>Run somewhere</button> 
+      <div id='rxd'>
+        <button onclick="hideLobby()">Close</button>
+      </div>
+    </div>
 
-    <hr>
-    
-    
-    <p>Enter game PIN : <input id='gameToJoin'></input> <button onclick='joinGameHTML()'>Join the game</button>
-    
-    
-    <hr>
-    <p>Move: <button onclick=runTo()>Run somewhere</button> 
-    <div id='rxd'>
-    <button onclick="hideLobby()">Close</button>
-    </div>  
-  </div>
-</body>
+    <audio src="music_zapsplat_winter_dance.mp3"></audio>
 
+  </body>
 </html>

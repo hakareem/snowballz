@@ -1,6 +1,5 @@
 "use strict";
-import { Game } from './classes/game.js'
-
+import { Game } from './classes/game.js';
 // Audio //
 // var backgroundMusic = new Audio("music/music_zapsplat_winter_dance.mp3");
 // function startBackgroundMusic() {
@@ -24,9 +23,6 @@ import { Game } from './classes/game.js'
 // function startHurtSound() {
 //   hurtSound.play();
 // }
-
-
-
 // let colors: string[] = [
 //   "Chartreuse",
 //   "Crimson",
@@ -42,8 +38,5 @@ import { Game } from './classes/game.js'
 //   "BlueViolet",
 //   "Ivory",
 // ];
-
-(window as any).game = new Game(9, 38, 10, 100, window.innerWidth, window.innerHeight, "")
-// let game2 = new Game(9, 38, 10, 100, window.innerWidth / 2, window.innerHeight, 0)
-
-
+window.game = new Game(9, 38, 10, 100, window.innerWidth, window.innerHeight, "");
+//# sourceMappingURL=script.js.map
