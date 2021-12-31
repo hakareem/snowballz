@@ -165,7 +165,6 @@ export class Game {
   async mouseDown(_e: MouseEvent) {
     if (this.anyPlayers()) {
       const p = this.players[this.myName];
-      // startBackgroundMusic();
       if (Vector.distanceBetween(p.position, p.target) < 40) {
         this.isAiming = true;
         this.mouseBtnDown = true;

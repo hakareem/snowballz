@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>snow</title>
     <link rel="stylesheet" href="style.css" />
-    <!-- <script src="classes.js" defer></script> -->
-    <!-- <script src="utility.js" defer></script> -->
     <script type="module" src="classes/client.js" defer></script>
     <script type="module" src="script.js" defer></script>
     <script>
@@ -16,89 +14,49 @@
           let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
           window.game.joinServerGame(gameToJoin, playerName) 
           document.getElementById("lobby").style.display = "none"
+          document.getElementById("static-pin").innerHTML = "Game PIN: " + gameToJoin
       }
       async function HTMLCreateAndJoinGame(){
         await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
         document.getElementById("gameToShare").value = window.game.id
+        document.getElementById("static-pin").innerHTML = "Game PIN: " + window.game.id
       }
       function hideLobby(){
           document.getElementById("lobby").style.display = "none"
       }
+
+      window.addEventListener("resize", ()=> window.game.resizeCanvas())
+      
+      // window.addEventListener('orientationchange', () => false);
     </script>
   </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>snow</title>
-  <link rel="stylesheet" href="style.css" />
-  <!-- <script src="classes.js" defer></script> -->
-  <!-- <script src="utility.js" defer></script> -->
-  <script type="module" src="classes/client.js" defer></script>
-  <script type="module" src="script.js" defer></script>
-  <script>
-    function joinGameHTML(){
-        let playerName=(document.getElementById("playerName")).value
-        let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
-        window.game.joinServerGame(gameToJoin, playerName) 
-        document.getElementById("lobby").style.display = "none"
-        document.getElementById("static-pin").innerHTML = "Game PIN: " + gameToJoin
-    }
-
-    async function HTMLCreateAndJoinGame(){
-      await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
-      document.getElementById("gameToShare").value = window.game.id
-      document.getElementById("static-pin").innerHTML = "Game PIN: " + window.game.id
-    }
-
-    function hideLobby(){
-        document.getElementById("lobby").style.display = "none"
-    }
-
-  window.addEventListener("resize", ()=> window.game.resizeCanvas())
-  
-  // window.addEventListener('orientationchange', () => false);
-
-</script>
-
-
-</head>
-
-<body class="ground snow1 snow2 snow3">
-
+  <body class="ground snow1 snow2 snow3">
     <div id="lobby">
-    <p>Username: <input id="playerName" placeholder="Elon Musk">
-    <hr>
-    Generate Game PIN: <input id='gameToShare' placeholder="00000"></input>
-    <button id="btn" onclick="HTMLCreateAndJoinGame()">Create a game</button>
-    <br>
-    <hr>
-    
+      <p>Username: <input id="playerName" placeholder="Elon Musk">
+      <hr>
+      Generate Game PIN: <input id='gameToShare' placeholder="00000"></input>
+      <button id="btn" onclick="HTMLCreateAndJoinGame()">Create a game</button>
+      <br>
+      <hr>
 
-    <p>Enter game PIN : <input id='gameToJoin'></input> <button onclick='joinGameHTML()'>Join the game</button>
-    
-    
-    <hr>
-    <!-- <p>Move: <button onclick=runTo()>Run somewhere</button>  -->
-    <div id='rxd'>      
-    <button id="btn" onclick="hideLobby()">Close</button>
-    <!-- <button id="btn" onclick="showLobby()">Open Game Menu</button> -->
-    </div>  
-  </div>
+      <p>Enter game PIN : <input id='gameToJoin'></input> <button onclick='joinGameHTML()'>Join the game</button>
+      
+      <hr>
+      <!-- <p>Move: <button onclick=runTo()>Run somewhere</button>  -->
+      <div id='rxd'>      
+      <button id="btn" onclick="hideLobby()">Close</button>
+      <!-- <button id="btn" onclick="showLobby()">Open Game Menu</button> -->
+      </div>  
+    </div>
 
-  <div>
-    <p id="static-pin">
-      Game PIN: 
-    
-    </p>
+    <div>
+      <p id="static-pin">
+        Game PIN: 
+      
+      </p>
+    </div>
 
-  </div>
-</body>
-
-
-    <div class="ground"></div>
-
-
-</body>
+    <audio src=""></audio>
+  </body>
 </html>
