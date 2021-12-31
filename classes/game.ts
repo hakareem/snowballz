@@ -87,6 +87,7 @@ export class Game {
         p.movePlayerAroundObstacles(this);
       }
       else if (p.hp <= 0) {
+        this.logEvent(`${p.username} is a ghost`)
         p.runToPoint(new Vector(0, 0)) // If this player is dead, it will run home (position 0,0)
       }
       if (Vector.distanceBetween(p.position, p.destination) < 50 && this.mouseBtnDown == true) {
@@ -325,4 +326,9 @@ export class Game {
     this.canvas.height = window.innerHeight
   }
 
+
+
+  logEvent(txt:string ){ //create a para element and append it to the event log div and set its inner text to txt  
+
+  }
 }
