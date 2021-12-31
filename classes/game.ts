@@ -46,7 +46,20 @@ export class Game {
     this.canvas.addEventListener("mousemove", (e) => this.mouseMovement(e));
     Sound.setup(['impact','playerGasp','throw'])
     requestAnimationFrame(() => this.cycle());
+    setInterval(()=>{this.moveAll()},1/60 * 1000) //do our movement at 60fps (regardless of the device frame-rate)
   }
+
+  moveAll(){
+    //for more consistent gameplay accross deveices that might be running at very different frame rates,
+    //we move players and snowballs on a setInterval - rather than in RequestAnimationFrame
+    for (let pName in this.players) {
+      const p = this.players[pName];
+      p.move()
+      p.moveSnowballs()
+    }
+
+  }
+
   cycle() {
     this.ctx?.resetTransform();
     this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -64,8 +77,8 @@ export class Game {
     for (let pName in this.players) {
       const p = this.players[pName];
       p.draw(this);
-      p.move();
-      p.drawAndMoveSnowballs(this);
+      //p.move();
+      p.drawSnowballs(this);
       p.drawHealth(this);
       p.checkSnowballs(this);
       p.drawUsername(this);
