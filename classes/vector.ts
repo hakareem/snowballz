@@ -35,7 +35,7 @@ export class Vector {
   }
 
   // reversed shooting
-    static negate(r: any){
+ static negate(r: any){
     return new Vector(-r.x,-r.y)
   }
 }
