@@ -190,4 +190,21 @@ body {
 canvas {
   border: 1px solid black;
   background-color: white;
+  -webkit-touch-callout: none; /* Safari */
+  -webkit-user-select: none; /* Chrome */     
+     -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; 
+}
+
+#static-pin {
+  position: absolute;
+  background-color: white;
+  margin-left: 1em;
+  margin-top: 16px;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 0.5em;
+  /* padding-top: 0;
+  padding-bottom: 0; */
 }

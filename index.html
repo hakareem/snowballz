@@ -12,24 +12,30 @@
   <script type="module" src="classes/client.js" defer></script>
   <script type="module" src="script.js" defer></script>
   <script>
- function joinGameHTML(){
-    let playerName=(document.getElementById("playerName")).value
-    let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
-    window.game.joinServerGame(gameToJoin, playerName) 
-    document.getElementById("lobby").style.display = "none"
-}
+    function joinGameHTML(){
+        let playerName=(document.getElementById("playerName")).value
+        let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
+        window.game.joinServerGame(gameToJoin, playerName) 
+        document.getElementById("lobby").style.display = "none"
+        document.getElementById("static-pin").innerHTML = "Game PIN: " + gameToJoin
+    }
 
+    async function HTMLCreateAndJoinGame(){
+      await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
+      document.getElementById("gameToShare").value = window.game.id
+      document.getElementById("static-pin").innerHTML = "Game PIN: " + window.game.id
+    }
 
-async function HTMLCreateAndJoinGame(){
-  await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
-  document.getElementById("gameToShare").value = window.game.id
-}
+    function hideLobby(){
+        document.getElementById("lobby").style.display = "none"
+    }
 
-function hideLobby(){
-    document.getElementById("lobby").style.display = "none"
-}
+  window.addEventListener("resize", ()=> window.game.resizeCanvas())
+  
+  // window.addEventListener('orientationchange', () => false);
 
 </script>
+
 
 </head>
 
@@ -54,7 +60,7 @@ function hideLobby(){
 
     <hr>
     
-    
+
     <p>Enter game PIN : <input id='gameToJoin'></input> <button onclick='joinGameHTML()'>Join the game</button>
     
     
@@ -63,6 +69,14 @@ function hideLobby(){
     <div id='rxd'>
     <button onclick="hideLobby()">Close</button>
     </div>  
+  </div>
+
+  <div>
+    <p id="static-pin">
+      Game PIN: 
+    
+    </p>
+
   </div>
 </body>
 
