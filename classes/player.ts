@@ -168,7 +168,12 @@ export class Player {
       if (snowball.active == true) {
         snowball.checkAgainstPlayers(game, this)
         snowball.checkAgainstObstacles(game)
+        if(Vector.distanceBetween(snowball.position, this.position) > snowball.velocity.length * 100){
+           snowball.active = false 
+           console.log("removed");
+           
+        }
       }
-    }
+    } 
   }
 }

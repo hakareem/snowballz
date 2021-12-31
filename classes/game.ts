@@ -198,7 +198,9 @@ export class Game {
     if (this.anyPlayers()) {
       const p = this.players[this.myName];
       if (this.isAiming) {
-        let v: Vector = p.target.subtract(p.position).normalise().multiply(5)
+        // let v: Vector = p.target.subtract(p.position).normalise().multiply(5)
+        let v: Vector = p.target.subtract(p.position).multiply(0.02)
+
         let payload = { cmd: "shootSnowball", playerName: this.myName, gameId: this.id, params: { position: p.position, velocity: v } }
         let msgs = await fetchObject(endpoint, payload)
 

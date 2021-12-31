@@ -61,16 +61,4 @@ export class Snowball {
     }
   }
 
-  limitDistance(game: Game) {
-    // for (let e = 0; e < game.players.length; e++)
-    for (let pName in game.players) {
-      const p = game.players[pName]
-      let distance = Vector.distanceBetween(p.position, this.position)
-      if (distance > 5000) {
-        this.active = false
-        // console.log("snowball removed");
-      }
-    }
-  }
-
 }
