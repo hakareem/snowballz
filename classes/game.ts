@@ -8,7 +8,7 @@ import { fetchObject, endpoint } from './client.js'
 
 export class Game {
   id: number = 0;
-  players: Record <string, Player>= {}
+  players: Record<string, Player> = {}
   obstacles: Obstacle[] = [];
   numPlayers: number;
   playerRadius: number;
@@ -48,11 +48,11 @@ export class Game {
   cycle() {
     this.ctx?.resetTransform();
     this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    if(this.anyPlayers()){
+    if (this.anyPlayers()) {
       Camera.update(this.players[this.myName].position, this);
     }
     // for (let i = 0; i < this.players.length; i++) 
-    for (let pName in this.players){
+    for (let pName in this.players) {
       const p = this.players[pName];
       p.draw(this);
       p.move();
@@ -60,9 +60,14 @@ export class Game {
       p.drawHealth(this);
       p.checkSnowballs(this);
       p.drawUsername(this);
-      p.movePlayerAroundObstacles(this);
-      while (p.pushOtherPlayersAway(this)) { }
-      p.ghostMode()
+
+      if (p.hp > 0) {
+        while (p.pushOtherPlayersAway(this)) { }
+        p.movePlayerAroundObstacles(this);
+      }
+      else if (p.hp <= 0) {
+        p.ghostMode()
+      }
       if (Vector.distanceBetween(p.position, p.destination) < 50 && this.mouseBtnDown == true) {
         p.drawAimLine(this);
         p.velocity.x = 0;
@@ -81,7 +86,7 @@ export class Game {
       this.obstacles[i].draw(this);
     }
   }
-  setupPlayerPics(){
+  setupPlayerPics() {
     this.playerPics.push("player images/PLAYER1.png")
     this.playerPics.push("player images/PLAYER2.png")
     this.playerPics.push("player images/PLAYER3.png")
@@ -104,7 +109,7 @@ export class Game {
       img.src = this.playerPics[randomPic]
       let pName = "player " + i
 
-      this.players[pName]= (new Player(pName, new Vector(Math.floor(Math.random() * 400), Math.floor(Math.random() * 400)), 100, 100, img, playerRadius));
+      this.players[pName] = (new Player(pName, new Vector(Math.floor(Math.random() * 400), Math.floor(Math.random() * 400)), 100, 100, img, playerRadius));
     }
   }
   setupObstaclePics(numObstacles: number) {
@@ -126,36 +131,36 @@ export class Game {
     }
   }
   async mouseDown(_e: MouseEvent) {
-    if(this.anyPlayers()){
-     const p = this.players[this.myName];
-    // startBackgroundMusic();
-    if (Vector.distanceBetween(p.position, p.target) < 40) {
-      this.isAiming = true;
-      this.mouseBtnDown = true;
-    }
-    else {
-      // p.runToPoint(p.target);
-    let payload={cmd:"runToPoint",playerName:this.myName,gameId:this.id,params:{position: p.target}} 
-    let msgs= await fetchObject(endpoint,payload)
- 
-    this.processMsgs(msgs) //just to display them
+    if (this.anyPlayers()) {
+      const p = this.players[this.myName];
+      // startBackgroundMusic();
+      if (Vector.distanceBetween(p.position, p.target) < 40) {
+        this.isAiming = true;
+        this.mouseBtnDown = true;
+      }
+      else {
+        // p.runToPoint(p.target);
+        let payload = { cmd: "runToPoint", playerName: this.myName, gameId: this.id, params: { position: p.target } }
+        let msgs = await fetchObject(endpoint, payload)
 
-    }
+        this.processMsgs(msgs) //just to display them
+
+      }
     }
   }
 
   async mouseUp(_e: MouseEvent) {
-    if(this.anyPlayers()){
+    if (this.anyPlayers()) {
       const p = this.players[this.myName];
-    if (this.isAiming) {
-      let v: Vector = p.target.subtract(p.position).normalise().multiply(5)
-      let payload={cmd:"shootSnowball",playerName:this.myName,gameId:this.id,params:{position: p.position, velocity:v }} 
-      let msgs= await fetchObject(endpoint,payload)
- 
-      this.processMsgs(msgs) //just to display them
-      // p.snowballs.push(new Snowball(p.position,p.target.subtract(p.position).normalise().multiply(5)));
-      
-      // startThrowSound();
+      if (this.isAiming) {
+        let v: Vector = p.target.subtract(p.position).normalise().multiply(5)
+        let payload = { cmd: "shootSnowball", playerName: this.myName, gameId: this.id, params: { position: p.position, velocity: v } }
+        let msgs = await fetchObject(endpoint, payload)
+
+        this.processMsgs(msgs) //just to display them
+        // p.snowballs.push(new Snowball(p.position,p.target.subtract(p.position).normalise().multiply(5)));
+
+        // startThrowSound();
       }
       this.mouseBtnDown = false;
       this.isAiming = false;
@@ -163,39 +168,39 @@ export class Game {
   }
 
   mouseMovement(e: MouseEvent) {
-    if(this.anyPlayers()){
+    if (this.anyPlayers()) {
       let p = this.players[this.myName];
-      p.target = new Vector(e.clientX + Camera.focus.x - this.canvas.width / 2,e.clientY + Camera.focus.y - this.canvas.height / 2);
+      p.target = new Vector(e.clientX + Camera.focus.x - this.canvas.width / 2, e.clientY + Camera.focus.y - this.canvas.height / 2);
     }
   }
 
 
-  addPlayer(playerName:string, p: Vector){
+  addPlayer(playerName: string, p: Vector) {
     let position = new Vector(p.x, p.y)  // p is not a true vector at this point and we need to reinstance a true vector from x and y values
 
 
     let img = document.createElement("img")
     img.src = this.playerPics[Object.keys(this.players).length % this.playerPics.length]
-    this.players[playerName]= new Player(playerName, position,100,100,img, this.playerRadius)
+    this.players[playerName] = new Player(playerName, position, 100, 100, img, this.playerRadius)
   }
 
 
-  async createAndJoinServerGame(playerName:string){
-    this.myName= playerName
-      let cmd={cmd:"createGame",playerName:this.myName, params:{trees:this.obstacles}}
-      let gameInfo= await fetchObject(endpoint,cmd)
-      this.id=gameInfo.gameId;  //we now know which game WE have joined (the creator)
+  async createAndJoinServerGame(playerName: string) {
+    this.myName = playerName
+    let cmd = { cmd: "createGame", playerName: this.myName, params: { trees: this.obstacles } }
+    let gameInfo = await fetchObject(endpoint, cmd)
+    this.id = gameInfo.gameId;  //we now know which game WE have joined (the creator)
     await this.joinServerGame(this.id, playerName)
-      // return this.id
-      // joinGame(this.id)
+    // return this.id
+    // joinGame(this.id)
   }
 
-  async joinServerGame(gameId: number,playerName:string){
-    let position: Vector = new Vector(Math.random()* 100,Math.random()* 100)
+  async joinServerGame(gameId: number, playerName: string) {
+    let position: Vector = new Vector(Math.random() * 100, Math.random() * 100)
     this.myName = playerName
     this.id = gameId
-    let payload={cmd:"joinGame",playerName:playerName,gameId:gameId,params:{position: position}} //will return (assign to you)a player ID -
-    let msgs=await fetchObject(endpoint,payload)
+    let payload = { cmd: "joinGame", playerName: playerName, gameId: gameId, params: { position: position } } //will return (assign to you)a player ID -
+    let msgs = await fetchObject(endpoint, payload)
 
     this.processMsgs(msgs) //just to display them
 
@@ -205,60 +210,60 @@ export class Game {
     // else{        
     //     gameId=msgs[0].gameId        
     //     console.log("Joined game")
-    
-        setInterval(() => this.poll(),250) //start polling for incomming data
+
+    setInterval(() => this.poll(), 250) //start polling for incomming data
     // }
   }
 
 
-  processMsgs(msgs:any[]){
-    if (msgs != undefined){
-      let rxd=document.getElementById("rxd")
-      for (let i=0;i<msgs.length;i++){
+  processMsgs(msgs: any[]) {
+    if (msgs != undefined) {
+      let rxd = document.getElementById("rxd")
+      for (let i = 0; i < msgs.length; i++) {
         console.log(msgs[i].cmd)  //You will want to actually *do things* here .. like run players to points, and launch snowballs
         let m = msgs[i]
-        if(m.cmd == "playerJoined"){
+        if (m.cmd == "playerJoined") {
           this.addPlayer(m.playerName, m.params.position)
-        } 
-        else if(m.cmd == "runToPoint"){
+        }
+        else if (m.cmd == "runToPoint") {
           let player = this.players[m.playerName]
           player.runToPoint(Vector.trueVector(m.params.position))
         }
 
-        else if(m.cmd == "gameData"){
+        else if (m.cmd == "gameData") {
           this.obstacles = [] // remove our random trees [they are about to be replaced]
-          for (let i =0; i < m.params.trees.length; i++){
+          for (let i = 0; i < m.params.trees.length; i++) {
             let o = m.params.trees[i]
-            this.obstacles.push(new Obstacle(Vector.trueVector(o.position), o.radius,o.color,o.picIndex))
+            this.obstacles.push(new Obstacle(Vector.trueVector(o.position), o.radius, o.color, o.picIndex))
           }
           // this.obstacles = m.params.trees
         }
-        else if(m.cmd == "shootSnowball"){
+        else if (m.cmd == "shootSnowball") {
           let player = this.players[m.playerName]
           // player.shootSnowball(Vector.trueVector(m.params.target), this)
           player.snowballs.push(new Snowball(Vector.trueVector(m.params.position), Vector.trueVector(m.params.velocity)))
           //  p.snowballs.push(new Snowball(p.position,p.target.subtract(p.position).normalise().multiply(5)));
         }
       }
-    }  
+    }
   }
-  async poll(){
+  async poll() {
     console.log("polling ");
-    
+
     //periodically called, to fetch pending messages from the server
-    let cmd={cmd:"poll",playerName:this.myName,gameId:this.id} //will return (assign to you)a player ID -
-    let msgs=await fetchObject(endpoint,cmd) //result is an object containing an array of messages
-    this.processMsgs(msgs)    
+    let cmd = { cmd: "poll", playerName: this.myName, gameId: this.id } //will return (assign to you)a player ID -
+    let msgs = await fetchObject(endpoint, cmd) //result is an object containing an array of messages
+    this.processMsgs(msgs)
   }
 
 
-  anyPlayers(): boolean{
+  anyPlayers(): boolean {
     return (Object.keys(this.players).length > 0)
   }
 
-  img (fileName: string): HTMLImageElement{
+  img(fileName: string): HTMLImageElement {
     let img = document.createElement("img")
-    img.src= fileName
+    img.src = fileName
     return img
   }
 }
