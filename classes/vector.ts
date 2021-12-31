@@ -22,6 +22,11 @@ export class Vector {
   get length() {
     return Vector.hypo(this.x, this.y);
   }
+
+  static trueVector(o: any){
+    return new Vector(o.x,o.y)
+  }
+
   static hypo(adjacent: number, opposite: number) {
     return Math.sqrt(Math.pow(adjacent, 2) + Math.pow(opposite, 2));
   }
@@ -29,8 +34,16 @@ export class Vector {
     return Vector.hypo(Math.abs(b.x - a.x), Math.abs(b.y - a.y));
   }
 
-  static trueVector(o: any){
-    return new Vector(o.x,o.y)
+
+
+  // reversed shooting
+    static negate(r: any){
+    return new Vector(-r.x,-r.y)
   }
+
+  //     static reverseShotY(r2: any){
+  //   return new Vector(r2.x,-r2.y)
+  // }
+  
 
 }

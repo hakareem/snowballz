@@ -29,41 +29,38 @@
       document.getElementById("lobby").style.display = "none"
     }
 
-  </script>
+// function showLobby(){
+// let b = document.getElementById("lobby").style.display = "block"
+// document.body.appendChild(b)
+// }
+
+
+
+</script>
 
 </head>
 
-<body>
+<body class="ground snow1 snow2 snow3">
 
-  <!-- <div class="ground"></div>
-  <section>
-    <div class="snow1">
-      </snow>
-      <div class="snow2">
-        </snow>
-        <div class="snow3">
-          </snow>
-          <canvas id="myCanvas"></canvas> -->
-  <!-- <img id="trees"/> -->
-  <div id="lobby">
-    <p>Choose a player name: <input id="playerName">
-      <hr>
-      <br>
-      Game PIN: <input id='gameToShare'></input>
-      <button onclick="HTMLCreateAndJoinGame()">Create a game</button>
-
-      <hr>
-
-
-    <p>Enter game PIN : <input id='gameToJoin'></input> <button onclick='joinGameHTML()'>Join the game</button>
-
-
-      <hr>
-    <p>Move: <button onclick=runTo()>Run somewhere</button>
-    <div id='rxd'>
-      <button onclick="hideLobby()">Close</button>
+    <div id="lobby">
+    <p>Username: <input id="playerName" placeholder="Elon Musk">
+    <hr>
+    Generate Game PIN: <input id='gameToShare' placeholder="00000"></input>
+    <button id="btn" onclick="HTMLCreateAndJoinGame()">Create a game</button>
+    <br>
+    <hr>
+    <p>Enter game PIN : <input id='gameToJoin' placeholder="00000"></input> <button id="btn" onclick='joinGameHTML()'>Join the game</button>
+    <hr>
+    <!-- <p>Move: <button onclick=runTo()>Run somewhere</button>  -->
+    <div id='rxd'>      
+    <button id="btn" onclick="hideLobby()">Close</button>
+    <!-- <button id="btn" onclick="showLobby()">Open Game Menu</button> -->
+    </div>  
     </div>
-  </div>
-</body>
 
+
+    <div class="ground"></div>
+
+
+</body>
 </html>
