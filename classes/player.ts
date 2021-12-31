@@ -85,12 +85,6 @@ export class Player {
   }
   	highlight = new Array(Math.round(Math.random()*255), Math.round(Math.random()*255), Math.round(Math.random()*255));
   drawAimLine(game: Game) {
-    // game.ctx?.beginPath();
-    // game.ctx?.moveTo(this.target.x, this.target.y);
-    // game.ctx?.lineTo(this.position.x, this.position.y);
-    // game.ctx!.strokeStyle = "yellow"
-    // game.ctx!.lineWidth = 4;
-    // game.ctx?.stroke();
     	for(let i=5; i>=0; i--)	{
 		  game.ctx?.beginPath();
     	game.ctx.lineWidth = (i+1)*2-2;
