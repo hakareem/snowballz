@@ -75,11 +75,19 @@ export class Player {
   move() {
     this.position = this.position.add(this.velocity);
   }
-  drawAndMoveSnowballs(game: Game) {
+
+  drawSnowballs(game:Game){
+    for (let i = 0; i < this.snowballs.length; i++) {
+      if (this.snowballs[i].active) { 
+        this.snowballs[i].draw(game);
+      }
+    }
+  }
+
+  moveSnowballs() {
     for (let i = 0; i < this.snowballs.length; i++) {
       if (this.snowballs[i].active) {
-        this.snowballs[i].move();
-        this.snowballs[i].draw(game);
+        this.snowballs[i].move();        
       }
     }
   }
