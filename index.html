@@ -1,32 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>snow</title>
-    <link rel="stylesheet" href="style.css" />
-    <!-- <script src="classes.js" defer></script> -->
-    <!-- <script src="utility.js" defer></script> -->
-    <script type="module" src="classes/client.js" defer></script>
-    <script type="module" src="script.js" defer></script>
-    <script>
-      function joinGameHTML(){
-          let playerName=(document.getElementById("playerName")).value
-          let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
-          window.game.joinServerGame(gameToJoin, playerName) 
-          document.getElementById("lobby").style.display = "none"
-      }
-      async function HTMLCreateAndJoinGame(){
-        await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
-        document.getElementById("gameToShare").value = window.game.id
-      }
-      function hideLobby(){
-          document.getElementById("lobby").style.display = "none"
-      }
-    </script>
-  </head>
-
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -89,14 +62,8 @@
 
   <div>
     <p id="static-pin">
-      Game PIN: 
-    
-    </p>
-
+      Game PIN:  </p>
   </div>
-</body>
-
-
     <div class="ground"></div>
 
 
