@@ -1,5 +1,6 @@
 import { Player } from './player.js'
 import { Obstacle } from './obstacle.js'
+import { nonObstacle } from './nonObstacle.js'
 import { Camera } from './camera.js'
 import { Vector } from './vector.js'
 import { Snowball } from './snowball.js'
@@ -11,6 +12,7 @@ export class Game {
   id: number = 0;
   players: Record<string, Player> = {}
   obstacles: Obstacle[] = [];
+  nonObstacle: nonObstacle[] =[]
   numPlayers: number;
   playerRadius: number;
   canvas: HTMLCanvasElement;
@@ -23,8 +25,9 @@ export class Game {
   myName: string;
   private playerPics: string[] = [];
   obstaclePics: HTMLImageElement[] = [];
+  nonObstaclePics: HTMLImageElement[] = []
 
-  constructor(numPlayers: number, playerRadius: number, snowballRadius: number, numObstacles: number, width: number, height: number, myName: string) {
+  constructor(numPlayers: number, playerRadius: number, snowballRadius: number, numObstacles: number,numnonObstacles: number, width: number, height: number, myName: string) {
     this.numPlayers = numPlayers
     this.playerRadius = playerRadius
     this.snowballRadius = snowballRadius
@@ -41,6 +44,7 @@ export class Game {
     // this.setupPlayers(this.numPlayers, this.playerRadius)
     this.setupObstaclePics(numObstacles)
     this.setupPlayerPics()
+    this.setupnonObstaclePics(numnonObstacles)
     this.canvas.addEventListener("mousedown", (e) => this.mouseDown(e));
     this.canvas.addEventListener("mouseup", (e) => this.mouseUp(e));
     this.canvas.addEventListener("mousemove", (e) => this.mouseMovement(e));
@@ -101,6 +105,7 @@ export class Game {
       }
     }
     this.drawObstacles();
+    this.drawnonObstacles();
     requestAnimationFrame(() => this.cycle());
   }
   drawObstacles() {
@@ -108,7 +113,16 @@ export class Game {
       this.obstacles[i].draw(this);
     }
   }
+   drawnonObstacles() {
+    for (let i = 0; i < this.nonObstacle.length; i++) {
+      this.nonObstacle[i].draw(this);
+    }
+  }
   setupPlayerPics() {
+    this.playerPics.push("player images/PLAYER20.png")
+    this.playerPics.push("player images/PLAYER22.png")
+    this.playerPics.push("player images/PLAYER23.png")
+    this.playerPics.push("player images/PLAYER24.png")
     this.playerPics.push("player images/PLAYER1.png")
     this.playerPics.push("player images/PLAYER2.png")
     this.playerPics.push("player images/PLAYER3.png")
@@ -126,10 +140,6 @@ export class Game {
     this.playerPics.push("player images/PLAYER16.png")
     this.playerPics.push("player images/PLAYER18.png")
     this.playerPics.push("player images/PLAYER19.png")
-    this.playerPics.push("player images/PLAYER20.png")
-    this.playerPics.push("player images/PLAYER22.png")
-    this.playerPics.push("player images/PLAYER23.png")
-    this.playerPics.push("player images/PLAYER24.png")
     this.playerPics.push("player images/PLAYER25.png")
     this.playerPics.push("player images/PLAYER26.png")
     this.playerPics.push("player images/PLAYER27.png")
@@ -173,6 +183,23 @@ export class Game {
       let picIndex = Math.floor(Math.random() * this.obstaclePics.length)
       let o = new Obstacle(p, 50 + Math.random() * 50, "lightblue", picIndex);
       this.obstacles.push(o);
+    }
+  }
+
+    setupnonObstaclePics(numnonObstacles: number) {
+
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob1.png"));
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob2.png"));
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob3.png"));
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob4.png"));
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob5.png"));
+ 
+
+    for (let i = 0; i < numnonObstacles; i++) {
+      let p = new Vector(Math.floor(Math.random() * 5000), Math.floor(Math.random() * 5000));
+      let picIndex = Math.floor(Math.random() * this.nonObstaclePics.length)
+      let o = new nonObstacle(p, 50 + Math.random() * 50, "lightblue", picIndex);
+      this.nonObstacle.push(o);
     }
   }
   async mouseDown(_e: MouseEvent) {
@@ -235,7 +262,7 @@ export class Game {
 
   async createAndJoinServerGame(playerName: string) {
     this.myName = playerName
-    let cmd = { cmd: "createGame", playerName: this.myName, params: { trees: this.obstacles } }
+    let cmd = { cmd: "createGame", playerName: this.myName, params: { trees: this.nonObstacle } }
     let gameInfo = await fetchObject(endpoint, cmd)
     this.id = gameInfo.gameId;  //we now know which game WE have joined (the creator)
     await this.joinServerGame(this.id, playerName)
@@ -287,13 +314,17 @@ export class Game {
             let o = m.params.trees[i]
             this.obstacles.push(new Obstacle(Vector.trueVector(o.position), o.radius, o.color, o.picIndex))
           }
-          // this.obstacles = m.params.trees
+          this.nonObstacle = []
+            for (let i = 0; i < m.params.trees.length; i++) {
+            let o = m.params.trees[i]
+            this.nonObstacle.push(new nonObstacle(Vector.trueVector(o.position), o.radius, o.color, o.picIndex))
+        }
         }
         else if (m.cmd == "shootSnowball") {
           let player = this.players[m.playerName]
           player.snowballs.push(new Snowball(Vector.trueVector(m.params.position), Vector.negate(m.params.velocity)))
           // player.shootSnowball(Vector.trueVector(m.params.target), this)
-          Sound.play('throw', 0.5)
+          Sound.play('throw', 0.01)
         }
       }
       if(msgs.length != check){
