@@ -10,11 +10,11 @@
     <script type="module" src="script.js" defer></script>
     <script>
       function joinGameHTML(){
-          let playerName=(document.getElementById("playerName")).value
-          let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
-          window.game.joinServerGame(gameToJoin, playerName) 
-          document.getElementById("lobby").style.display = "none"
-          document.getElementById("static-pin").innerHTML = "Game PIN: " + gameToJoin
+        let playerName=(document.getElementById("playerName")).value
+        let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
+        window.game.joinServerGame(gameToJoin, playerName) 
+        document.getElementById("lobby").style.display = "none"
+        document.getElementById("static-pin").innerHTML = "Game PIN: " + gameToJoin
       }
       async function HTMLCreateAndJoinGame(){
         await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
@@ -22,12 +22,20 @@
         document.getElementById("static-pin").innerHTML = "Game PIN: " + window.game.id
       }
       function hideLobby(){
-          document.getElementById("lobby").style.display = "none"
+        document.getElementById("lobby").style.display = "none"
+        startBackgroundMusic()
       }
 
       window.addEventListener("resize", ()=> window.game.resizeCanvas())
       
       // window.addEventListener('orientationchange', () => false);
+
+      let backgroundMusic = new Audio("music/winter_dance.mp3");
+      function startBackgroundMusic() {
+        backgroundMusic.play();
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = 0.1;
+      }
     </script>
   </head>
 
@@ -53,7 +61,5 @@
     <div>
       <p id="static-pin">Game PIN:</p>
     </div>
-    
-    <audio src=""></audio>
   </body>
 </html>
