@@ -29,6 +29,10 @@ export class Game {
     this.playerRadius = playerRadius
     this.snowballRadius = snowballRadius
     this.canvas = document.createElement("canvas")
+    
+    //this.canvas.setAttribute("draggable","false") //Required to make mobile work (otherwise 'draggging' your guy, attempts to move the canvas instead of throwing a snowball)
+    //this.canvas.style.touchAction="none"
+
     this.ctx = this.canvas.getContext("2d")!
     document.body.appendChild(this.canvas)
     this.canvas.width = width;
@@ -41,9 +45,15 @@ export class Game {
     // this.setupPlayers(this.numPlayers, this.playerRadius)
     this.setupObstaclePics(numObstacles)
     this.setupPlayerPics()
-    this.canvas.addEventListener("mousedown", (e) => this.mouseDown(e));
-    this.canvas.addEventListener("mouseup", (e) => this.mouseUp(e));
-    this.canvas.addEventListener("mousemove", (e) => this.mouseMovement(e));
+    this.canvas.addEventListener("mousedown", (e)=>this.mouseDown(e.clientX,e.clientY));
+    this.canvas.addEventListener("touchstart",(e)=>this.mouseDown(e.touches[0].clientX,e.touches[0].clientY))
+    this.canvas.addEventListener("mouseup", (e)=>this.mouseUp());
+    this.canvas.addEventListener("touchend", (e)=>this.mouseUp()); //we hook the touch events to the same listeners to provide touch support
+
+    this.canvas.addEventListener("mousemove", (e) => this.mouseMovement(e.clientX,e.clientY));
+    this.canvas.addEventListener("touchmove", (e) => this.mouseMovement(e.touches[0].clientX,e.touches[0].clientY)); //mouse move events do not fire when 'dragging' with touch so we have to implement touch support (it seems)
+
+
     Sound.setup(['impact','playerGasp','throw'])
     requestAnimationFrame(() => this.cycle());
     setInterval(()=>{this.moveAll()},1/120 * 1000) //do our movement at 60fps (regardless of the device frame-rate)
@@ -171,8 +181,14 @@ export class Game {
       this.obstacles.push(o);
     }
   }
-  async mouseDown(_e: MouseEvent) {
+  
+  async mouseDown(x:number,y:number) {
+    console.log("md")
+
+    this.mouseMovement(x,y)
+
     if (this.anyPlayers()) {
+    
       const p = this.players[this.myName];
       if (Vector.distanceBetween(p.position, p.target) < 40) {
         this.isAiming = true;
@@ -188,9 +204,12 @@ export class Game {
       }
     }
   }
-  async mouseUp(_e: MouseEvent) {
+
+  async mouseUp() {
+    console.log("mu")
     if (this.anyPlayers()) {
       const p = this.players[this.myName];
+      
       if (this.isAiming) {
         // let v: Vector = p.target.subtract(p.position).normalise().multiply(5)
         let v: Vector = p.target.subtract(p.position).multiply(0.02)
@@ -207,10 +226,13 @@ export class Game {
       this.isAiming = false;
     }
   }
-  mouseMovement(e: MouseEvent) {
+
+  mouseMovement(x:number,y:number)  {
+    console.log("mm")
     if (this.anyPlayers()) {
       let p = this.players[this.myName];
-      p.target = new Vector(e.clientX + Camera.focus.x - this.canvas.width / 2, e.clientY + Camera.focus.y - this.canvas.height / 2);
+      p.target = new Vector(x + Camera.focus.x - this.canvas.width / 2, y + Camera.focus.y - this.canvas.height / 2);
+      
     }
   }
   addPlayer(playerName: string, p: Vector) {
@@ -252,7 +274,7 @@ export class Game {
       let rxd = document.getElementById("rxd")
       let check = msgs.length
       for (let i = 0; i < msgs.length; i++) {
-        console.log(msgs[i].sqn)  //You will want to actually *do things* here .. like run players to points, and launch snowballs
+       // console.log(msgs[i].sqn)  //You will want to actually *do things* here .. like run players to points, and launch snowballs
         let m = msgs[i]
         if (m.cmd == "playerJoined") {
           this.addPlayer(m.playerName, m.params.position)
