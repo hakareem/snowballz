@@ -14,12 +14,22 @@
     function joinGameHTML(){
         let playerName=(document.getElementById("playerName")).value
         let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
+
+     
         window.game.joinServerGame(gameToJoin, playerName) 
         document.getElementById("lobby").style.display = "none"
         document.getElementById("static-pin").innerHTML = "Game PIN: " + gameToJoin
     }
-
+  
     async function HTMLCreateAndJoinGame(){
+
+      // const input = document.getElementById("gameToJoin")
+      // input.addEventListener("submit", (e)  =>{
+      //   let messages = []
+      //   if(playerName.value === "" || playerName.value == null){
+      //     messages.push("Enter a username")
+      // }
+      // })
       await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
       document.getElementById("gameToShare").value = window.game.id
       document.getElementById("lobby").style.display = "none"
