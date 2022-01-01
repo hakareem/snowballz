@@ -23,19 +23,11 @@
       }
       function hideLobby(){
           document.getElementById("lobby").style.display = "none"
-          startBackgroundMusic()
       }
 
       window.addEventListener("resize", ()=> window.game.resizeCanvas())
       
       // window.addEventListener('orientationchange', () => false);
-
-      let backgroundMusic = new Audio("music/winter_dance.mp3");
-      function startBackgroundMusic() {
-        backgroundMusic.play();
-        backgroundMusic.loop = true;
-        backgroundMusic.volume = 0.1;
-      }
     </script>
   </head>
 
@@ -61,5 +53,7 @@
     <div>
       <p id="static-pin">Game PIN:</p>
     </div>
+    
+    <audio src=""></audio>
   </body>
 </html>
