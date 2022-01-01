@@ -22,6 +22,7 @@
     async function HTMLCreateAndJoinGame(){
       await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
       document.getElementById("gameToShare").value = window.game.id
+      document.getElementById("lobby").style.display = "none"
       document.getElementById("static-pin").innerHTML = "Game PIN: " + window.game.id
     }
 
