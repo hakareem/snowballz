@@ -6,7 +6,7 @@ html,body {
   width: 100vw;
 	position: relative;
 	text-align: center;
-	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background: linear-gradient(-45deg,  #e73c7e, #23a6d5, #23d5ab);
 	background-size: 400% 400%;
 	animation: gradient 15s ease infinite;
 }
@@ -44,7 +44,7 @@ html,body {
 }
 .button{
 	font-size: 2vmin;
-	padding: 2vmin;
+	padding: 1vmin;
 	border: 2px solid black;
 	width: 40vmax;
 	margin: 5vmin;
@@ -58,6 +58,17 @@ html,body {
 }
 
 
+.btn{
+	font-size: 2vmin;
+	padding: 1vmin;
+	border: 2px solid black;
+	width: 20vmax;
+	margin: 5vmin;
+	margin-left: -3vmin;
+	cursor: pointer;
+	transition: transform .2s;
+	border-radius: 3vmin;
+}
 
 canvas {
   border: 1px solid black;
@@ -79,42 +90,11 @@ canvas {
   padding: 0.5em;
 }
 
-/* #lobby{
-  font-family: Arial, Helvetica, sans-serif;
-  position: absolute;
-  top: 25%;
-  left: 25%;
-  width: 50%;
-  height: 50%;
-  box-shadow: 10px 10px 10px rgba(0,0,0,0.5);
-  color: white;
-  font-size: 24px;
-  padding: 20px;
-  border-radius: 20px;
-	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-	background-size: 400% 400%;
-	animation: gradient 15s ease infinite;
-}
-
-@keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
-}
-
-#btn {
-  background-color: white;
-  font-size: 16px;
+ .hover {
   border-radius: 30px;
 }
 
-#btn:hover{
+.hover:hover{
   background-color: greenyellow;
 }
 
@@ -124,4 +104,4 @@ canvas {
   position: absolute;
   bottom: 0;
   width: 100vw;
-} */
+} 
