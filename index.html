@@ -23,19 +23,27 @@
       }
       function hideLobby(){
           document.getElementById("lobby").style.display = "none"
+          startBackgroundMusic()
       }
 
       window.addEventListener("resize", ()=> window.game.resizeCanvas())
       
       // window.addEventListener('orientationchange', () => false);
+
+      let backgroundMusic = new Audio("music/winter_dance.mp3");
+      function startBackgroundMusic() {
+        backgroundMusic.play();
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = 0.1;
+      }
     </script>
   </head>
 
-  <body class="ground snow1 snow2 snow3">
+  <body>
     <div id="lobby">
-      <p>Username: <input id="playerName" placeholder="Elon Musk">
+      <p>Username: <input id="playerName" placeholder="Username">
       <hr>
-      Generate Game PIN: <input id='gameToShare' placeholder="00000"></input>
+      Generate Game PIN: <input id='gameToShare' placeholder="PIN"></input>
       <button id="btn" onclick="HTMLCreateAndJoinGame()">Create a game</button>
       <br>
       <hr>
@@ -53,7 +61,5 @@
     <div>
       <p id="static-pin">Game PIN:</p>
     </div>
-    
-    <audio src=""></audio>
   </body>
 </html>
