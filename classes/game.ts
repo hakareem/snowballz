@@ -295,7 +295,7 @@ export class Game {
           let player = this.players[m.playerName]
           player.snowballs.push(new Snowball(Vector.trueVector(m.params.position), Vector.negate(m.params.velocity)))
           // player.shootSnowball(Vector.trueVector(m.params.target), this)
-          Sound.play('throw', 0.5)
+          Sound.play('throw', 0.01)
         }
       }
       if(msgs.length != check){
