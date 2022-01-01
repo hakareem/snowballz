@@ -188,11 +188,21 @@ export class Game {
 
     setupnonObstaclePics(numnonObstacles: number) {
 
-    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob1.png"));
-    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob2.png"));
-    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob3.png"));
-    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob4.png"));
-    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob5.png"));
+    // this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob1.png"));
+    // this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob2.png"));
+    // this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob3.png"));
+    // this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob4.png"));
+    // this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob5.png"));
+    // this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob6.png"));
+    // this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob7.png"));
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob8.png"));
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob9.png"));
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob10.png"));
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob11.png"));
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob12.png"));
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob13.png"));
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob14.png"));
+    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob15.png"));
  
 
     for (let i = 0; i < numnonObstacles; i++) {
@@ -330,7 +340,7 @@ export class Game {
       if(msgs.length != check){
         alert("its all wrong oh noo")
       }
-
+      
     }
   }
   async poll() {
