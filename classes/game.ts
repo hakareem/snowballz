@@ -199,7 +199,7 @@ export class Game {
     for (let i = 0; i < numnonObstacles; i++) {
       let p = new Vector(Math.floor(Math.random() * 5000), Math.floor(Math.random() * 5000));
       let picIndex = Math.floor(Math.random() * this.nonObstaclePics.length)
-      let o = new nonObstacle(p, 50 + Math.random() * 50, "lightblue", picIndex);
+      let o = new nonObstacle(p, 30 + Math.random() * 2, "lightblue", picIndex);
       this.nonObstacle.push(o);
     }
   }
@@ -263,7 +263,7 @@ export class Game {
 
   async createAndJoinServerGame(playerName: string) {
     this.myName = playerName
-    let cmd = { cmd: "createGame", playerName: this.myName, params: { trees: this.nonObstacle } }
+    let cmd = { cmd: "createGame", playerName: this.myName, params: { trees: this.obstacles, walk: this.nonObstacle} }
     let gameInfo = await fetchObject(endpoint, cmd)
     this.id = gameInfo.gameId;  //we now know which game WE have joined (the creator)
     await this.joinServerGame(this.id, playerName)
@@ -316,8 +316,8 @@ export class Game {
             this.obstacles.push(new Obstacle(Vector.trueVector(o.position), o.radius, o.color, o.picIndex))
           }
           this.nonObstacle = []
-            for (let i = 0; i < m.params.trees.length; i++) {
-            let o = m.params.trees[i]
+            for (let i = 0; i < m.params.walk.length; i++) {
+            let o = m.params.walk[i]
             this.nonObstacle.push(new nonObstacle(Vector.trueVector(o.position), o.radius, o.color, o.picIndex))
         }
         }
