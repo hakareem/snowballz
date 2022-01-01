@@ -5,11 +5,7 @@ html,body {
   height: 100vh;
   width: 100vw;
   touch-action:none; /* disable things like pinch zoom and two finger scroll*/
-  -webkit-touch-callout: none; /* Safari */
-  -webkit-user-select: none; /* Chrome */     
-     -moz-user-select: none; /* Firefox */
-      -ms-user-select: none; /* Internet Explorer/Edge */
-          user-select: none; 
+  user-select: none; /* disable selection of the HTML itself */  
 }
 
 canvas {
