@@ -48,7 +48,7 @@ export class Snowball {
 
           p.stamina -= 10
           if(p.stamina <= 0){
-              p.killer = owner
+            p.velocity = p.velocity.subtract(p.velocity)
           }
           Sound.play('playerGasp', 0.5)
         }
