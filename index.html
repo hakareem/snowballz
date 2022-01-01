@@ -6,6 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>snow</title>
   <link rel="stylesheet" href="style.css" />
+  <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+
   <!-- <script src="classes.js" defer></script> -->
   <!-- <script src="utility.js" defer></script> -->
   <script type="module" src="classes/client.js" defer></script>
@@ -33,13 +38,28 @@
   
   // window.addEventListener('orientationchange', () => false);
 
-</script>
+setInterval(snow, 200);
 
+function snow() {
+	let snowfall = document.createElement('i');
+	snowfall.classList.add('fas');
+	snowfall.classList.add('fa-snowflake');
+	snowfall.style.left = Math.random() * window.innerWidth + 'px';
+	snowfall.style.animationDuration = Math.random() * 3 + 2 + 's'; 
+	snowfall.style.opacity = Math.random();
+	
+	document.body.appendChild(snowfall);
+	
+	setTimeout(() => {
+		snowfall.remove();
+	}, 5000)
+}
+
+</script>
 
 </head>
 
 <body>
-
     <div id="lobby">
     <p>Username: <input id="playerName" placeholder="Username">
     <hr>
