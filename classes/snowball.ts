@@ -46,7 +46,7 @@ export class Snowball {
             p.killer = owner
           }
 
-          p.stamina -= 10
+          p.stamina -= 30
           if(p.stamina <= 0){
             p.velocity = p.velocity.subtract(p.velocity)
           }
