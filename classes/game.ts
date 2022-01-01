@@ -192,13 +192,8 @@ export class Game {
     this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob4.png"));
     this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob6.png"));
     this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob7.png"));
-    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob9.png"));
-    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob10.png"));
     this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob11.png"));
-    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob12.png"));
-    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob13.png"));
-    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob14.png"));
-    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob15.png"));
+
  
 
     for (let i = 0; i < numnonObstacles; i++) {
