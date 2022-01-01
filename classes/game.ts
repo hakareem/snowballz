@@ -192,7 +192,6 @@ export class Game {
     this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob4.png"));
     this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob6.png"));
     this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob7.png"));
-    this.nonObstaclePics.push(this.img("nonCollide-able Pics/ob11.png"));
 
  
 
