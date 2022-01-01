@@ -4,6 +4,7 @@ html,body {
   overflow: hidden;
   height: 100vh;
   width: 100vw;
+  touch-action:none /* disable things like pinch zoom and two finger scroll*/
 }
 
 canvas {
