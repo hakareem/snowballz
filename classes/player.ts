@@ -57,13 +57,14 @@ export class Player {
   }
 
   drawStamina(game: Game){
-        game.ctx?.save();
+    game.ctx?.save();
     game.ctx?.translate(this.position.x, this.position.y);
-    // game.ctx?.scale(1, -1);
-
-    game.ctx?.fillRect(-30, 30, 60, 10);
-    // game.ctx!.strokeStyle = "black";
-    // game.ctx?.strokeRect(-30, 30, 60, 10);
+    game.ctx!.fillStyle = "yellow";
+    let height = (40 * this.stamina) / 100
+    
+    game.ctx?.fillRect(-35, 10, 5, height);
+    game.ctx!.strokeStyle = "black";
+    game.ctx?.strokeRect(-35, 10, 5, 40);
     game.ctx?.restore();
   }
 

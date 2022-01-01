@@ -45,6 +45,11 @@ export class Snowball {
           if (p.hp <= 0) {
             p.killer = owner
           }
+
+          p.stamina -= 10
+          if(p.stamina <= 0){
+              p.killer = owner
+          }
           Sound.play('playerGasp', 0.5)
         }
       }

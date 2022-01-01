@@ -80,6 +80,7 @@ export class Game {
       //p.move();
       p.drawSnowballs(this);
       p.drawHealth(this);
+      p.drawStamina(this);
       p.checkSnowballs(this);
       p.drawUsername(this);
       if (p.hp > 0) { //Is the player still alive? 
@@ -186,7 +187,7 @@ export class Game {
       }
       else {
         // p.runToPoint(p.target);
-        let payload = { cmd: "runToPoint", playerName: this.myName, gameId: this.id, params: { destination: p.target,position: p.position, health: p.hp} }
+        let payload = { cmd: "runToPoint", playerName: this.myName, gameId: this.id, params: { destination: p.target,position: p.position, health: p.hp, stamina: p.stamina} }
         let msgs = await fetchObject(endpoint, payload)
 
         this.processMsgs(msgs) //just to display them
@@ -278,6 +279,7 @@ export class Game {
           let player = this.players[m.playerName]
           player.position = Vector.trueVector(m.params.position) // recieve definitive stats from the original player 
           player.hp = m.params.health // recieve definitive stats from the original player 
+          player.stamina = m.params.stamina // recieve definitive stats from the original player 
           player.runToPoint(Vector.trueVector(m.params.destination))
         }
 
