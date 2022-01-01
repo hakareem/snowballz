@@ -143,7 +143,7 @@ export class Game {
       img.src = this.playerPics[randomPic]
       let pName = "player " + i
 
-      this.players[pName] = (new Player(pName, new Vector(Math.floor(Math.random() * 400), Math.floor(Math.random() * 400)), 100, 100, img, playerRadius));
+      this.players[pName] = (new Player(pName, new Vector(Math.floor(Math.random() * 400), Math.floor(Math.random() * 400)), 100, 100, img, playerRadius, 100));
     }
   }
   setupObstaclePics(numObstacles: number) {
@@ -229,7 +229,7 @@ export class Game {
 
     let img = document.createElement("img")
     img.src = this.playerPics[Object.keys(this.players).length % this.playerPics.length]
-    this.players[playerName] = new Player(playerName, position, 100, 100, img, this.playerRadius)
+    this.players[playerName] = new Player(playerName, position, 100, 100, img, this.playerRadius,100)
   }
 
 
