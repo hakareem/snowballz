@@ -50,7 +50,7 @@ export class Snowball {
           if(p.stamina <= 0){
             p.velocity = p.velocity.subtract(p.velocity)
           }
-          Sound.play('playerGasp', 0.5)
+          Sound.play('playerGasp', 0.01)
         }
       }
     }
@@ -61,7 +61,7 @@ export class Snowball {
       let snowballToObstacle = Vector.distanceBetween(obstacle.position, this.position)
       if (snowballToObstacle < obstacle.radius + game.snowballRadius) {
         this.active = false
-        Sound.play('impact', 0.5)
+        Sound.play('impact', 0.01)
       }
     }
   }
