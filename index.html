@@ -39,27 +39,29 @@
 </head>
 
 <body>
-
+<div id="container">
     <div id="lobby">
-    <p>Username: <input id="playerName" placeholder="Username">
+     	<div id="title" class="font">Snowball Fight!</div>
+    <input class="button font" id="playerName" placeholder="Username">
+      
     <hr>
-    Generate Game PIN: <input id='gameToShare' placeholder="00000"></input>
-    <button id="btn" onclick="HTMLCreateAndJoinGame()">Create a game</button>
+    <!-- Generate Game PIN: <input id='gameToShare' placeholder="00000"></input> -->
+    <button id='gameToShare' class="button font" id="btn" onclick="HTMLCreateAndJoinGame()">Host a Game</button>
     <br>
     <hr>
     
 
-    <p>Enter game PIN : <input id='gameToJoin'></input> <button onclick='joinGameHTML()'>Join the game</button>
+    <!-- <p>Enter game PIN : <input id='gameToJoin'></input>  -->
+      <button id='gameToJoin' class="button font" onclick='joinGameHTML()'>Join a Game</button>
     
     
     <hr>
-    <!-- <p>Move: <button onclick=runTo()>Run somewhere</button>  -->
     <div id='rxd'>      
-    <button id="btn" onclick="hideLobby()">Close</button>
-    <!-- <button id="btn" onclick="showLobby()">Open Game Menu</button> -->
+    <button class="button font" id="btn" onclick="hideLobby()">Close</button>
+
     </div>  
   </div>
-
+</div>
   <div>
     <p id="static-pin">
       Game PIN:  </p>

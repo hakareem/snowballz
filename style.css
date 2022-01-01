@@ -4,7 +4,60 @@ html,body {
   overflow: hidden;
   height: 100vh;
   width: 100vw;
+	position: relative;
+	text-align: center;
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
 }
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+#title{
+	font-size: 10vmin;
+	text-align: center;
+	animation: wobble 3s infinite;
+	margin-bottom: 5vmin;
+  padding-top: 100px;
+}
+@keyframes wobble{
+	0%{transform: rotate(-5deg);}
+	50%{transform: rotate(5deg);}
+	100%{transform: rotate(-5deg);}
+}
+#background{
+	position: absolute;
+	top: calc(50vh - 50vmax);
+	left: calc(50vw - 50vmax);
+	height: 100vmax;
+	width: 100vmax;
+}
+.button{
+	font-size: 2vmin;
+	padding: 2vmin;
+	border: 2px solid black;
+	width: 40vmax;
+	margin: 5vmin;
+	margin-left: -3vmin;
+	cursor: pointer;
+	transition: transform .2s;
+	border-radius: 3vmin;
+}
+.button:hover{
+	transform: translateX(-10vmin) rotate(-2deg);
+}
+
+
 
 canvas {
   border: 1px solid black;
@@ -26,9 +79,7 @@ canvas {
   padding: 0.5em;
 }
 
-
-#lobby{
-  background: linear-gradient(-45deg,black,orange);
+/* #lobby{
   font-family: Arial, Helvetica, sans-serif;
   position: absolute;
   top: 25%;
@@ -40,6 +91,21 @@ canvas {
   font-size: 24px;
   padding: 20px;
   border-radius: 20px;
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
 
 #btn {
@@ -58,60 +124,4 @@ canvas {
   position: absolute;
   bottom: 0;
   width: 100vw;
-}
-
-/* .snow1 {
-  background: url("snowfall image/snow.png");
-  background-repeat: repeat;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  animation: animateOne 15s infinite linear;
-}
-.snow2 {
-  background: url("snowfall image/snow.png");
-  background-repeat: repeat;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  animation: animateTwo 20s infinite linear;
-}
-.snow3 {
-  background: url("snowfall image/m.png");
-  background-repeat: repeat;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  animation: animateThree 26s infinite linear;
-}
-@keyframes animateOne {
-  0% {
-    background-position: 0px 0px;
-  }
-  100% {
-    background-position: 100px 650px;
-  }
-}
-@keyframes animateTwo {
-  0% {
-    background-position: 0px -100px;
-  }
-  100% {
-    background-position: 0px 870px;
-  }
-}
-@keyframes animateThree {
-  0% {
-    background-position: 0px 100px;
-  }
-  100% {
-    background-position: 0px 650px;
-  }
 } */
-
