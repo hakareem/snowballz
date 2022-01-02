@@ -1,88 +1,96 @@
-html,body {
+html,
+body {
   margin: 0;
   padding: 0;
   overflow: hidden;
   height: 100vh;
   width: 100vw;
-	position: relative;
-	text-align: center;
+  position: relative;
+  text-align: center;
 }
 
 #container {
-  	background: linear-gradient(-45deg,  #e73c7e, #23a6d5, #23d5ab);
-	background-size: 400% 400%;
-	animation: gradient 15s ease infinite;
+  background: linear-gradient(-45deg, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
 }
 
 @keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .fa-snowflake {
-	color: rgb(255, 255, 255);
-	position: absolute;
-	top: 0;
-	animation: fall 4s linear forwards;
+  color: rgb(255, 255, 255);
+  position: absolute;
+  top: 0;
+  animation: fall 2s linear forwards;
+  transform: scale(3);
 }
 
 @keyframes fall {
-	to {
-		transform: translateY(105vh);
-	}
+  to {
+    /* transform: translateY(105vh); */
+    transform: scale(0);
+  }
 }
 #title {
-	font-size: 10vmin;
-	text-align: center;
-	animation: wobble 3s infinite;
-	margin-bottom: 5vmin;
+  font-size: 10vmin;
+  text-align: center;
+  animation: wobble 3s infinite;
+  margin-bottom: 5vmin;
   padding-top: 100px;
 }
-@keyframes wobble{
-	0%{transform: rotate(-5deg);}
-	50%{transform: rotate(5deg);}
-	100%{transform: rotate(-5deg);}
+@keyframes wobble {
+  0% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(-5deg);
+  }
 }
-#background{
-	position: absolute;
-	top: calc(50vh - 50vmax);
-	left: calc(50vw - 50vmax);
-	height: 100vmax;
-	width: 100vmax;
+#background {
+  position: absolute;
+  top: calc(50vh - 50vmax);
+  left: calc(50vw - 50vmax);
+  height: 100vmax;
+  width: 100vmax;
 }
-.button{
-	font-size: 2vmin;
-	padding: 1vmin;
-	border: 2px solid black;
-	width: 40vmax;
-	margin: 5vmin;
-	margin-left: -3vmin;
-	cursor: pointer;
-	transition: transform .2s;
-	border-radius: 3vmin;
+.button {
+  font-size: 2vmin;
+  padding: 1vmin;
+  border: 2px solid black;
+  width: 40vmax;
+  margin: 5vmin;
+  margin-left: -3vmin;
+  cursor: pointer;
+  transition: transform 0.2s;
+  border-radius: 3vmin;
 }
-.button:hover{
-	transform: translateX(-10vmin) rotate(-2deg);
+.button:hover {
+  transform: translateX(-10vmin) rotate(-2deg);
 }
 
-
-.btn{
-	font-size: 2vmin;
-	padding: 1vmin;
-	border: 2px solid black;
-	width: 20vmax;
-	margin: 5vmin;
-	margin-left: -3vmin;
-	cursor: pointer;
-	transition: transform .2s;
-	border-radius: 3vmin;
+.btn {
+  font-size: 2vmin;
+  padding: 1vmin;
+  border: 2px solid black;
+  width: 20vmax;
+  margin: 5vmin;
+  margin-left: -3vmin;
+  cursor: pointer;
+  transition: transform 0.2s;
+  border-radius: 3vmin;
 }
 
 canvas {
@@ -90,10 +98,10 @@ canvas {
   /* background-color: rgb(0, 0, 0); */
   background-image: url("snowfall image/snowy.jpg");
   -webkit-touch-callout: none; /* Safari */
-  -webkit-user-select: none; /* Chrome */     
-     -moz-user-select: none; /* Firefox */
-      -ms-user-select: none; /* Internet Explorer/Edge */
-          user-select: none; 
+  -webkit-user-select: none; /* Chrome */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
 }
 
 #static-pin {
@@ -106,11 +114,11 @@ canvas {
   padding: 0.5em;
 }
 
- .hover {
+.hover {
   border-radius: 30px;
 }
 
-.hover:hover{
+.hover:hover {
   background-color: greenyellow;
 }
 
@@ -120,4 +128,4 @@ canvas {
   position: absolute;
   bottom: 0;
   width: 100vw;
-} 
+}

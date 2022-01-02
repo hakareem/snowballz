@@ -52,13 +52,14 @@
 
       // window.addEventListener('orientationchange', () => false);
 
-      setInterval(snow, 200);
+      setInterval(snow, 100);
 
       function snow() {
         let snowfall = document.createElement("i");
         snowfall.classList.add("fas");
         snowfall.classList.add("fa-snowflake");
         snowfall.style.left = Math.random() * window.innerWidth + "px";
+        snowfall.style.top = Math.random() * window.innerHeight + "px";
         snowfall.style.animationDuration = Math.random() * 3 + 2 + "s";
         snowfall.style.opacity = Math.random();
 
@@ -81,7 +82,7 @@
   <body>
     <div id="container">
       <div id="lobby">
-        <div id="title" class="font">Snowball Fight!</div>
+        <div id="title" class="font">Snowballz!</div>
         <input class="btn font" id="playerName" placeholder="Username" />
 
         <hr />
