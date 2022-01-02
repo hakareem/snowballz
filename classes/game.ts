@@ -207,7 +207,7 @@ export class Game {
     }
   }
   setupObstaclePics(numObstacles: number) {
-    this.setupLayer("trees","tree1,tree2,tree3", 50)
+    this.setupLayer("trees","trees1,trees2,trees3", 50)
     this.setupLayer("puddles","puddle1,puddle2,puddle3", 50)
 
   }
