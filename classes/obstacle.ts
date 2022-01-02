@@ -1,6 +1,5 @@
-import { Vector } from './vector.js'
-import { Game } from './game.js'
-
+import { Vector } from "./vector.js";
+import { Game } from "./game.js";
 
 export class Obstacle {
   position: Vector;
@@ -12,12 +11,12 @@ export class Obstacle {
     position: Vector,
     radius: number,
     color: string,
-    picIndex: number,
+    picIndex: number
   ) {
     this.position = position;
     this.radius = radius;
     this.color = color;
-    this.picIndex = picIndex
+    this.picIndex = picIndex;
   }
 
   draw(game: Game) {
