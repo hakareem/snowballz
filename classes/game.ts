@@ -113,7 +113,6 @@ export class Game {
         p.velocity.x = 0;
         p.velocity.y = 0;
       }
-
     }
     if(alive == 1 && Object.keys(this.players).length > 1){
       alert(lastStanding + " wins")
