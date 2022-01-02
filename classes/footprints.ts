@@ -11,7 +11,7 @@ export class Footprints{
     draw(game:Game){
         game.ctx.save();
         game.ctx.translate(this.position.x, this.position.y);
-        game.ctx.drawImage(image source, x position, y position, width, height);
+        // game.ctx.drawImage(image source, x position, y position, width, height);
         game.ctx.restore();
     }
 }

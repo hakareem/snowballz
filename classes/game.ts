@@ -70,6 +70,7 @@ export class Game {
   cycle() {
     this.ctx?.resetTransform();
     this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
     if (this.anyPlayers()) {
       let me = this.players[this.myName]
       if (me.killer) {
@@ -79,9 +80,15 @@ export class Game {
         Camera.update(me.position, this);
       }
     }
-    // for (let i = 0; i < this.players.length; i++) 
+    // for (let i = 0; i < this.players.length; i++)
+    let alive = 0;
+    let lastStanding:string = ""
     for (let pName in this.players) {
       const p = this.players[pName];
+      if(p.hp > 0){
+        alive++
+        lastStanding = pName
+      }
       p.draw(this);
       //p.move();
       p.drawSnowballs(this);
@@ -106,6 +113,10 @@ export class Game {
         p.velocity.x = 0;
         p.velocity.y = 0;
       }
+
+    }
+    if(alive == 1 && Object.keys(this.players).length > 1){
+      alert(lastStanding + " wins")
     }
     this.drawObstacles();
     requestAnimationFrame(() => this.cycle());
