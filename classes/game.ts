@@ -188,7 +188,9 @@ export class Game {
   setupObstaclePics(numObstacles: number) {
     let trees = "trees1,trees2,trees3".split(",");
     for (let t in trees) {
-      this.obstaclePics["trees"].push(this.img(t));
+      this.obstaclePics["trees"].push(
+        this.img("obstacle images/" + t + ".png")
+      );
     }
     // this.obstaclePics["trees"].push(this.img("obstacle images/TREES.png"));
     // this.obstaclePics.push(this.img("obstacle images/TREES1.png"));
@@ -230,7 +232,9 @@ export class Game {
     }
     let puddles = "puddle1,puddle2,puddle3".split(",");
     for (let p in puddles) {
-      this.obstaclePics["puddles"].push(this.img(p));
+      this.obstaclePics["puddles"].push(
+        this.img("noncollidable/" + p + ".png")
+      );
     }
     for (let i = 0; i < 50; i++) {
       let p = new Vector(
