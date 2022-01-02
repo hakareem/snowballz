@@ -1,10 +1,7 @@
-import { Vector } from './vector.js'
-import { Snowball } from './snowball.js'
-import { Game } from './game.js'
-import { Camera } from './camera.js'
-
-
-
+import { Vector } from "./vector.js";
+import { Snowball } from "./snowball.js";
+import { Game } from "./game.js";
+import { Camera } from "./camera.js";
 
 export class Player {
   username: string = "";
@@ -19,7 +16,7 @@ export class Player {
   hpMax: number = 0;
   img: HTMLImageElement;
   radius: number;
-  killer: Player | null = null
+  killer: Player | null = null;
   stamina: number = 0;
 
   constructor(
@@ -33,12 +30,12 @@ export class Player {
   ) {
     this.username = username;
     this.position = position;
-    this.destination = this.position
+    this.destination = this.position;
     this.hp = hp;
     this.hpMax = hpMax;
     this.img = img;
-    this.radius = radius
-    this.stamina = stamina
+    this.radius = radius;
+    this.stamina = stamina;
   }
   drawHealth(game: Game) {
     game.ctx?.save();
@@ -56,16 +53,16 @@ export class Player {
     game.ctx?.restore();
   }
 
-  drawStamina(game: Game){
+  drawStamina(game: Game) {
     game.ctx?.save();
     game.ctx?.translate(this.position.x, this.position.y);
     game.ctx?.scale(1, -2.2);
     game.ctx!.fillStyle = "green";
-    let height = (60 * this.stamina) / 100
-      if (height < 0) {
-      height = 0;
+    let width = (60 * this.stamina) / 100;
+    if (width < 0) {
+      width = 0;
     }
-    game.ctx?.fillRect(-30, 20, height, 5);
+    game.ctx?.fillRect(-30, 20, width, 5);
     game.ctx!.strokeStyle = "black";
     game.ctx?.strokeRect(-30, 20, 60, 5);
     game.ctx?.restore();
@@ -75,59 +72,76 @@ export class Player {
     game.ctx!.textAlign = "center";
     game.ctx!.font = "25px Arial";
     game.ctx!.fillStyle = "black";
-    game.ctx?.fillText(this.username, this.position.x + 5, this.position.y + 50);
+    game.ctx?.fillText(
+      this.username,
+      this.position.x + 5,
+      this.position.y + 50
+    );
   }
   draw(game: Game) {
     game.ctx?.save();
-    let r = this.radius  //*1.4
+    let r = this.radius; //*1.4
     //game.pctx is s second canvas/context we use to pre-rotate the player
-    game.pctx?.save()
-    game.pctx?.clearRect(0, 0, r * 2, r * 2)
-    game.pctx?.translate(r, r)
-    game.pctx?.rotate(this.angle)
-    game.pctx?.translate(-r, -r)
-    game.pctx?.drawImage(this.img, r * .2, r * .2, r * 1.8, r * 1.8)
-    game.pctx?.restore()
-    game.ctx!.translate(this.position.x, this.position.y)
-    game.ctx?.drawImage(game.pCanvas, -r, -r, r * 2, r * 2)
+    game.pctx?.save();
+    game.pctx?.clearRect(0, 0, r * 2, r * 2);
+    game.pctx?.translate(r, r);
+    game.pctx?.rotate(this.angle);
+    game.pctx?.translate(-r, -r);
+    game.pctx?.drawImage(this.img, r * 0.2, r * 0.2, r * 1.8, r * 1.8);
+    game.pctx?.restore();
+    game.ctx!.translate(this.position.x, this.position.y);
+    game.ctx?.drawImage(game.pCanvas, -r, -r, r * 2, r * 2);
     game.ctx?.restore();
   }
   move() {
     this.position = this.position.add(this.velocity);
   }
 
-  drawSnowballs(game:Game){
+  drawSnowballs(game: Game) {
     for (let i = 0; i < this.snowballs.length; i++) {
-      if (this.snowballs[i].active) { 
+      if (this.snowballs[i].active) {
         this.snowballs[i].draw(game);
       }
     }
   }
-  	highlight = new Array(Math.round(Math.random()*255), Math.round(Math.random()*255), Math.round(Math.random()*255));
+  highlight = new Array(
+    Math.round(Math.random() * 255),
+    Math.round(Math.random() * 255),
+    Math.round(Math.random() * 255)
+  );
 
   moveSnowballs() {
     for (let i = 0; i < this.snowballs.length; i++) {
       if (this.snowballs[i].active) {
-        this.snowballs[i].move();        
+        this.snowballs[i].move();
       }
     }
   }
   drawAimLine(game: Game) {
-    	for(let i=5; i>=0; i--)	{
-		  game.ctx?.beginPath();
-    	game.ctx.lineWidth = (i+1)*2-2;
-		  game.ctx.moveTo(this.target.x, this.target.y);
+    for (let i = 5; i >= 0; i--) {
+      game.ctx?.beginPath();
+      game.ctx.lineWidth = (i + 1) * 2 - 2;
+      game.ctx.moveTo(this.target.x, this.target.y);
       game.ctx?.lineTo(this.position.x, this.position.y);
-			game.ctx.strokeStyle = '#000000';
-			game.ctx.strokeStyle = 'rgba('+this.highlight[0]+','+this.highlight[1]+','+this.highlight[2]+',0.5)';
-  		game.ctx.stroke();
+      game.ctx.strokeStyle = "#000000";
+      game.ctx.strokeStyle =
+        "rgba(" +
+        this.highlight[0] +
+        "," +
+        this.highlight[1] +
+        "," +
+        this.highlight[2] +
+        ",0.5)";
+      game.ctx.stroke();
+    }
   }
-}
   runToPoint(destination: Vector) {
-    let p = this
-    p.destination = destination
+    let p = this;
+    p.destination = destination;
     // Do nothing if we are already at the point, otherwise we would get an division by 0 error
-    if (Vector.distanceBetween(p.position, p.destination) < 0.01) { return }
+    if (Vector.distanceBetween(p.position, p.destination) < 0.01) {
+      return;
+    }
     let adjacent = p.destination.x - p.position.x;
     let opposite = p.destination.y - p.position.y;
     p.angle = -Math.atan2(-opposite, adjacent) - Math.PI / 2;
@@ -146,13 +160,13 @@ export class Player {
   // }
   pushOtherPlayersAway(game: Game) {
     let isOverlap = false;
-    // for (let i = 0; i < game.players.length; i++) 
+    // for (let i = 0; i < game.players.length; i++)
     for (let pName in game.players) {
       const otherPlayer = game.players[pName];
       if (otherPlayer != this) {
         let dbt = Vector.distanceBetween(this.position, otherPlayer.position);
         if (dbt < 0.01) {
-          otherPlayer.position.x += 2
+          otherPlayer.position.x += 2;
         }
         let overlap = 60 - dbt;
         if (overlap > 0) {
@@ -169,29 +183,31 @@ export class Player {
   }
   movePlayerAroundObstacles(game: Game) {
     for (let i = 0; i < game.obstacles.length; i++) {
-      const obstacle = game.obstacles[i]
+      const obstacle = game.obstacles[i];
       let dbt = Vector.distanceBetween(this.position, obstacle.position);
       let overlap = obstacle.radius * 1.7 - dbt;
       if (overlap > 0) {
         let vectorBetween = this.position.subtract(obstacle.position);
         let directionBetween = vectorBetween.normalise();
-        this.position = this.position.add(directionBetween.multiply(overlap))
-        this.runToPoint(this.destination)
+        this.position = this.position.add(directionBetween.multiply(overlap));
+        this.runToPoint(this.destination);
       }
     }
   }
   checkSnowballs(game: Game) {
     for (let s = 0; s < this.snowballs.length; s++) {
-      let snowball = this.snowballs[s]
+      let snowball = this.snowballs[s];
       if (snowball.active == true) {
-        snowball.checkAgainstPlayers(game, this)
-        snowball.checkAgainstObstacles(game)
-        if(Vector.distanceBetween(snowball.position, this.position) > snowball.velocity.length * 100){
-           snowball.active = false 
-           console.log("removed");
-           
+        snowball.checkAgainstPlayers(game, this);
+        snowball.checkAgainstObstacles(game);
+        if (
+          Vector.distanceBetween(snowball.position, this.position) >
+          snowball.velocity.length * 100
+        ) {
+          snowball.active = false;
+          console.log("removed");
         }
       }
-    } 
+    }
   }
 }
