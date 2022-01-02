@@ -19,16 +19,29 @@
     function joinGameHTML(){
         let playerName=(document.getElementById("playerName")).value
         let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
+
+     
         window.game.joinServerGame(gameToJoin, playerName) 
         document.getElementById("lobby").style.display = "none"
         document.getElementById("static-pin").innerHTML = "Game PIN: " + gameToJoin
-      }
-      async function HTMLCreateAndJoinGame(){
-        await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
-        document.getElementById("gameToShare").value = window.game.id
-        document.getElementById("static-pin").innerHTML = "Game PIN: " + window.game.id
-      }
-      function hideLobby(){
+    }
+  
+    async function HTMLCreateAndJoinGame(){
+
+      // const input = document.getElementById("gameToJoin")
+      // input.addEventListener("submit", (e)  =>{
+      //   let messages = []
+      //   if(playerName.value === "" || playerName.value == null){
+      //     messages.push("Enter a username")
+      // }
+      // })
+      await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
+      document.getElementById("gameToShare").value = window.game.id
+      document.getElementById("lobby").style.display = "none"
+      document.getElementById("static-pin").innerHTML = "Game PIN: " + window.game.id
+    }
+
+    function hideLobby(){
         document.getElementById("lobby").style.display = "none"
         startBackgroundMusic()
       }
@@ -66,26 +79,34 @@ function snow() {
 </head>
 
 <body>
+<div id="container">
     <div id="lobby">
-      <p>Username: <input id="playerName" placeholder="Username">
-      <hr>
-      Generate Game PIN: <input id='gameToShare' placeholder="PIN"></input>
-      <button id="btn" onclick="HTMLCreateAndJoinGame()">Create a game</button>
-      <br>
-      <hr>
-
-      <p>Enter game PIN : <input id='gameToJoin'></input> <button onclick='joinGameHTML()'>Join the game</button>
+     	<div id="title" class="font">Snowball Fight!</div>
+    <input class="btn font" id="playerName" placeholder="Username">
       
-      <hr>
+    <hr>
   
-      <div id='rxd'>      
-      <button id="btn" onclick="hideLobby()">Close</button>
-      <!-- <button id="btn" onclick="showLobby()">Open Game Menu</button> -->
-      </div>  
-    </div>
+    <button id='gameToShare' class="button font hover" id="btn" onclick="HTMLCreateAndJoinGame()">Host a Game</button>
+    <hr>
+    
+  
+    <input class="btn font" id='gameToJoin' placeholder="Enter Game PIN">
+    <button id='gameToJoin' class="btn font hover" onclick='joinGameHTML()'>Join a Game</button>
+    
+    
+   
+    <div id='rxd'>      
+    <button class="button font hover" id="btn" onclick="hideLobby()">Close</button>
 
-    <div>
-      <p id="static-pin">Game PIN:</p>
-    </div>
-  </body>
+    </div>  
+  </div>
+</div>
+  <div>
+    <p id="static-pin">
+      Game PIN:  </p>
+  </div>
+    <div class="ground"></div>
+
+
+</body>
 </html>
