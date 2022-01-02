@@ -198,7 +198,7 @@ export class Game {
     for (let i = 0; i < numnonObstacles; i++) {
       let p = new Vector(Math.floor(Math.random() * 5000), Math.floor(Math.random() * 5000));
       let picIndex = Math.floor(Math.random() * this.nonObstaclePics.length)
-      let o = new nonObstacle(p, 30 + Math.random() * 2, "lightblue", picIndex);
+      let o = new nonObstacle(p, 20 + Math.random() * 2, "lightblue", picIndex);
       this.nonObstacle.push(o);
     }
   }
