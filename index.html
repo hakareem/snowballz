@@ -1,113 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>snow</title>
-  <link rel="stylesheet" href="style.css" />
-  <link
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>snow</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     />
 
-  <!-- <script src="classes.js" defer></script> -->
-  <!-- <script src="utility.js" defer></script> -->
-  <script type="module" src="classes/client.js" defer></script>
-  <script type="module" src="script.js" defer></script>
-  <script>
-    function joinGameHTML(){
-        let playerName=(document.getElementById("playerName")).value
-        let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
+    <!-- <script src="classes.js" defer></script> -->
+    <!-- <script src="utility.js" defer></script> -->
+    <script type="module" src="classes/client.js" defer></script>
+    <script type="module" src="script.js" defer></script>
+    <script>
+      function joinGameHTML() {
+        let playerName = document.getElementById("playerName").value;
+        let gameToJoin = parseInt(document.getElementById("gameToJoin").value);
 
-     
-        window.game.joinServerGame(gameToJoin, playerName) 
-        document.getElementById("lobby").style.display = "none"
-        document.getElementById("static-pin").innerHTML = "Game PIN: " + gameToJoin
-        startBackgroundMusic()
-
-    }
-  
-    async function HTMLCreateAndJoinGame(){
-
-      // const input = document.getElementById("gameToJoin")
-      // input.addEventListener("submit", (e)  =>{
-      //   let messages = []
-      //   if(playerName.value === "" || playerName.value == null){
-      //     messages.push("Enter a username")
-      // }
-      // })
-      await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
-      document.getElementById("gameToShare").value = window.game.id
-      document.getElementById("lobby").style.display = "none"
-      document.getElementById("static-pin").innerHTML = "Game PIN: " + window.game.id
-      startBackgroundMusic()
-    }
-
-    function hideLobby(){
-        document.getElementById("lobby").style.display = "none"
+        window.game.joinServerGame(gameToJoin, playerName);
+        document.getElementById("lobby").style.display = "none";
+        document.getElementById("static-pin").innerHTML =
+          "Game PIN: " + gameToJoin;
+        startBackgroundMusic();
       }
-      window.addEventListener("resize", ()=> window.game.resizeCanvas())
-      
+
+      async function HTMLCreateAndJoinGame() {
+        // const input = document.getElementById("gameToJoin")
+        // input.addEventListener("submit", (e)  =>{
+        //   let messages = []
+        //   if(playerName.value === "" || playerName.value == null){
+        //     messages.push("Enter a username")
+        // }
+        // })
+        await window.game.createAndJoinServerGame(
+          document.getElementById("playerName").value
+        );
+        document.getElementById("gameToShare").value = window.game.id;
+        document.getElementById("lobby").style.display = "none";
+        document.getElementById("static-pin").innerHTML =
+          "Game PIN: " + window.game.id;
+        startBackgroundMusic();
+      }
+
+      function hideLobby() {
+        document.getElementById("lobby").style.display = "none";
+      }
+      window.addEventListener("resize", () => window.game.resizeCanvas());
+
       // window.addEventListener('orientationchange', () => false);
 
-setInterval(snow, 200);
+      setInterval(snow, 200);
 
-function snow() {
-	let snowfall = document.createElement('i');
-	snowfall.classList.add('fas');
-	snowfall.classList.add('fa-snowflake');
-	snowfall.style.left = Math.random() * window.innerWidth + 'px';
-	snowfall.style.animationDuration = Math.random() * 3 + 2 + 's'; 
-	snowfall.style.opacity = Math.random();
-	
-	document.body.appendChild(snowfall);
-	
-	setTimeout(() => {
-		snowfall.remove();
-	}, 5000)
-}
+      function snow() {
+        let snowfall = document.createElement("i");
+        snowfall.classList.add("fas");
+        snowfall.classList.add("fa-snowflake");
+        snowfall.style.left = Math.random() * window.innerWidth + "px";
+        snowfall.style.animationDuration = Math.random() * 3 + 2 + "s";
+        snowfall.style.opacity = Math.random();
 
-     let backgroundMusic = new Audio("music/winter_dance.mp3");
+        document.body.appendChild(snowfall);
+
+        setTimeout(() => {
+          snowfall.remove();
+        }, 5000);
+      }
+
+      let backgroundMusic = new Audio("music/winter_dance.mp3");
       function startBackgroundMusic() {
         backgroundMusic.play();
         backgroundMusic.loop = true;
         backgroundMusic.volume = 0.01;
       }
+    </script>
+  </head>
 
-</script>
+  <body>
+    <div id="container">
+      <div id="lobby">
+        <div id="title" class="font">Snowball Fight!</div>
+        <input class="btn font" id="playerName" placeholder="Username" />
 
-</head>
+        <hr />
 
-<body>
-<div id="container">
-    <div id="lobby">
-     	<div id="title" class="font">Snowball Fight!</div>
-    <input class="btn font" id="playerName" placeholder="Username">
-      
-    <hr>
-  
-    <button id='gameToShare' class="button font hover" id="btn" onclick="HTMLCreateAndJoinGame()">Host a Game</button>
-    <hr>
-    
-  
-    <input class="btn font" id='gameToJoin' placeholder="Enter Game PIN">
-    <button id='gameToJoin' class="btn font hover" onclick='joinGameHTML()'>Join a Game</button>
-    
-    
-   
-    <div id='rxd'>      
-    <button class="button font hover" id="btn" onclick="hideLobby()">Close</button>
+        <button
+          id="gameToShare"
+          class="button font hover"
+          id="btn"
+          onclick="HTMLCreateAndJoinGame()"
+        >
+          Host a Game
+        </button>
+        <hr />
 
-    </div>  
-  </div>
-</div>
-  <div>
-    <p id="static-pin">
-      Game PIN:  </p>
-  </div>
+        <input class="btn font" id="gameToJoin" placeholder="Enter Game PIN" />
+        <button id="gameToJoin" class="btn font hover" onclick="joinGameHTML()">
+          Join a Game
+        </button>
+
+        <div id="rxd">
+          <button class="button font hover" id="btn" onclick="hideLobby()">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p id="static-pin">Game PIN:</p>
+    </div>
     <div class="ground"></div>
-
-
-</body>
+  </body>
 </html>
