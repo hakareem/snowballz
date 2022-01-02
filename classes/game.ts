@@ -128,6 +128,7 @@ export class Game {
       }
     }
     this.drawObstacles("trees");
+    this.drawObstacles("puddles");
     requestAnimationFrame(() => this.cycle());
   }
   drawObstacles(layer: string) {
@@ -185,32 +186,13 @@ export class Game {
       );
     }
   }
-  setupObstaclePics(numObstacles: number) {
-    let trees = "trees1,trees2,trees3".split(",");
-    for (let t in trees) {
-      this.obstaclePics["trees"].push(
-        this.img("obstacle images/" + t + ".png")
-      );
+  setupLayer(layer: string, picList: string, numObstacles: number){
+  
+    let pics = picList.split(",")
+    this.obstaclePics[layer] = []
+    for (let i of pics) {
+      this.obstaclePics[layer].push(this.img(layer + "/" + i + ".png"));
     }
-    // this.obstaclePics["trees"].push(this.img("obstacle images/TREES.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES1.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES2.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES3.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES4.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES6.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES7.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES8.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES9.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES10.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES11.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES12.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES13.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES14.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES15.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES16.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES17.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES18.png"));
-    // this.obstaclePics.push(this.img("obstacle images/TREES19.png"));
 
     for (let i = 0; i < numObstacles; i++) {
       let p = new Vector(
@@ -218,42 +200,16 @@ export class Game {
         Math.floor(Math.random() * 5000)
       );
       let picIndex = Math.floor(
-        Math.random() * this.obstaclePics["trees"].length
+        Math.random() * pics.length
       );
-      let o = new Obstacle(
-        p,
-        50 + Math.random() * 50,
-        "lightblue",
-        picIndex,
-        true,
-        "trees"
-      );
+      let o = new Obstacle(p,50 + Math.random() * 50,"lightblue",picIndex,true,layer);
       this.obstacles.push(o);
     }
-    let puddles = "puddle1,puddle2,puddle3".split(",");
-    for (let p in puddles) {
-      this.obstaclePics["puddles"].push(
-        this.img("noncollidable/" + p + ".png")
-      );
-    }
-    for (let i = 0; i < 50; i++) {
-      let p = new Vector(
-        Math.floor(Math.random() * 5000),
-        Math.floor(Math.random() * 5000)
-      );
-      let picIndex = Math.floor(
-        Math.random() * this.obstaclePics["puddles"].length
-      );
-      let o = new Obstacle(
-        p,
-        50 + Math.random() * 50,
-        "lightblue",
-        picIndex,
-        true,
-        "puddles"
-      );
-      this.obstacles.push(o);
-    }
+  }
+  setupObstaclePics(numObstacles: number) {
+    this.setupLayer("trees","tree1,tree2,tree3", 50)
+    this.setupLayer("puddles","puddle1,puddle2,puddle3", 50)
+
   }
 
   async mouseDown(x: number, y: number) {
@@ -436,6 +392,7 @@ export class Game {
     return Object.keys(this.players).length > 0;
   }
   img(fileName: string): HTMLImageElement {
+    console.log(fileName);
     let img = document.createElement("img");
     img.src = fileName;
     return img;

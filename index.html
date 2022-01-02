@@ -35,9 +35,7 @@
         //     messages.push("Enter a username")
         // }
         // })
-        await window.game.createAndJoinServerGame(
-          document.getElementById("playerName").value
-        );
+        await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
         document.getElementById("gameToShare").value = window.game.id;
         document.getElementById("lobby").style.display = "none";
         document.getElementById("static-pin").innerHTML =
