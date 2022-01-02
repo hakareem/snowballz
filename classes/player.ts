@@ -184,13 +184,15 @@ export class Player {
   movePlayerAroundObstacles(game: Game) {
     for (let i = 0; i < game.obstacles.length; i++) {
       const obstacle = game.obstacles[i];
-      let dbt = Vector.distanceBetween(this.position, obstacle.position);
-      let overlap = obstacle.radius * 1.7 - dbt;
-      if (overlap > 0) {
-        let vectorBetween = this.position.subtract(obstacle.position);
-        let directionBetween = vectorBetween.normalise();
-        this.position = this.position.add(directionBetween.multiply(overlap));
-        this.runToPoint(this.destination);
+      if (obstacle.collideable) {
+        let dbt = Vector.distanceBetween(this.position, obstacle.position);
+        let overlap = obstacle.radius * 1.7 - dbt;
+        if (overlap > 0) {
+          let vectorBetween = this.position.subtract(obstacle.position);
+          let directionBetween = vectorBetween.normalise();
+          this.position = this.position.add(directionBetween.multiply(overlap));
+          this.runToPoint(this.destination);
+        }
       }
     }
   }

@@ -1,9 +1,8 @@
-import { Vector } from './vector.js'
-import { Game } from './game.js'
+import { Vector } from "./vector.js";
+import { Game } from "./game.js";
 // import { game } from '../script.js';
-import { Player } from './player.js';
-import { Sound } from './sounds.js'
-
+import { Player } from "./player.js";
+import { Sound } from "./sounds.js";
 
 export class Snowball {
   color: string = "";
@@ -37,30 +36,38 @@ export class Snowball {
     for (let pName in game.players) {
       const p = game.players[pName];
       if (p != owner) {
-        let playerToSnowball = Vector.distanceBetween(p.position, this.position)
+        let playerToSnowball = Vector.distanceBetween(
+          p.position,
+          this.position
+        );
         if (playerToSnowball < p.radius + game.snowballRadius) {
-          this.active = false
-          p.hp -= 10
+          this.active = false;
+          p.hp -= 10;
           if (p.hp <= 0) {
-            p.killer = owner
+            p.killer = owner;
           }
 
-          p.stamina -= 30
-          if(p.stamina <= 0){
-            p.velocity = p.velocity.subtract(p.velocity)
+          p.stamina -= 30;
+          if (p.stamina <= 0) {
+            p.velocity = p.velocity.subtract(p.velocity);
           }
-          Sound.play('playerGasp', 0.01)
+          Sound.play("playerGasp", 0.01);
         }
       }
     }
   }
   checkAgainstObstacles(game: Game) {
     for (let i = 0; i < game.obstacles.length; i++) {
-      const obstacle = game.obstacles[i]
-      let snowballToObstacle = Vector.distanceBetween(obstacle.position, this.position)
-      if (snowballToObstacle < obstacle.radius + game.snowballRadius) {
-        this.active = false
-        Sound.play('impact', 0.01)
+      const obstacle = game.obstacles[i];
+      if (obstacle.collideable) {
+        let snowballToObstacle = Vector.distanceBetween(
+          obstacle.position,
+          this.position
+        );
+        if (snowballToObstacle < obstacle.radius + game.snowballRadius) {
+          this.active = false;
+          Sound.play("impact", 0.01);
+        }
       }
     }
   }
