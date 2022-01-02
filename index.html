@@ -18,23 +18,21 @@
     <script>
       function joinGameHTML() {
         let playerName = document.getElementById("playerName").value;
-        let gameToJoin = parseInt(document.getElementById("gameToJoin").value);
+        if(playerName != ""){
 
-        window.game.joinServerGame(gameToJoin, playerName);
-        document.getElementById("lobby").style.display = "none";
-        document.getElementById("static-pin").innerHTML =
-          "Game PIN: " + gameToJoin;
-        startBackgroundMusic();
+          let gameToJoin = parseInt(document.getElementById("gameToJoin").value);
+
+          window.game.joinServerGame(gameToJoin, playerName);
+          document.getElementById("lobby").style.display = "none";
+          document.getElementById("static-pin").innerHTML =
+            "Game PIN: " + gameToJoin;
+          startBackgroundMusic();
+        } else {
+          alert("please enter a player name")
+        }
       }
 
       async function HTMLCreateAndJoinGame() {
-        // const input = document.getElementById("gameToJoin")
-        // input.addEventListener("submit", (e)  =>{
-        //   let messages = []
-        //   if(playerName.value === "" || playerName.value == null){
-        //     messages.push("Enter a username")
-        // }
-        // })
         await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
         document.getElementById("gameToShare").value = window.game.id;
         document.getElementById("lobby").style.display = "none";

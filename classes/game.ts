@@ -94,6 +94,7 @@ export class Game {
         Camera.update(me.position, this);
       }
     }
+    this.drawObstacles("snow");
     this.drawObstacles("puddles");
 
     // for (let i = 0; i < this.players.length; i++)
@@ -188,29 +189,47 @@ export class Game {
       );
     }
   }
-  setupLayer(layer: string, picList: string, numObstacles: number, collideable: boolean, minRadius: number, maxRadius: number){
-  
+  setupPics(layer:string, picList:string, extension: string){
     let pics = picList.split(",")
     this.obstaclePics[layer] = []
     for (let i of pics) {
-      this.obstaclePics[layer].push(this.img(layer + "/" + i + ".png"));
+    this.obstaclePics[layer].push(this.img(layer + "/" + i + extension));
     }
+    return pics.length
+  }
 
+  setupTiledLayer(layer:string, picList:string, offset:number, reps:number, extension: string){
+    this.setupPics(layer,picList,extension)
+    let x = 0
+    let y =0
+    for (let i = 0; i< reps; i++){
+      for(let j = 0; j < reps; j++){
+      let o = new Obstacle(new Vector(x,y),offset / 2,"lightblue",0,false,layer);
+      this.obstacles.push(o);
+      x += offset
+      }
+      x = 0
+      y += offset
+    }
+  }
+  setupRandomLayer(layer: string, picList: string, extension: string, numObstacles: number, collideable: boolean, minRadius: number, maxRadius: number){
+    let numPics = this.setupPics(layer,picList,extension)
     for (let i = 0; i < numObstacles; i++) {
       let p = new Vector(
         Math.floor(Math.random() * 5000),
         Math.floor(Math.random() * 5000)
       );
       let picIndex = Math.floor(
-        Math.random() * pics.length
+        Math.random() * numPics
       );
       let o = new Obstacle(p,minRadius + Math.random() * (maxRadius- minRadius),"lightblue",picIndex,collideable,layer);
       this.obstacles.push(o);
     }
   }
   setupObstaclePics(numObstacles: number) {
-    this.setupLayer("trees","trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18", 100, true,50,100)
-    this.setupLayer("puddles","puddle1,puddle2", 100, false,20,30)
+    this.setupTiledLayer("snow", "snow", 512, 10, ".jpg")
+    this.setupRandomLayer("trees","trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18",".png", 100, true,50,100)
+    this.setupRandomLayer("puddles","puddle1,puddle2",".png", 100, false,20,30)
 
   }
 
