@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>snow</title>
-    <link rel="stylesheet" href="style.css" />
-    <script type="module" src="classes/client.js" defer></script>
-    <script type="module" src="script.js" defer></script>
-    <script>
-      function joinGameHTML(){
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>snow</title>
+  <link rel="stylesheet" href="style.css" />
+  <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+
+  <!-- <script src="classes.js" defer></script> -->
+  <!-- <script src="utility.js" defer></script> -->
+  <script type="module" src="classes/client.js" defer></script>
+  <script type="module" src="script.js" defer></script>
+  <script>
+    function joinGameHTML(){
         let playerName=(document.getElementById("playerName")).value
         let gameToJoin = parseInt((document.getElementById("gameToJoin")).value);
         window.game.joinServerGame(gameToJoin, playerName) 
@@ -30,16 +37,35 @@
       
       // window.addEventListener('orientationchange', () => false);
 
-      let backgroundMusic = new Audio("music/winter_dance.mp3");
+setInterval(snow, 200);
+
+function snow() {
+	let snowfall = document.createElement('i');
+	snowfall.classList.add('fas');
+	snowfall.classList.add('fa-snowflake');
+	snowfall.style.left = Math.random() * window.innerWidth + 'px';
+	snowfall.style.animationDuration = Math.random() * 3 + 2 + 's'; 
+	snowfall.style.opacity = Math.random();
+	
+	document.body.appendChild(snowfall);
+	
+	setTimeout(() => {
+		snowfall.remove();
+	}, 5000)
+}
+
+     let backgroundMusic = new Audio("music/winter_dance.mp3");
       function startBackgroundMusic() {
         backgroundMusic.play();
         backgroundMusic.loop = true;
         backgroundMusic.volume = 0.1;
       }
-    </script>
-  </head>
 
-  <body>
+</script>
+
+</head>
+
+<body>
     <div id="lobby">
       <p>Username: <input id="playerName" placeholder="Username">
       <hr>
@@ -51,7 +77,7 @@
       <p>Enter game PIN : <input id='gameToJoin'></input> <button onclick='joinGameHTML()'>Join the game</button>
       
       <hr>
-      <!-- <p>Move: <button onclick=runTo()>Run somewhere</button>  -->
+  
       <div id='rxd'>      
       <button id="btn" onclick="hideLobby()">Close</button>
       <!-- <button id="btn" onclick="showLobby()">Open Game Menu</button> -->

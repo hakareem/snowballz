@@ -115,6 +115,10 @@ export class Game {
     }
   }
   setupPlayerPics() {
+    this.playerPics.push("player images/PLAYER20.png")
+    this.playerPics.push("player images/PLAYER22.png")
+    this.playerPics.push("player images/PLAYER23.png")
+    this.playerPics.push("player images/PLAYER24.png")
     this.playerPics.push("player images/PLAYER1.png")
     this.playerPics.push("player images/PLAYER2.png")
     this.playerPics.push("player images/PLAYER3.png")
@@ -132,10 +136,6 @@ export class Game {
     this.playerPics.push("player images/PLAYER16.png")
     this.playerPics.push("player images/PLAYER18.png")
     this.playerPics.push("player images/PLAYER19.png")
-    this.playerPics.push("player images/PLAYER20.png")
-    this.playerPics.push("player images/PLAYER22.png")
-    this.playerPics.push("player images/PLAYER23.png")
-    this.playerPics.push("player images/PLAYER24.png")
     this.playerPics.push("player images/PLAYER25.png")
     this.playerPics.push("player images/PLAYER26.png")
     this.playerPics.push("player images/PLAYER27.png")
@@ -326,4 +326,5 @@ export class Game {
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
   }
+
 }

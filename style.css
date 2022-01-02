@@ -7,11 +7,27 @@ html,body {
   touch-action:none; /* disable things like pinch zoom and two finger scroll*/
   user-select: none; /* disable selection of the HTML itself */  
 }
+.fa-snowflake {
+	color: rgb(255, 255, 255);
+	position: absolute;
+	top: 0;
+	animation: fall 4s linear forwards;
+}
+
+@keyframes fall {
+	to {
+		transform: translateY(105vh);
+	}
+}
 
 canvas {
   border: 1px solid black;
-  background-color: white;
-  
+  background-color: rgba(19, 17, 17, 0.123);
+  -webkit-touch-callout: none; /* Safari */
+  -webkit-user-select: none; /* Chrome */     
+     -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; 
 }
 
 #static-pin {
@@ -57,59 +73,3 @@ canvas {
   bottom: 0;
   width: 100vw;
 }
-
-/* .snow1 {
-  background: url("snowfall image/snow.png");
-  background-repeat: repeat;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  animation: animateOne 15s infinite linear;
-}
-.snow2 {
-  background: url("snowfall image/snow.png");
-  background-repeat: repeat;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  animation: animateTwo 20s infinite linear;
-}
-.snow3 {
-  background: url("snowfall image/m.png");
-  background-repeat: repeat;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  animation: animateThree 26s infinite linear;
-}
-@keyframes animateOne {
-  0% {
-    background-position: 0px 0px;
-  }
-  100% {
-    background-position: 100px 650px;
-  }
-}
-@keyframes animateTwo {
-  0% {
-    background-position: 0px -100px;
-  }
-  100% {
-    background-position: 0px 870px;
-  }
-}
-@keyframes animateThree {
-  0% {
-    background-position: 0px 100px;
-  }
-  100% {
-    background-position: 0px 650px;
-  }
-} */
-
