@@ -94,6 +94,8 @@ export class Game {
         Camera.update(me.position, this);
       }
     }
+    this.drawObstacles("puddles");
+
     // for (let i = 0; i < this.players.length; i++)
     for (let pName in this.players) {
       const p = this.players[pName];
@@ -128,7 +130,7 @@ export class Game {
       }
     }
     this.drawObstacles("trees");
-    this.drawObstacles("puddles");
+
     requestAnimationFrame(() => this.cycle());
   }
   drawObstacles(layer: string) {
@@ -207,8 +209,8 @@ export class Game {
     }
   }
   setupObstaclePics(numObstacles: number) {
-    this.setupLayer("trees","trees1,trees2,trees3", 50, true)
-    this.setupLayer("puddles","puddle1,puddle2,puddle3", 50, false)
+    this.setupLayer("trees","trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18", 100, true)
+    this.setupLayer("puddles","puddle1,puddle2", 100, false)
 
   }
 
