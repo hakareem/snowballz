@@ -47,10 +47,6 @@ export class Snowball {
             p.killer = owner;
           }
 
-          p.stamina -= 30;
-          if (p.stamina <= 0) {
-            p.velocity = p.velocity.subtract(p.velocity);
-          }
           Sound.play("playerGasp", 0.01);
         }
       }

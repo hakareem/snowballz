@@ -94,7 +94,14 @@ export class Player {
     game.ctx?.restore();
   }
   move() {
-    this.position = this.position.add(this.velocity);
+    this.position = this.position.add(this.velocity.multiply(this.stamina / 50 + 0.1) );
+    this.stamina -= this.velocity.length / 20  // burn stamina
+    this.stamina += 0.15 // regen stamina
+    if(this.stamina <= 0 ){
+      this.stamina = 0
+    }else if(this.stamina > 100){
+      this.stamina = 100
+    }
   }
 
   drawSnowballs(game: Game) {

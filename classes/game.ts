@@ -188,7 +188,7 @@ export class Game {
       );
     }
   }
-  setupLayer(layer: string, picList: string, numObstacles: number, collideable: boolean){
+  setupLayer(layer: string, picList: string, numObstacles: number, collideable: boolean, minRadius: number, maxRadius: number){
   
     let pics = picList.split(",")
     this.obstaclePics[layer] = []
@@ -204,13 +204,13 @@ export class Game {
       let picIndex = Math.floor(
         Math.random() * pics.length
       );
-      let o = new Obstacle(p,50 + Math.random() * 50,"lightblue",picIndex,collideable,layer);
+      let o = new Obstacle(p,minRadius + Math.random() * (maxRadius- minRadius),"lightblue",picIndex,collideable,layer);
       this.obstacles.push(o);
     }
   }
   setupObstaclePics(numObstacles: number) {
-    this.setupLayer("trees","trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18", 100, true)
-    this.setupLayer("puddles","puddle1,puddle2", 100, false)
+    this.setupLayer("trees","trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18", 100, true,50,100)
+    this.setupLayer("puddles","puddle1,puddle2", 100, false,20,30)
 
   }
 

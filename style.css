@@ -76,7 +76,8 @@ body {
   border: 2px solid black;
   width: 40vmax;
   margin: 5vmin;
-  margin-left: -3vmin;
+  align-items: center;
+  /* margin-left: -3vmin; */
   cursor: pointer;
   transition: transform 0.2s;
   border-radius: 3vmin;
@@ -91,7 +92,9 @@ body {
   border: 2px solid black;
   width: 20vmax;
   margin: 5vmin;
-  margin-left: -3vmin;
+  align-items: center;
+
+  /* margin-left: -3vmin; */
   cursor: pointer;
   transition: transform 0.2s;
   border-radius: 3vmin;
