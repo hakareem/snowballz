@@ -86,6 +86,7 @@ export class Game {
       //p.move();
       p.drawSnowballs(this);
       p.drawHealth(this);
+      p.drawStamina(this);
       p.checkSnowballs(this);
       p.drawUsername(this);
       if (p.hp > 0) { //Is the player still alive? 
@@ -149,7 +150,7 @@ export class Game {
       img.src = this.playerPics[randomPic]
       let pName = "player " + i
 
-      this.players[pName] = (new Player(pName, new Vector(Math.floor(Math.random() * 400), Math.floor(Math.random() * 400)), 100, 100, img, playerRadius));
+      this.players[pName] = (new Player(pName, new Vector(Math.floor(Math.random() * 400), Math.floor(Math.random() * 400)), 100, 100, img, playerRadius, 100));
     }
   }
   setupObstaclePics(numObstacles: number) {
@@ -197,7 +198,7 @@ export class Game {
       }
       else {
         // p.runToPoint(p.target);
-        let payload = { cmd: "runToPoint", playerName: this.myName, gameId: this.id, params: { destination: p.target,position: p.position, health: p.hp} }
+        let payload = { cmd: "runToPoint", playerName: this.myName, gameId: this.id, params: { destination: p.target,position: p.position, health: p.hp, stamina: p.stamina} }
         let msgs = await fetchObject(endpoint, payload)
 
         this.processMsgs(msgs) //just to display them
@@ -239,7 +240,7 @@ export class Game {
     let position = new Vector(p.x, p.y)  // p is not a true vector at this point and we need to reinstance a true vector from x and y values
     let img = document.createElement("img")
     img.src = this.playerPics[Object.keys(this.players).length % this.playerPics.length]
-    this.players[playerName] = new Player(playerName, position, 100, 100, img, this.playerRadius)
+    this.players[playerName] = new Player(playerName, position, 100, 100, img, this.playerRadius,100)
   }
   async createAndJoinServerGame(playerName: string) {
     this.myName = playerName
@@ -283,6 +284,7 @@ export class Game {
           let player = this.players[m.playerName]
           player.position = Vector.trueVector(m.params.position) // recieve definitive stats from the original player 
           player.hp = m.params.health // recieve definitive stats from the original player 
+          player.stamina = m.params.stamina // recieve definitive stats from the original player 
           player.runToPoint(Vector.trueVector(m.params.destination))
         }
 
@@ -298,7 +300,7 @@ export class Game {
           let player = this.players[m.playerName]
           player.snowballs.push(new Snowball(Vector.trueVector(m.params.position), Vector.negate(m.params.velocity)))
           // player.shootSnowball(Vector.trueVector(m.params.target), this)
-          Sound.play('throw', 0.5)
+          Sound.play('throw', 0.01)
         }
       }
       if(msgs.length != check){

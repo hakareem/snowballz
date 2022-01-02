@@ -20,6 +20,7 @@ export class Player {
   img: HTMLImageElement;
   radius: number;
   killer: Player | null = null
+  stamina: number = 0;
 
   constructor(
     username: string,
@@ -27,7 +28,8 @@ export class Player {
     hp: number,
     hpMax: number,
     img: HTMLImageElement,
-    radius: number
+    radius: number,
+    stamina: number
   ) {
     this.username = username;
     this.position = position;
@@ -36,6 +38,7 @@ export class Player {
     this.hpMax = hpMax;
     this.img = img;
     this.radius = radius
+    this.stamina = stamina
   }
   drawHealth(game: Game) {
     game.ctx?.save();
@@ -50,6 +53,21 @@ export class Player {
     game.ctx?.fillRect(-30, 30, width, 10);
     game.ctx!.strokeStyle = "black";
     game.ctx?.strokeRect(-30, 30, 60, 10);
+    game.ctx?.restore();
+  }
+
+  drawStamina(game: Game){
+    game.ctx?.save();
+    game.ctx?.translate(this.position.x, this.position.y);
+    game.ctx?.scale(1, -2.2);
+    game.ctx!.fillStyle = "green";
+    let height = (60 * this.stamina) / 100
+      if (height < 0) {
+      height = 0;
+    }
+    game.ctx?.fillRect(-30, 20, height, 5);
+    game.ctx!.strokeStyle = "black";
+    game.ctx?.strokeRect(-30, 20, 60, 5);
     game.ctx?.restore();
   }
 
