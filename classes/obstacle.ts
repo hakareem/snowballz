@@ -28,7 +28,7 @@ export class Obstacle {
   draw(game: Game) {
     game.ctx?.save();
     game.ctx?.translate(this.position.x, this.position.y);
-    let r = this.radius * 1.4;
+    let r = this.radius;
     game.ctx?.drawImage(
       game.obstaclePics[this.layer][this.picIndex],
       -r,

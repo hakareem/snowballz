@@ -217,7 +217,7 @@ export class Game {
       x += offset
       }
       x = 0
-      y += offset
+      y += offset 
     }
   }
   setupRandomLayer(layer: string, picList: string, extension: string, numObstacles: number, collideable: boolean, minRadius: number, maxRadius: number){
