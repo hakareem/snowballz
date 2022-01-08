@@ -122,6 +122,7 @@ canvas {
   padding: 0.5em;
   top: 1em;
   left: 1em;
+  width:fit-content;
 }
 
 .hover {
