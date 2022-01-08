@@ -23,7 +23,7 @@ export class Game {
   private playerPics: string[] = [];
   obstaclePics: Record<string, HTMLImageElement[]> = {};
 
-  deathList:Player[]=[]
+  deathList: Player[] = []
 
 
   constructor(
@@ -34,8 +34,8 @@ export class Game {
     canvasWidth: number,
     canvasHeight: number,
     myName: string,
-    public fieldWidth:number,
-    public fieldHeight:number
+    public fieldWidth: number,
+    public fieldHeight: number
   ) {
     this.numPlayers = numPlayers;
     this.playerRadius = playerRadius;
@@ -90,48 +90,48 @@ export class Game {
   }
 
   cycle() {
-  
+
     this.ctx?.resetTransform();
     this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.trackActivePlayer()    //The camera will track me, then my killer, then his killer etc.
-    
+
     //Draw the layers in ORDER
     this.drawObstacles("snow");
     this.drawObstacles("puddles");
     this.drawObstacles("leaves");
     //Note trees are drawn after (over) players
-    this.drawAndProcessPlayers()    
+    this.drawAndProcessPlayers()
     this.drawObstacles("trees");
 
     requestAnimationFrame(() => this.cycle());
   }
 
-  trackActivePlayer(){
+  trackActivePlayer() {
 
-    let tries=0
+    let tries = 0
 
     if (this.anyPlayers()) {
       let me = this.players[this.myName];
-      let follow:Player=me
-      while (follow.killer){
-        console.log (`${follow.username}'s killer is ${follow.killer.username}`)        
-        follow=follow.killer      
+      let follow: Player = me
+      while (follow.killer) {
+        console.log(`${follow.username}'s killer is ${follow.killer.username}`)
+        follow = follow.killer
         console.log("Now following" + follow.username)
-        if (tries>100){console.log("Breaking");break} // Saftey net
-        tries ++
+        if (tries > 100) { console.log("Breaking"); break } // Saftey net
+        tries++
       }  //recurse down the 'chain' of killers
-      Camera.update(follow.position, this);      
-    }    
+      Camera.update(follow.position, this);
+    }
   }
 
-  drawAndProcessPlayers(){
+  drawAndProcessPlayers() {
     let alive = 0;
-    let lastStanding:string = ""
-    
+    let lastStanding: string = ""
+
     for (let pName in this.players) {
       const p = this.players[pName];
-      if(p.hp > 0){
+      if (p.hp > 0) {
         alive++
         lastStanding = pName
       }
@@ -144,14 +144,14 @@ export class Game {
       p.drawUsername(this);
       if (p.hp > 0) {
         //Is the player still alive?
-        p.pushOtherPlayersAway(this) 
+        p.pushOtherPlayersAway(this)
         p.movePlayerAroundObstacles(this);
-        p.fencePlayer(this) 
+        p.fencePlayer(this)
 
-      } 
+      }
       else if (p.hp <= 0) {
-        if(!this.deathList.includes(p)){
-            this.deathList.push(p)
+        if (!this.deathList.includes(p)) {
+          this.deathList.push(p)
         }
         p.runToPoint(new Vector(0, 0)); // If this player is dead, it will run home (position 0,0)
       }
@@ -171,7 +171,7 @@ export class Game {
         p.velocity.y = 0;
       }
     }
-    if(alive == 1 && Object.keys(this.players).length > 1){
+    if (alive == 1 && Object.keys(this.players).length > 1) {
       //display the deathList in reverse Order here:-
 
       alert(lastStanding + " wins")
@@ -234,31 +234,31 @@ export class Game {
       );
     }
   }
-  setupPics(layer:string, picList:string, extension: string){
+  setupPics(layer: string, picList: string, extension: string) {
     let pics = picList.split(",")
     this.obstaclePics[layer] = []
     for (let i of pics) {
-    this.obstaclePics[layer].push(this.img(layer + "/" + i + extension));
+      this.obstaclePics[layer].push(this.img(layer + "/" + i + extension));
     }
     return pics.length
   }
 
-  setupTiledLayer(layer:string, picList:string, tileSize:number,  extension: string){
-    this.setupPics(layer,picList,extension)
+  setupTiledLayer(layer: string, picList: string, tileSize: number, extension: string) {
+    this.setupPics(layer, picList, extension)
     let x = 0
-    let y =0
-    for (let i = 0; i< this.fieldWidth/tileSize; i++){
-      for(let j = 0; j < this.fieldHeight/tileSize; j++){
-      let o = new Obstacle(new Vector(x,y),tileSize / 2,"lightblue",0,false,layer,1);
-      this.obstacles.push(o);
-      x += tileSize
+    let y = 0
+    for (let i = 0; i < this.fieldWidth / tileSize; i++) {
+      for (let j = 0; j < this.fieldHeight / tileSize; j++) {
+        let o = new Obstacle(new Vector(x, y), tileSize / 2, "lightblue", 0, false, layer, 1);
+        this.obstacles.push(o);
+        x += tileSize
       }
       x = 0
-      y += tileSize 
+      y += tileSize
     }
   }
-  setupRandomLayer(layer: string, picList: string, extension: string, numObstacles: number, collideable: boolean, minRadius: number, maxRadius: number,drawScale:number){
-    let numPics = this.setupPics(layer,picList,extension)
+  setupRandomLayer(layer: string, picList: string, extension: string, numObstacles: number, collideable: boolean, minRadius: number, maxRadius: number, drawScale: number) {
+    let numPics = this.setupPics(layer, picList, extension)
     for (let i = 0; i < numObstacles; i++) {
       let p = new Vector(
         Math.floor(Math.random() * this.fieldWidth),
@@ -267,7 +267,7 @@ export class Game {
       let picIndex = Math.floor(
         Math.random() * numPics
       );
-      let o = new Obstacle(p,minRadius + Math.random() * (maxRadius- minRadius),"lightblue",picIndex,collideable,layer,drawScale);
+      let o = new Obstacle(p, minRadius + Math.random() * (maxRadius - minRadius), "lightblue", picIndex, collideable, layer, drawScale);
       this.obstacles.push(o);
     }
   }
@@ -275,9 +275,9 @@ export class Game {
   setupObstaclePics(numObstacles: number) {
     this.setupTiledLayer("snow", "snow", 512, ".jpg")
     //NB: Trees are drawn with a drawScale of 1.4 (ie.. substantially bigger than their 'collidable' circles)
-    this.setupRandomLayer("trees","trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18",".png", 50, true,150,25,1.4)
-    this.setupRandomLayer("puddles", "puddle2",".png", 30, false,50,150,1)
-    this.setupRandomLayer("leaves", "leaf",".png", 150, false,10,10,1)
+    this.setupRandomLayer("trees", "trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18", ".png", 50, true, 150, 25, 1.4)
+    this.setupRandomLayer("puddles", "puddle2", ".png", 30, false, 50, 150, 1)
+    this.setupRandomLayer("leaves", "leaf", ".png", 150, false, 10, 10, 1)
 
   }
 
@@ -353,7 +353,7 @@ export class Game {
     let img = document.createElement("img");
     img.src =
       this.playerPics[
-        Object.keys(this.players).length % this.playerPics.length
+      Object.keys(this.players).length % this.playerPics.length
       ];
     this.players[playerName] = new Player(
       playerName,

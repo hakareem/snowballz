@@ -1,132 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>snow</title>
-    <link rel="stylesheet" href="style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
 
-    <!-- <script src="classes.js" defer></script> -->
-    <!-- <script src="utility.js" defer></script> -->
-    <script type="module" src="classes/client.js" defer></script>
-    <script type="module" src="script.js" defer></script>
-    <script>
-      let playerName;
-      function checkPlayerName(){
-        playerName = document.getElementById("playerName").value;
-        if(playerName.trim() == ""){
-          alert("Please enter a player name")
-          return false
-        }
-        return true
-        
-      }
-      function joinGameHTML() {
-        
-          let gameToJoin = parseInt(document.getElementById("gameToJoin").value);
-          if (checkPlayerName()){
-            window.game.joinServerGame(gameToJoin, playerName);
-            document.getElementById("lobby").style.display = "none";
-            document.getElementById("static-pin").value = "http://snowballz.org?pin=" + gameToJoin;
-            startBackgroundMusic();
-          }          
-        
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>snow</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 
-      async function HTMLCreateAndJoinGame() {
-        if (checkPlayerName()){
-          await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
-          document.getElementById("gameToShare").value = window.game.id;
-          document.getElementById("lobby").style.display = "none";
-          document.getElementById("static-pin").value = "http://snowballz.org?pin=" + window.game.id;
-          startBackgroundMusic();
-          hideLobby()
-        }
+  <!-- <script src="classes.js" defer></script> -->
+  <!-- <script src="utility.js" defer></script> -->
+  <script type="module" src="classes/client.js" defer></script>
+  <script type="module" src="script.js" defer></script>
+  <script>
+    let playerName;
+    function checkPlayerName() {
+      playerName = document.getElementById("playerName").value;
+      if (playerName.trim() == "") {
+        alert("Please enter a player name")
+        return false
       }
+      return true
 
-      function hideLobby() {
+    }
+    function joinGameHTML() {
+
+      let gameToJoin = parseInt(document.getElementById("gameToJoin").value);
+      if (checkPlayerName()) {
+        window.game.joinServerGame(gameToJoin, playerName);
         document.getElementById("lobby").style.display = "none";
-      }
-      window.addEventListener("resize", () => window.game.resizeCanvas());
-
-      window.addEventListener("load",()=>{
-        if (window.location.href.includes("pin")){
-          document.getElementById("gameToJoin").value = window.location.href.split("?pin=")[1]
-          document.getElementById("gameToJoin").style.display="none"
-          document.getElementById("host").style.display="none"
-        }
-      })
-
-      // window.addEventListener('orientationchange', () => false);
-
-      setInterval(snow, 100);
-
-      function snow() {
-        let snowfall = document.createElement("i");
-        snowfall.classList.add("fas");
-        snowfall.classList.add("fa-snowflake");
-        snowfall.style.left = Math.random() * window.innerWidth + "px";
-        snowfall.style.top = Math.random() * window.innerHeight + "px";
-        snowfall.style.animationDuration = Math.random() * 3 + 2 + "s";
-        snowfall.style.opacity = Math.random();
-
-        document.body.appendChild(snowfall);
-
-        setTimeout(() => {
-          snowfall.remove();
-        }, 5000);
+        document.getElementById("static-pin").value = "http://snowballz.org?pin=" + gameToJoin;
+        startBackgroundMusic();
       }
 
-      let backgroundMusic = new Audio("music/winter_dance.mp3");
-      function startBackgroundMusic() {
-        backgroundMusic.play();
-        backgroundMusic.loop = true;
-        backgroundMusic.volume = 0.01;
+    }
+
+    async function HTMLCreateAndJoinGame() {
+      if (checkPlayerName()) {
+        await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
+        document.getElementById("gameToShare").value = window.game.id;
+        document.getElementById("lobby").style.display = "none";
+        document.getElementById("static-pin").value = "http://snowballz.org?pin=" + window.game.id;
+        startBackgroundMusic();
+        hideLobby()
       }
+    }
 
-    </script>
-  </head>
+    function hideLobby() {
+      document.getElementById("lobby").style.display = "none";
+    }
+    window.addEventListener("resize", () => window.game.resizeCanvas());
 
-  <body>
-    <div id="container">
-      <div id="lobby">
-        <div id="title" class="font">Snowballz!</div>
-        <input class="btn font" id="playerName" placeholder="Player name" autocomplete="off" />
+    window.addEventListener("load", () => {
+      if (window.location.href.includes("pin")) {
+        document.getElementById("gameToJoin").value = window.location.href.split("?pin=")[1]
+        document.getElementById("gameToJoin").style.display = "none"
+        document.getElementById("host").style.display = "none"
+      }
+    })
 
-        <section id="host">
-        <hr/>
+    // window.addEventListener('orientationchange', () => false);
 
-        <button
-          id="gameToShare"
-          class="button font hover"
-          id="btn"
-          onclick="HTMLCreateAndJoinGame()"
-        >
+    setInterval(snow, 100);
+
+    function snow() {
+      let snowfall = document.createElement("i");
+      snowfall.classList.add("fas");
+      snowfall.classList.add("fa-snowflake");
+      snowfall.style.left = Math.random() * window.innerWidth + "px";
+      snowfall.style.top = Math.random() * window.innerHeight + "px";
+      snowfall.style.animationDuration = Math.random() * 3 + 2 + "s";
+      snowfall.style.opacity = Math.random();
+
+      document.body.appendChild(snowfall);
+
+      setTimeout(() => {
+        snowfall.remove();
+      }, 5000);
+    }
+
+    let backgroundMusic = new Audio("music/winter_dance.mp3");
+    function startBackgroundMusic() {
+      backgroundMusic.play();
+      backgroundMusic.loop = true;
+      backgroundMusic.volume = 0.01;
+    }
+
+  </script>
+</head>
+
+<body>
+  <div id="container">
+    <div id="lobby">
+      <div id="title" class="font">Snowballz!</div>
+      <input class="btn font" id="playerName" placeholder="Player name" autocomplete="off" />
+
+      <section id="host">
+        <hr />
+
+        <button id="gameToShare" class="button font hover" id="btn" onclick="HTMLCreateAndJoinGame()">
           Host a Game
         </button>
         <hr />
-        </section>
+      </section>
 
-        <input class="btn font" id="gameToJoin" placeholder="Enter Game PIN" />
-        <button id="gameToJoin" class="btn font hover" onclick="joinGameHTML()">
-          Join the Game
-        </button>
+      <input class="btn font" id="gameToJoin" placeholder="Enter Game PIN" />
+      <button id="gameToJoin" class="btn font hover" onclick="joinGameHTML()">
+        Join the Game
+      </button>
 
-        <!-- close button is redundant AFAICS
+      <!-- close button is redundant AFAICS
         <div id="rxd">
           <button class="button font hover" id="btn" onclick="hideLobby()">
             Close
           </button>
         </div>
         -->
-      </div>
     </div>
-      <input id="static-pin">
+  </div>
+  <input id="static-pin">
 
-  </body>
+</body>
+
 </html>
