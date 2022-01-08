@@ -23,6 +23,9 @@ export class Game {
   private playerPics: string[] = [];
   obstaclePics: Record<string, HTMLImageElement[]> = {};
 
+  deathList:Player[]=[]
+
+
   constructor(
     numPlayers: number,
     playerRadius: number,
@@ -85,6 +88,7 @@ export class Game {
       p.moveSnowballs();
     }
   }
+
   cycle() {
   
     this.ctx?.resetTransform();
@@ -106,15 +110,15 @@ export class Game {
   trackActivePlayer(){
 
     let tries=0
-    
+
     if (this.anyPlayers()) {
       let me = this.players[this.myName];
       let follow:Player=me
       while (follow.killer){
-        console.log (`${follow}'s killer is ${follow.killer}`)        
+        console.log (`${follow.username}'s killer is ${follow.killer.username}`)        
         follow=follow.killer      
-        console.log("Now following" + follow)
-        if (tries>100){break} // Saftey net
+        console.log("Now following" + follow.username)
+        if (tries>100){console.log("Breaking");break} // Saftey net
         tries ++
       }  //recurse down the 'chain' of killers
       Camera.update(follow.position, this);      
@@ -144,7 +148,11 @@ export class Game {
         p.movePlayerAroundObstacles(this);
         p.fencePlayer(this) 
 
-      } else if (p.hp <= 0) {
+      } 
+      else if (p.hp <= 0) {
+        if(!this.deathList.includes(p)){
+            this.deathList.push(p)
+        }
         p.runToPoint(new Vector(0, 0)); // If this player is dead, it will run home (position 0,0)
       }
       if (
@@ -164,6 +172,8 @@ export class Game {
       }
     }
     if(alive == 1 && Object.keys(this.players).length > 1){
+      //display the deathList in reverse Order here:-
+
       alert(lastStanding + " wins")
     }
   }
