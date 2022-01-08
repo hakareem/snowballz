@@ -104,10 +104,19 @@ export class Game {
   }
 
   trackActivePlayer(){
+
+    let tries=0
+    
     if (this.anyPlayers()) {
       let me = this.players[this.myName];
       let follow:Player=me
-      while (follow.killer){follow=follow.killer}  //recurse down the 'chain' of killers
+      while (follow.killer){
+        console.log (`${follow}'s killer is ${follow.killer}`)        
+        follow=follow.killer      
+        console.log("Now following" + follow)
+        if (tries>100){break} // Saftey net
+        tries ++
+      }  //recurse down the 'chain' of killers
       Camera.update(follow.position, this);      
     }    
   }
