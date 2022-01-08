@@ -410,6 +410,7 @@ export class Game {
         // console.log(msgs[i].sqn)  //You will want to actually *do things* here .. like run players to points, and launch snowballs
         let m = msgs[i];
         if (m.cmd == "playerJoined") {
+          this.logEvent(m.playerName + " joined the game")
           this.addPlayer(m.playerName, m.params.position);
         } else if (m.cmd == "runToPoint") {
           let player = this.players[m.playerName];
@@ -447,7 +448,7 @@ export class Game {
         }
       }
       if (msgs.length != check) {
-        alert("its all wrong oh noo");
+        alert("its all wrong oh noo")
       }
     }
   }
@@ -470,5 +471,11 @@ export class Game {
   resizeCanvas() {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
+  }
+  logEvent(log: string) {
+    let div = document.getElementById("logEvent")
+    let p = document.createElement("p")
+    div?.appendChild(p)
+    p.innerText = log
   }
 }
