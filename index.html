@@ -16,8 +16,9 @@
     <script type="module" src="classes/client.js" defer></script>
     <script type="module" src="script.js" defer></script>
     <script>
+      let playerName;
       function checkPlayerName(){
-        let playerName = document.getElementById("playerName").value;
+        playerName = document.getElementById("playerName").value;
         if(playerName.trim() == ""){
           alert("Please enter a player name")
           return false
