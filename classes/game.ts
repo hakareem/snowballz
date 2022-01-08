@@ -28,9 +28,11 @@ export class Game {
     playerRadius: number,
     snowballRadius: number,
     numObstacles: number,
-    width: number,
-    height: number,
-    myName: string
+    canvasWidth: number,
+    canvasHeight: number,
+    myName: string,
+    public fieldWidth:number,
+    public fieldHeight:number
   ) {
     this.numPlayers = numPlayers;
     this.playerRadius = playerRadius;
@@ -42,8 +44,8 @@ export class Game {
 
     this.ctx = this.canvas.getContext("2d")!;
     document.body.appendChild(this.canvas);
-    this.canvas.width = width;
-    this.canvas.height = height;
+    this.canvas.width = canvasWidth;
+    this.canvas.height = canvasHeight;
     this.pCanvas = document.createElement("canvas");
     this.pCanvas.width = playerRadius * 2;
     this.pCanvas.height = playerRadius * 2;
@@ -84,22 +86,36 @@ export class Game {
     }
   }
   cycle() {
+  
     this.ctx?.resetTransform();
     this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    if (this.anyPlayers()) {
-      let me = this.players[this.myName];
-      if (me.killer) {
-        Camera.update(me.killer.position, this);
-      } else {
-        Camera.update(me.position, this);
-      }
-    }
+    this.trackActivePlayer()    //The camera will track me, then my killer, then his killer etc.
+    
+    //Draw the layers in ORDER
     this.drawObstacles("snow");
     this.drawObstacles("puddles");
+    this.drawObstacles("leaves");
+    //Note trees are drawn after (over) players
+    this.drawAndProcessPlayers()    
+    this.drawObstacles("trees");
 
+    requestAnimationFrame(() => this.cycle());
+  }
+
+  trackActivePlayer(){
+    if (this.anyPlayers()) {
+      let me = this.players[this.myName];
+      let follow:Player=me
+      while (follow.killer){follow=follow.killer}  //recurse down the 'chain' of killers
+      Camera.update(follow.position, this);      
+    }    
+  }
+
+  drawAndProcessPlayers(){
     let alive = 0;
     let lastStanding:string = ""
+    
     for (let pName in this.players) {
       const p = this.players[pName];
       if(p.hp > 0){
@@ -115,8 +131,10 @@ export class Game {
       p.drawUsername(this);
       if (p.hp > 0) {
         //Is the player still alive?
-        while (p.pushOtherPlayersAway(this)) {}
+        p.pushOtherPlayersAway(this) 
         p.movePlayerAroundObstacles(this);
+        p.fencePlayer(this) 
+
       } else if (p.hp <= 0) {
         p.runToPoint(new Vector(0, 0)); // If this player is dead, it will run home (position 0,0)
       }
@@ -139,9 +157,9 @@ export class Game {
     if(alive == 1 && Object.keys(this.players).length > 1){
       alert(lastStanding + " wins")
     }
-    this.drawObstacles("trees");
-    requestAnimationFrame(() => this.cycle());
   }
+
+
   drawObstacles(layer: string) {
     for (let i = 0; i < this.obstacles.length; i++) {
       if (this.obstacles[i].layer == layer) {
@@ -206,38 +224,41 @@ export class Game {
     return pics.length
   }
 
-  setupTiledLayer(layer:string, picList:string, offset:number, reps:number, extension: string){
+  setupTiledLayer(layer:string, picList:string, tileSize:number,  extension: string){
     this.setupPics(layer,picList,extension)
     let x = 0
     let y =0
-    for (let i = 0; i< reps; i++){
-      for(let j = 0; j < reps; j++){
-      let o = new Obstacle(new Vector(x,y),offset / 2,"lightblue",0,false,layer);
+    for (let i = 0; i< this.fieldWidth/tileSize; i++){
+      for(let j = 0; j < this.fieldHeight/tileSize; j++){
+      let o = new Obstacle(new Vector(x,y),tileSize / 2,"lightblue",0,false,layer,1);
       this.obstacles.push(o);
-      x += offset
+      x += tileSize
       }
       x = 0
-      y += offset 
+      y += tileSize 
     }
   }
-  setupRandomLayer(layer: string, picList: string, extension: string, numObstacles: number, collideable: boolean, minRadius: number, maxRadius: number){
+  setupRandomLayer(layer: string, picList: string, extension: string, numObstacles: number, collideable: boolean, minRadius: number, maxRadius: number,drawScale:number){
     let numPics = this.setupPics(layer,picList,extension)
     for (let i = 0; i < numObstacles; i++) {
       let p = new Vector(
-        Math.floor(Math.random() * 5000),
-        Math.floor(Math.random() * 5000)
+        Math.floor(Math.random() * this.fieldWidth),
+        Math.floor(Math.random() * this.fieldHeight)
       );
       let picIndex = Math.floor(
         Math.random() * numPics
       );
-      let o = new Obstacle(p,minRadius + Math.random() * (maxRadius- minRadius),"lightblue",picIndex,collideable,layer);
+      let o = new Obstacle(p,minRadius + Math.random() * (maxRadius- minRadius),"lightblue",picIndex,collideable,layer,drawScale);
       this.obstacles.push(o);
     }
   }
+
   setupObstaclePics(numObstacles: number) {
-    this.setupTiledLayer("snow", "snow", 512, 10, ".jpg")
-    this.setupRandomLayer("trees","trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18",".png", 100, true,50,100)
-    this.setupRandomLayer("puddles","puddle1,puddle2",".png", 100, false,20,30)
+    this.setupTiledLayer("snow", "snow", 512, ".jpg")
+    //NB: Trees are drawn with a drawScale of 1.4 (ie.. substantially bigger than their 'collidable' circles)
+    this.setupRandomLayer("trees","trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18",".png", 50, true,150,25,1.4)
+    this.setupRandomLayer("puddles", "puddle2",".png", 30, false,50,150,1)
+    this.setupRandomLayer("leaves", "leaf",".png", 150, false,10,10,1)
 
   }
 
@@ -388,7 +409,8 @@ export class Game {
                 o.color,
                 o.picIndex,
                 o.collideable,
-                o.layer
+                o.layer,
+                o.drawScale
               )
             );
           }

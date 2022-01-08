@@ -16,35 +16,50 @@
     <script type="module" src="classes/client.js" defer></script>
     <script type="module" src="script.js" defer></script>
     <script>
-      function joinGameHTML() {
+      function checkPlayerName(){
         let playerName = document.getElementById("playerName").value;
-        if(playerName != ""){
-
-          let gameToJoin = parseInt(document.getElementById("gameToJoin").value);
-
-          window.game.joinServerGame(gameToJoin, playerName);
-          document.getElementById("lobby").style.display = "none";
-          document.getElementById("static-pin").innerHTML =
-            "Game PIN: " + gameToJoin;
-          startBackgroundMusic();
-        } else {
-          alert("please enter a player name")
+        if(playerName.trim() == ""){
+          alert("Please enter a player name")
+          return false
         }
+        return true
+        
+      }
+      function joinGameHTML() {
+        
+          let gameToJoin = parseInt(document.getElementById("gameToJoin").value);
+          if (checkPlayerName()){
+            window.game.joinServerGame(gameToJoin, playerName);
+            document.getElementById("lobby").style.display = "none";
+            document.getElementById("static-pin").value = "http://snowballz.org?pin=" + gameToJoin;
+            startBackgroundMusic();
+          }          
+        
       }
 
       async function HTMLCreateAndJoinGame() {
-        await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
-        document.getElementById("gameToShare").value = window.game.id;
-        document.getElementById("lobby").style.display = "none";
-        document.getElementById("static-pin").innerHTML =
-          "Game PIN: " + window.game.id;
-        startBackgroundMusic();
+        if (checkPlayerName()){
+          await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
+          document.getElementById("gameToShare").value = window.game.id;
+          document.getElementById("lobby").style.display = "none";
+          document.getElementById("static-pin").value = "http://snowballz.org?pin=" + window.game.id;
+          startBackgroundMusic();
+          hideLobby()
+        }
       }
 
       function hideLobby() {
         document.getElementById("lobby").style.display = "none";
       }
       window.addEventListener("resize", () => window.game.resizeCanvas());
+
+      window.addEventListener("load",()=>{
+        if (window.location.href.includes("pin")){
+          document.getElementById("gameToJoin").value = window.location.href.split("?pin=")[1]
+          document.getElementById("gameToJoin").style.display="none"
+          document.getElementById("host").style.display="none"
+        }
+      })
 
       // window.addEventListener('orientationchange', () => false);
 
@@ -80,8 +95,9 @@
     <div id="container">
       <div id="lobby">
         <div id="title" class="font">Snowballz!</div>
-        <input class="btn font" id="playerName" placeholder="Username" />
+        <input class="btn font" id="playerName" placeholder="Player name" />
 
+        <section id="host">
         <hr />
 
         <button
@@ -93,21 +109,24 @@
           Host a Game
         </button>
         <hr />
+        </section>
 
         <input class="btn font" id="gameToJoin" placeholder="Enter Game PIN" />
         <button id="gameToJoin" class="btn font hover" onclick="joinGameHTML()">
-          Join a Game
+          Join the Game
         </button>
 
+        <!-- close button is redundant AFAICS
         <div id="rxd">
           <button class="button font hover" id="btn" onclick="hideLobby()">
             Close
           </button>
         </div>
+        -->
       </div>
     </div>
     <div>
-      <p id="static-pin">Game PIN:</p>
+      <input id="static-pin">share this link</p>
     </div>
     <div class="ground"></div>
   </body>

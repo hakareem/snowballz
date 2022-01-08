@@ -91,7 +91,16 @@ export class Player {
     game.pctx?.restore();
     game.ctx!.translate(this.position.x, this.position.y);
     game.ctx?.drawImage(game.pCanvas, -r, -r, r * 2, r * 2);
+    
+    //Debugging - comment out (don't remove)
+    game.ctx.beginPath()
+    game.ctx.strokeStyle="blue"
+    game.ctx.arc(0,0,this.radius,0,6.28)
+    game.ctx.stroke()
+
     game.ctx?.restore();
+
+    
   }
   move() {
     this.position = this.position.add(this.velocity.multiply(this.stamina / 70 + 0.1) );
@@ -175,7 +184,7 @@ export class Player {
         if (dbt < 0.01) {
           otherPlayer.position.x += 2;
         }
-        let overlap = 60 - dbt;
+        let overlap = (this.radius + otherPlayer.radius) - dbt;
         if (overlap > 0) {
           isOverlap = true;
           let vectorBetween = this.position.subtract(otherPlayer.position);
@@ -193,7 +202,7 @@ export class Player {
       const obstacle = game.obstacles[i];
       if (obstacle.collideable) {
         let dbt = Vector.distanceBetween(this.position, obstacle.position);
-        let overlap = obstacle.radius * 1.7 - dbt;
+        let overlap =  (obstacle.radius+this.radius)-dbt
         if (overlap > 0) {
           let vectorBetween = this.position.subtract(obstacle.position);
           let directionBetween = vectorBetween.normalise();
@@ -202,6 +211,14 @@ export class Player {
         }
       }
     }
+  }
+
+  fencePlayer(game:Game){
+    if (this.position.x<0){this.position.x=0}
+    if (this.position.y<0){this.position.y=0}
+    if (this.position.x>game.fieldWidth){this.position.x=game.fieldWidth}
+    if (this.position.y>game.fieldHeight){this.position.y=game.fieldHeight}
+   
   }
   checkSnowballs(game: Game) {
     for (let s = 0; s < this.snowballs.length; s++) {

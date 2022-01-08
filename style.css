@@ -82,6 +82,7 @@ body {
   cursor: pointer;
   transition: transform 0.2s;
   border-radius: 3vmin;
+  
 }
 .button:hover {
   transform: translateX(-10vmin) rotate(-2deg);
@@ -99,6 +100,7 @@ body {
   cursor: pointer;
   transition: transform 0.2s;
   border-radius: 3vmin;
+  text-align:center
 }
 
 canvas {
