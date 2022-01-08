@@ -104,8 +104,10 @@ export class Player {
   }
   move() {
     this.position = this.position.add(this.velocity.multiply(this.stamina / 70 + 0.1) );
+    
     this.stamina -= this.velocity.length / 26  // burn stamina
     this.stamina += 0.15 // regen stamina
+    
     if(this.stamina <= 0 ){
       this.stamina = 0
     }else if(this.stamina > 100){
