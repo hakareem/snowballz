@@ -44,12 +44,12 @@ export class Game {
     this.canvas.addEventListener("mousedown", (e) => this.mouseDown(e));
     this.canvas.addEventListener("mouseup", (e) => this.mouseUp(e));
     this.canvas.addEventListener("mousemove", (e) => this.mouseMovement(e));
-    Sound.setup(['impact','playerGasp','throw'])
+    Sound.setup(['impact', 'playerGasp', 'throw'])
     requestAnimationFrame(() => this.cycle());
-    setInterval(()=>{this.moveAll()},1/120 * 1000) //do our movement at 60fps (regardless of the device frame-rate)
+    setInterval(() => { this.moveAll() }, 1 / 120 * 1000) //do our movement at 60fps (regardless of the device frame-rate)
   }
 
-  moveAll(){
+  moveAll() {
     //for more consistent gameplay accross deveices that might be running at very different frame rates,
     //we move players and snowballs on a setInterval - rather than in RequestAnimationFrame
     for (let pName in this.players) {
@@ -182,12 +182,12 @@ export class Game {
       // startBackgroundMusic();
       if (Vector.distanceBetween(p.position, p.target) < 40) {
         this.isAiming = true;
-        this.mouseBtnDown = true; 
+        this.mouseBtnDown = true;
 
       }
       else {
         // p.runToPoint(p.target);
-        let payload = { cmd: "runToPoint", playerName: this.myName, gameId: this.id, params: { destination: p.target,position: p.position, health: p.hp} }
+        let payload = { cmd: "runToPoint", playerName: this.myName, gameId: this.id, params: { destination: p.target, position: p.position, health: p.hp } }
         let msgs = await fetchObject(endpoint, payload)
 
         this.processMsgs(msgs) //just to display them
@@ -274,6 +274,7 @@ export class Game {
         let m = msgs[i]
         if (m.cmd == "playerJoined") {
           this.addPlayer(m.playerName, m.params.position)
+          this.logEvent(m.playerName + "joined the game")
         }
         else if (m.cmd == "runToPoint") {
           let player = this.players[m.playerName]
@@ -297,7 +298,7 @@ export class Game {
           Sound.play('throw', 0.5)
         }
       }
-      if(msgs.length != check){
+      if (msgs.length != check) {
         alert("its all wrong oh noo")
       }
 
@@ -325,10 +326,10 @@ export class Game {
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
   }
-
-
-
-  logEvent(txt:string ){ //create a para element and append it to the event log div and set its inner text to txt  
-
+  logEvent(log: string) {
+    let div = document.getElementById("logEvent")
+    let p = document.createElement("p")
+    div?.appendChild(p)
+    p.innerText = log
   }
 }
