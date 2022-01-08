@@ -93,10 +93,10 @@ export class Player {
     game.ctx?.drawImage(game.pCanvas, -r, -r, r * 2, r * 2);
     
     //Debugging - comment out (don't remove)
-    game.ctx.beginPath()
-    game.ctx.strokeStyle="blue"
-    game.ctx.arc(0,0,this.radius,0,6.28)
-    game.ctx.stroke()
+    // game.ctx.beginPath()
+    // game.ctx.strokeStyle="blue"
+    // game.ctx.arc(0,0,this.radius,0,6.28)
+    // game.ctx.stroke()
 
     game.ctx?.restore();
 
@@ -208,9 +208,7 @@ export class Player {
         if (overlap > 0) {
           let vectorBetween = this.position.subtract(obstacle.position);
           let directionBetween = vectorBetween.normalise();
-          this.position = this.position.add(directionBetween.multiply(overlap));
-          this.velocity = new Vector(0,0)
-
+          this.position = this.position.add(directionBetween.multiply(overlap));          
           this.runToPoint(this.destination);
         }
       }

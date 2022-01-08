@@ -173,7 +173,7 @@ export class Game {
     }
     if(alive == 1 && Object.keys(this.players).length > 1){
       //display the deathList in reverse Order here:-
-
+      
       alert(lastStanding + " wins")
     }
   }

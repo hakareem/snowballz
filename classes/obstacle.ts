@@ -21,12 +21,12 @@ export class Obstacle {
     );
 
     //for debugging (Comment out - DON'T remore)
-    if (this.collideable){
-      game.ctx.beginPath()
-      game.ctx.strokeStyle="blue"
-      game.ctx.arc(0,0,this.radius,0,6.28)
-      game.ctx.stroke()
-    }
+    // if (this.collideable){
+    //   game.ctx.beginPath()
+    //   game.ctx.strokeStyle="blue"
+    //   game.ctx.arc(0,0,this.radius,0,6.28)
+    //   game.ctx.stroke()
+    // }
 
     game.ctx?.restore();
   }
