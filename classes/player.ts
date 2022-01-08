@@ -207,6 +207,8 @@ export class Player {
           let vectorBetween = this.position.subtract(obstacle.position);
           let directionBetween = vectorBetween.normalise();
           this.position = this.position.add(directionBetween.multiply(overlap));
+          this.velocity = new Vector(0,0)
+
           this.runToPoint(this.destination);
         }
       }
