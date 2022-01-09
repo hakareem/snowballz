@@ -173,6 +173,14 @@ export class Game {
     }
     if(alive == 1 && Object.keys(this.players).length > 1){
       //display the deathList in reverse Order here:-
+      let deathDiv = document.createElement("div")
+      this.canvas.appendChild(deathDiv)
+      deathDiv.classList.add("death-div")
+
+      deathDiv.appendChild(this.deathList)
+
+      
+
 
       alert(lastStanding + " wins")
     }
