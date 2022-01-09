@@ -177,7 +177,7 @@ export class Game {
       this.canvas.appendChild(deathDiv)
       deathDiv.classList.add("death-div")
 
-      deathDiv.appendChild(this.deathList)
+      // deathDiv.appendChild(this.deathList)
 
       
 
