@@ -102,6 +102,7 @@ export class Game {
     this.drawObstacles("snow");
     this.drawObstacles("puddles");
     this.drawObstacles("leaves");
+    this.drawFence()
     //Note trees are drawn after (over) players
     this.drawAndProcessPlayers()    
     this.drawObstacles("trees");
@@ -215,6 +216,24 @@ export class Game {
   }
 
 
+  drawFence(){
+    
+    this.ctx.save()
+
+
+    this.ctx.translate(0,0)
+    this.ctx.strokeStyle="rgba(0,0,255,0.4)" //"blue"
+    this.ctx.lineWidth=15
+    this.ctx.setLineDash([120,40]) 
+    this.ctx.beginPath()   
+    this.ctx.rect(0,0,this.fieldWidth,this.fieldHeight)
+    this.ctx.stroke()
+    this.ctx.setLineDash([100,20])
+
+    this.ctx.restore()
+    
+  }
+
   drawObstacles(layer: string) {
     for (let i = 0; i < this.obstacles.length; i++) {
       if (this.obstacles[i].layer == layer) {
@@ -281,15 +300,15 @@ export class Game {
 
   setupTiledLayer(layer:string, picList:string, tileSize:number,  extension: string){
     this.setupPics(layer,picList,extension)
-    let x = 0
-    let y =0
-    for (let i = 0; i< this.fieldWidth/tileSize; i++){
-      for(let j = 0; j < this.fieldHeight/tileSize; j++){
-      let o = new Obstacle(new Vector(x,y),tileSize / 2,"lightblue",0,false,layer,1);
-      this.obstacles.push(o);
-      x += tileSize
+    let x = -tileSize * 2
+    let y = -tileSize * 2
+    for (let i = 0; i< this.fieldWidth/tileSize +4; i++){
+      for(let j = 0; j < this.fieldHeight/tileSize+4; j++){
+        let o = new Obstacle(new Vector(x,y),tileSize / 2,"lightblue",0,false,layer,1);
+        this.obstacles.push(o);
+        x += tileSize
       }
-      x = 0
+      x = -tileSize *2
       y += tileSize 
     }
   }
@@ -311,7 +330,8 @@ export class Game {
   setupObstaclePics(numObstacles: number) {
     this.setupTiledLayer("snow", "snow", 512, ".jpg")
     //NB: Trees are drawn with a drawScale of 1.4 (ie.. substantially bigger than their 'collidable' circles)
-    this.setupRandomLayer("trees","trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18",".png", 50, true,150,25,1.4)
+    //this.setupRandomLayer("trees","trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18",".png", 50, true,150,25,1.4)
+    this.setupRandomLayer("trees","trees1,trees5,trees9,trees11,trees14",".png", 50, true,150,25,1.4) //nick removed some of the more 'exotic' trees
     this.setupRandomLayer("puddles", "puddle2",".png", 30, false,50,150,1)
     this.setupRandomLayer("leaves", "leaf",".png", 150, false,10,10,1)
 

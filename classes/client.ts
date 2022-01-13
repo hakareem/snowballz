@@ -4,7 +4,7 @@ import { Vector } from './vector.js'
 
 let gameId: number = 0
 let playerName: string = ""
-export const endpoint = "http://quicksnooker.com:5050"
+export const endpoint = "http://snowballz.org:5050"
 //change to the correct deployed port
 
 // export async function createGame(){

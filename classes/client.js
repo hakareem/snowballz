@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 let gameId = 0;
 let playerName = "";
-export const endpoint = "http://quicksnooker.com:5050";
+export const endpoint = "http://snowballz.org:5050";
 //change to the correct deployed port
 // export async function createGame(){
 //     playerName=(<HTMLInputElement>document.getElementById("playerName")).value
