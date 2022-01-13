@@ -47,7 +47,7 @@ export class Snowball {
             p.killer = owner;
           }
 
-          Sound.play("playerGasp", 0.01);
+          Sound.play("playerGasp", 0.2);
         }
       }
     }
@@ -62,7 +62,7 @@ export class Snowball {
         );
         if (snowballToObstacle < obstacle.radius + game.snowballRadius) {
           this.active = false;
-          Sound.play("impact", 0.01);
+          Sound.play("impact", 0.1);
         }
       }
     }

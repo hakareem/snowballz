@@ -506,7 +506,7 @@ export class Game {
             )
           );
           // player.shootSnowball(Vector.trueVector(m.params.target), this)
-          Sound.play("throw", 0.01);
+          Sound.play("throw", 0.1);
         }
       }
       if (msgs.length != check) {
