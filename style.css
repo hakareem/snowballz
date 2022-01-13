@@ -141,9 +141,34 @@ canvas {
   width: 100vw;
 }
 
-.death-list {
-  border: 1px solid black;
-  width: 100px;
-  height: 100px;
+.death-div-class {
+  position:absolute;
+  top: 5vh;
+  right: 25vw;
+  border: 2px solid black;
+  background: linear-gradient(-45deg, #e73c7e, #23a6d5, #23d5ab);
+  animation: gradient 15s ease infinite;
+  width: 50vw;
+  height: 90vh;
+  display:none;
+  z-index: 1;
+  text-align: center;
+}
 
+h1 {
+  font-size: 5em;
+}
+
+
+#winner-title {
+  font-size:4em;
+  font-weight: bold;
+}
+
+#line {
+  stroke-width: 5px;
+}
+
+#dead-players {
+  font-size: 3em;
 }
