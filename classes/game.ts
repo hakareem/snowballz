@@ -148,8 +148,7 @@ export class Game {
         //Is the player still alive?
         p.pushOtherPlayersAway(this) 
         p.movePlayerAroundObstacles(this);
-        p.fencePlayer(this) 
-
+        p.fencePlayer(this)
       } 
       else if (p.hp <= 0) {
         if(!this.deathList.includes(p)){
@@ -160,24 +159,59 @@ export class Game {
       if (
         Vector.distanceBetween(p.position, p.destination) < 50 &&
         this.mouseBtnDown == true
-      ) {
-        p.velocity.x = 0;
+        )
+      { p.velocity.x = 0;
         p.velocity.y = 0;
         p.angle = -Math.atan2(
           p.position.x - p.target.x,
           p.position.y - p.target.y
-        );
+          );
         p.drawAimLine(this);
-      } else if (Vector.distanceBetween(p.position, p.destination) < 20) {
+      }
+      else if (Vector.distanceBetween(p.position, p.destination) < 20) {
         p.velocity.x = 0;
         p.velocity.y = 0;
       }
     }
     if(alive == 1 && Object.keys(this.players).length > 1){
       //display the deathList in reverse Order here:-
+      let deathDiv = document.createElement("div")
+      document.body.appendChild(deathDiv)
+      deathDiv.classList.add("death-div-class")
+      deathDiv.id = "death-div-id"
 
-      alert(lastStanding + " wins")
+      document.getElementById("title")
+      let h1 = document.createElement("h1")
+      h1.textContent = "Game Leaderboard"
+      deathDiv.appendChild(h1)
+      
+      let line = document.createElement("hr")
+      deathDiv.appendChild(line)
+      line.id = "line"
+      
+      
+      let winnerTitle = document.createElement("h2")
+      winnerTitle.textContent = `${lastStanding} is the winner!`
+      deathDiv.appendChild(winnerTitle)
+      winnerTitle.id = "winner-title"
+
+
+      for(let i = this.deathList.length - 1; i>=0;i--){
+        let deadPlayer = document.createElement("h3")
+        deadPlayer.innerHTML = this.deathList[i].username
+        deadPlayer.id = "dead-players"
+        deathDiv.appendChild(deadPlayer)
+      }
+
+      deathDiv.style.visibility = "visible"
+      // console.log(lastStanding + " wins")
+      console.log(deathDiv)
+    this.displayLeaderBoard()
     }
+  }
+
+  displayLeaderBoard(){
+    document.getElementById("death-div-id")!.style.display = "block"
   }
 
 
