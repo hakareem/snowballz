@@ -3,7 +3,7 @@ import { Obstacle } from "./obstacle.js";
 import { Camera } from "./camera.js";
 import { Vector } from "./vector.js";
 import { Snowball } from "./snowball.js";
-import { fetchObject, endpoint } from "./client.js";
+import { fetchObject } from "./client.js";
 import { Sound } from "./sounds.js";
 
 export class Game {
@@ -26,7 +26,7 @@ export class Game {
   deathList:Player[]=[]
   lastThrow:number=0  //the milliseconds since time began
 
-
+  endpoint = "https://snowballz.org:5050" //this is the *only* place this should appear
 
   constructor(
     numPlayers: number,
@@ -360,7 +360,7 @@ export class Game {
             stamina: p.stamina,
           },
         };
-        let msgs = await fetchObject(endpoint, payload);
+        let msgs = await fetchObject(this.endpoint, payload);
 
         this.processMsgs(msgs); //just to display them
       }
@@ -386,7 +386,7 @@ export class Game {
             gameId: this.id,
             params: { position: p.position, velocity: v },
           };
-          let msgs = await fetchObject(endpoint, payload);
+          let msgs = await fetchObject(this.endpoint, payload);
 
           this.processMsgs(msgs); //just to display them
           // p.snowballs.push(new Snowball(p.position,p.target.subtract(p.position).normalise().multiply(5)));
@@ -435,7 +435,7 @@ export class Game {
       playerName: this.myName,
       params: { trees: this.obstacles },
     };
-    let gameInfo = await fetchObject(endpoint, cmd);
+    let gameInfo = await fetchObject(this.endpoint, cmd);
     this.id = gameInfo.gameId; //we now know which game WE have joined (the creator)
     await this.joinServerGame(this.id, playerName);
     // return this.id
@@ -451,7 +451,7 @@ export class Game {
       gameId: gameId,
       params: { position: position },
     }; //will return (assign to you)a player ID -
-    let msgs = await fetchObject(endpoint, payload);
+    let msgs = await fetchObject(this.endpoint, payload);
 
     this.processMsgs(msgs); //just to display them
 
@@ -518,7 +518,7 @@ export class Game {
     // console.log("polling ");
     //periodically called, to fetch pending messages from the server
     let cmd = { cmd: "poll", playerName: this.myName, gameId: this.id }; //will return (assign to you)a player ID -
-    let msgs = await fetchObject(endpoint, cmd); //result is an object containing an array of messages
+    let msgs = await fetchObject(this.endpoint, cmd); //result is an object containing an array of messages
     this.processMsgs(msgs);
   }
   anyPlayers(): boolean {

@@ -16,6 +16,7 @@
     <script type="module" src="classes/client.js" defer></script>
     <script type="module" src="script.js" defer></script>
     <script>
+      
       let playerName;
       function checkPlayerName(){
         playerName = document.getElementById("playerName").value;
@@ -32,7 +33,7 @@
           if (checkPlayerName()){
             window.game.joinServerGame(gameToJoin, playerName);
             document.getElementById("lobby").style.display = "none";
-            document.getElementById("static-pin").value = "http://snowballz.org?pin=" + gameToJoin;
+            document.getElementById("static-pin").value = window.game.endpoint +"?pin=" + gameToJoin;
             startBackgroundMusic();
           }          
         
@@ -43,7 +44,8 @@
           await window.game.createAndJoinServerGame(document.getElementById("playerName").value);
           document.getElementById("gameToShare").value = window.game.id;
           document.getElementById("lobby").style.display = "none";
-          document.getElementById("static-pin").value = "http://snowballz.org?pin=" + window.game.id;
+          document.getElementById("static-pin").classList.remove("hidden");
+          document.getElementById("static-pin").value = window.game.endpoint +"?pin=" + window.game.id;
           startBackgroundMusic();
           hideLobby()
         }
@@ -96,7 +98,7 @@
     <div id="container">
       <div id="lobby">
         <div id="title" class="font">❄️Snowballz❄️</div>
-        <input class="btn font" id="playerName" placeholder="Player name" autocomplete="off" />
+        <input class="btn font" id="playerName" placeholder="Enter a player name" autocomplete="off" />
 
         <section id="host">
         <hr/>
@@ -126,7 +128,7 @@
         -->
       </div>
     </div>
-      <input id="static-pin">
+      <input id="static-pin" class="hidden">
 
 
     <!-- <div id="deathList" -->
