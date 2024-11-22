@@ -10,6 +10,20 @@ export class Vector {
   add(v: Vector): Vector {
     return new Vector(this.x + v.x, this.y + v.y);
   }
+
+  distanceFrom(b:Vector):number{
+    return Vector.hypo(this.x-b.x,this.y-b.y)
+  }
+
+  subIn(v: Vector): void {
+    this.x -= v.x;
+    this.y -= v.y;
+  }
+  addIn(v: Vector): void {
+    this.x += v.x;
+    this.y += v.y;
+  }
+
   multiply(m: number): Vector {
     return new Vector(this.x * m, this.y * m);
   }

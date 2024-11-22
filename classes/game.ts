@@ -7,11 +7,13 @@ import { fetchObject } from "./client.js";
 import { Sound } from "./sounds.js";
 
 export class Game {
+
   id: number = 0;
   players: Record<string, Player> = {};
+  //player:Player  //player is a dozer - is an obstacle - Fuel is heath, stamina is engine temperature - weight adds traction - but costs fuel, damage
   obstacles: Obstacle[] = [];
-  numPlayers: number;
-  playerRadius: number;
+  //numPlayers: number;
+  //playerRadius: number;
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   pCanvas: HTMLCanvasElement;
@@ -20,13 +22,14 @@ export class Game {
   isAiming: boolean = false;
   snowballRadius: number;
   myName: string;
-  private playerPics: string[] = [];
-  obstaclePics: Record<string, HTMLImageElement[]> = {};
+  //private playerPics: string[] = [];
+  obstaclePics: Record<string, HTMLImageElement[]> = {}; //obstacle pics, by layer (each layer has many pics)
 
   deathList:Player[]=[]
   lastThrow:number=0  //the milliseconds since time began
 
-  endpoint = "https://snowballz.org" //this is the *only* place this should appear
+  //endpoint = "https://snowballz.org" //this is the *only* place this should appear
+  endpoint = "http://localhost" //this is the *only* place this should appear
   serviceURL= this.endpoint + ":5050"
   
 
@@ -41,8 +44,8 @@ export class Game {
     public fieldWidth:number,
     public fieldHeight:number
   ) {
-    this.numPlayers = numPlayers;
-    this.playerRadius = playerRadius;
+    //this.numPlayers = numPlayers;
+    //this.playerRadius = playerRadius;
     this.snowballRadius = snowballRadius;
     this.canvas = document.createElement("canvas");
 
@@ -59,8 +62,8 @@ export class Game {
     this.pctx = this.pCanvas.getContext("2d")!;
     this.myName = myName;
     // this.setupPlayers(this.numPlayers, this.playerRadius)
-    this.setupObstaclePics(numObstacles);
-    this.setupPlayerPics();
+    this.setupObstaclePics();
+    //this.setupPlayerPics();
     this.canvas.addEventListener("mousedown", (e) =>
       this.mouseDown(e.clientX, e.clientY)
     );
@@ -86,17 +89,71 @@ export class Game {
   moveAll() {
     //for more consistent gameplay accross deveices that might be running at very different frame rates,
     //we move players and snowballs on a setInterval - rather than in RequestAnimationFrame
-    for (let pName in this.players) {
-      const p = this.players[pName];
-      p.move();
-      p.moveSnowballs();
-    }
+    // for (let pName in this.players) {
+    //   const p = this.players[pName];
+    //   p.move();
+    //   p.moveSnowballs();
+    // }
+
+    //obstacles are not moved by velocities - they are just given a new position and resolveoverlaps is called
+
+    const p=this.players[this.myName]
+    p.obstacle.position.addIn(new Vector(1,0.1)) //just to show it moving
+
+    this.resolveOverlaps()
+
   }
+
+  resolveOverlaps(){
+
+    
+    //after control inputs - obstacles (and dozers) may be overlapping
+    do{
+      for (let o=0; o<this.obstacles.length; o++){
+        for (let i=0;i<this.obstacles.length;i++){
+          if (o!=i){
+            const a=this.obstacles[o]
+            const b=this.obstacles[i]
+            if (a.collideable && b.collideable){
+              const ap=a.position
+              const bp=b.position
+              let d = ap.distanceFrom(bp) //Vector.distanceBetween(a.position,b.position)
+              if (d<a.radius + b.radius){
+                let v = ap.subtract(bp).normalise().multiply(0.5)
+                ap.addIn(v) 
+                bp.subIn(v)
+              }
+            }
+          }
+        }
+      }
+    } while (this.obstaclesOverlap())
+
+
+  }
+
+  obstaclesOverlap():boolean{
+    for (let o=0; o<this.obstacles.length; o++){
+      for (let i=0;i<this.obstacles.length;i++){
+        if (o!=i){
+          if (this.obstacles[o].collideable && this.obstacles[i].collideable){
+            let d = Vector.distanceBetween(this.obstacles[o].position,this.obstacles[i].position)
+            if (d<this.obstacles[o].radius + this.obstacles[i].radius){
+              return true
+            }
+          }
+        }
+      }
+    }
+    return false
+  }
+
+
 
   cycle() {
   
     this.ctx?.resetTransform();
-    this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height); //redundant we are overtiling the whole canvas
 
     this.trackActivePlayer()    //The camera will track me, then my killer, then his killer etc.
     
@@ -104,6 +161,8 @@ export class Game {
     this.drawObstacles("snow");
     this.drawObstacles("puddles");
     this.drawObstacles("leaves");
+    this.drawObstacles("dozers"); //redundant ?
+    
     this.drawFence()
     //Note trees are drawn after (over) players
     this.drawAndProcessPlayers()    
@@ -118,15 +177,15 @@ export class Game {
 
     if (this.anyPlayers()) {
       let me = this.players[this.myName];
-      let follow:Player=me
+      let follow = me
       while (follow.killer){
-        console.log (`${follow.username}'s killer is ${follow.killer.username}`)        
+        console.log (`${follow.playerName}'s killer is ${follow.killer.playerName}`)        
         follow=follow.killer      
-        console.log("Now following" + follow.username)
+        console.log("Now following" + follow.playerName)
         if (tries>100){console.log("Breaking");break} // Saftey net
         tries ++
       }  //recurse down the 'chain' of killers
-      Camera.update(follow.position, this);      
+      Camera.update(follow.obstacle.position, this);      
     }    
   }
 
@@ -140,7 +199,7 @@ export class Game {
         alive++
         lastStanding = pName
       }
-      p.draw(this);
+      //p.sprite.draw(this); not needed because players *are* sprites
       //p.move();
       p.drawSnowballs(this);
       p.drawHealth(this);
@@ -149,31 +208,32 @@ export class Game {
       p.drawUsername(this);
       if (p.hp > 0) {
         //Is the player still alive?
-        p.pushOtherPlayersAway(this) 
-        p.movePlayerAroundObstacles(this);
-        p.fencePlayer(this)
+        //p.pushOtherPlayersAway(this) 
+        //p.movePlayerAroundObstacles(this);
+        //p.fencePlayer(this)
       } 
       else if (p.hp <= 0) {
         if(!this.deathList.includes(p)){
             this.deathList.push(p)
         }
-        p.runToPoint(new Vector(0, 0)); // If this player is dead, it will run home (position 0,0)
+
+        //p.runToPoint(new Vector(0, 0)); // If this player is dead, it will run home (position 0,0)
       }
       if (
-        Vector.distanceBetween(p.position, p.destination) < 50 &&
+        Vector.distanceBetween(p.obstacle.position, p.destination) < 50 &&
         this.mouseBtnDown == true
         )
-      { p.velocity.x = 0;
-        p.velocity.y = 0;
+      { //p.velocity.x = 0;
+        //p.velocity.y = 0;
         p.angle = -Math.atan2(
-          p.position.x - p.target.x,
-          p.position.y - p.target.y
+          p.obstacle.position.x - p.target.x,
+          p.obstacle.position.y - p.target.y
           );
         p.drawAimLine(this);
       }
-      else if (Vector.distanceBetween(p.position, p.destination) < 20) {
-        p.velocity.x = 0;
-        p.velocity.y = 0;
+      else if (Vector.distanceBetween(p.obstacle.position, p.destination) < 20) {
+        //p.velocity.x = 0;
+        //p.velocity.y = 0;
       }
     }
     if(alive == 1 && Object.keys(this.players).length > 1){
@@ -201,7 +261,7 @@ export class Game {
 
       for(let i = this.deathList.length - 1; i>=0;i--){
         let deadPlayer = document.createElement("h3")
-        deadPlayer.innerHTML = this.deathList[i].username
+        deadPlayer.innerHTML = this.deathList[i].playerName
         deadPlayer.id = "dead-players"
         deathDiv.appendChild(deadPlayer)
       }
@@ -217,11 +277,9 @@ export class Game {
     document.getElementById("death-div-id")!.style.display = "block"
   }
 
-
   drawFence(){
     
     this.ctx.save()
-
 
     this.ctx.translate(0,0)
     this.ctx.strokeStyle="rgba(0,0,255,0.4)" //"blue"
@@ -243,54 +301,32 @@ export class Game {
       }
     }
   }
-  setupPlayerPics() {
-    this.playerPics.push("player images/PLAYER20.png");
-    this.playerPics.push("player images/PLAYER22.png");
-    this.playerPics.push("player images/PLAYER23.png");
-    this.playerPics.push("player images/PLAYER24.png");
-    this.playerPics.push("player images/PLAYER1.png");
-    this.playerPics.push("player images/PLAYER2.png");
-    this.playerPics.push("player images/PLAYER3.png");
-    this.playerPics.push("player images/PLAYER4.png");
-    this.playerPics.push("player images/PLAYER5.png");
-    this.playerPics.push("player images/PLAYER6.png");
-    this.playerPics.push("player images/PLAYER8.png");
-    this.playerPics.push("player images/PLAYER9.png");
-    this.playerPics.push("player images/PLAYER10.png");
-    this.playerPics.push("player images/PLAYER11.png");
-    this.playerPics.push("player images/PLAYER12.png");
-    this.playerPics.push("player images/PLAYER13.png");
-    this.playerPics.push("player images/PLAYER14.png");
-    this.playerPics.push("player images/PLAYER15.png");
-    this.playerPics.push("player images/PLAYER16.png");
-    this.playerPics.push("player images/PLAYER18.png");
-    this.playerPics.push("player images/PLAYER19.png");
-    this.playerPics.push("player images/PLAYER25.png");
-    this.playerPics.push("player images/PLAYER26.png");
-    this.playerPics.push("player images/PLAYER27.png");
-    this.playerPics.push("player images/PLAYER29.png");
-  }
-  setupPlayers(numPlayers: number, playerRadius: number) {
-    for (let i = 0; i < numPlayers; i++) {
-      let img = document.createElement("img");
-      let randomPic = Math.floor(Math.random() * this.playerPics.length);
-      img.src = this.playerPics[randomPic];
-      let pName = "player " + i;
+  
+  
+  // setupPlayers(numPlayers: number, playerRadius: number) {
+  //   for (let i = 0; i < numPlayers; i++) {
+     
+  //     // let img = document.createElement("img");
+  //     // let randomPic = Math.floor(Math.random() * this.playerPics.length);
+  //     // img.src = this.playerPics[randomPic];
+  //     // let pName = "player " + i;
 
-      this.players[pName] = new Player(
-        pName,
-        new Vector(
-          Math.floor(Math.random() * 400),
-          Math.floor(Math.random() * 400)
-        ),
-        100,
-        100,
-        img,
-        playerRadius,
-        100
-      );
-    }
-  }
+  //     this.players[pName] = new Player(
+  //       pName,
+  //       new Vector(
+  //         Math.floor(Math.random() * 400),
+  //         Math.floor(Math.random() * 400)
+  //       ),
+  //       100,
+  //       100,
+  //       img,
+  //       playerRadius,
+  //       100
+  //     );
+  //   }
+  // }
+
+
   setupPics(layer:string, picList:string, extension: string){
     let pics = picList.split(",")
     this.obstaclePics[layer] = []
@@ -306,7 +342,7 @@ export class Game {
     let y = -tileSize * 2
     for (let i = 0; i< this.fieldWidth/tileSize +4; i++){
       for(let j = 0; j < this.fieldHeight/tileSize+4; j++){
-        let o = new Obstacle(new Vector(x,y),tileSize / 2,"lightblue",0,false,layer,1);
+        let o = new Obstacle(new Vector(x,y),0,tileSize / 2,"lightblue",0,false,layer,1);
         this.obstacles.push(o);
         x += tileSize
       }
@@ -324,18 +360,20 @@ export class Game {
       let picIndex = Math.floor(
         Math.random() * numPics
       );
-      let o = new Obstacle(p,minRadius + Math.random() * (maxRadius- minRadius),"lightblue",picIndex,collideable,layer,drawScale);
+      let o = new Obstacle(p,0,minRadius + Math.random() * (maxRadius- minRadius),"lightblue",picIndex,collideable,layer,drawScale);
       this.obstacles.push(o);
     }
   }
 
-  setupObstaclePics(numObstacles: number) {
+  setupObstaclePics() {
     this.setupTiledLayer("snow", "snow", 512, ".jpg")
     //NB: Trees are drawn with a drawScale of 1.4 (ie.. substantially bigger than their 'collidable' circles)
     //this.setupRandomLayer("trees","trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18",".png", 50, true,150,25,1.4)
     this.setupRandomLayer("trees","trees1,trees5,trees9,trees11,trees14",".png", 50, true,150,25,1.4) //nick removed some of the more 'exotic' trees
     this.setupRandomLayer("puddles", "puddle2",".png", 30, false,50,150,1)
     this.setupRandomLayer("leaves", "leaf",".png", 150, false,10,10,1)
+    this.setupRandomLayer("dozers", "dozer",".png", 1, true,50,50,1)
+    
 
   }
 
@@ -346,7 +384,7 @@ export class Game {
 
     if (this.anyPlayers()) {
       const p = this.players[this.myName];
-      if (Vector.distanceBetween(p.position, p.target) < 40) {
+      if (Vector.distanceBetween(p.obstacle.position, p.target) < 40) {
         this.isAiming = true;
         this.mouseBtnDown = true;
       } else {
@@ -357,7 +395,7 @@ export class Game {
           gameId: this.id,
           params: {
             destination: p.target,
-            position: p.position,
+            position: p.obstacle.position,
             health: p.hp,
             stamina: p.stamina,
           },
@@ -374,19 +412,21 @@ export class Game {
   async mouseUp() {
     
     if (this.anyPlayers()) {
-      const p = this.players[this.myName];
+      
 
       if (Date.now()-this.lastThrow >500){
 
+        const me = this.players[this.myName]
         if (this.isAiming) {
+          const p=me.obstacle.position
           // let v: Vector = p.target.subtract(p.position).normalise().multiply(5)
-          let v: Vector = p.target.subtract(p.position).multiply(0.02);
+          let v: Vector = me.target.subtract(p).multiply(0.02);
 
           let payload = {
             cmd: "shootSnowball",
             playerName: this.myName,
             gameId: this.id,
-            params: { position: p.position, velocity: v },
+            params: { position: p, velocity: v },
           };
           let msgs = await fetchObject(this.serviceURL, payload);
 
@@ -415,20 +455,12 @@ export class Game {
   }
   addPlayer(playerName: string, p: Vector) {
     let position = new Vector(p.x, p.y); // p is not a true vector at this point and we need to reinstance a true vector from x and y values
-    let img = document.createElement("img");
-    img.src =
-      this.playerPics[
-        Object.keys(this.players).length % this.playerPics.length
-      ];
-    this.players[playerName] = new Player(
-      playerName,
-      position,
-      100,
-      100,
-      img,
-      this.playerRadius,
-      100
-    );
+    
+    // let img = document.createElement("img");
+    // img.src =      this.playerPics[        Object.keys(this.players).length % this.playerPics.length      ];
+    
+    this.players[playerName] = new Player(playerName,position,  100, 100,1,100,this.obstacles[this.obstacles.length-1]);
+    
   }
   async createAndJoinServerGame(playerName: string) {
     this.myName = playerName;
@@ -478,17 +510,17 @@ export class Game {
           this.addPlayer(m.playerName, m.params.position);
         } else if (m.cmd == "runToPoint") {
           let player = this.players[m.playerName];
-          player.position = Vector.trueVector(m.params.position); // recieve definitive stats from the original player
+          player.obstacle.position = Vector.trueVector(m.params.position); // recieve definitive stats from the original player
           player.hp = m.params.health; // recieve definitive stats from the original player
           player.stamina = m.params.stamina; // recieve definitive stats from the original player
-          player.runToPoint(Vector.trueVector(m.params.destination));
+          //player.runToPoint(Vector.trueVector(m.params.destination));
         } else if (m.cmd == "gameData") {
           this.obstacles = []; // remove our random trees [they are about to be replaced]
           for (let i = 0; i < m.params.trees.length; i++) {
             let o = m.params.trees[i];
             this.obstacles.push(
               new Obstacle(
-                Vector.trueVector(o.position),
+                Vector.trueVector(o.position),0,
                 o.radius,
                 o.color,
                 o.picIndex,

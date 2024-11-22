@@ -2,11 +2,18 @@ import { Vector } from "./vector.js";
 import { Game } from "./game.js";
 
 export class Obstacle {
+
     
-  constructor(public position: Vector,public radius: number,public color: string, public picIndex: number,public collideable: boolean, public layer: string, public drawScale:number  ) {
+  constructor(public position: Vector,
+            angle:number,
+            public radius: number,
+            public color: string, public picIndex: number,public collideable: boolean, public layer: string, public drawScale:number,
+            
+          ) {
     //switched to public constructor properties (no need to initialise them all with this.that=theOther)
   }    
   
+
 
   draw(game: Game) {
     game.ctx?.save();

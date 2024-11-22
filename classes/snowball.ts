@@ -36,10 +36,7 @@ export class Snowball {
     for (let pName in game.players) {
       const p = game.players[pName];
       if (p != owner) {
-        let playerToSnowball = Vector.distanceBetween(
-          p.position,
-          this.position
-        );
+        let playerToSnowball = Vector.distanceBetween(p.obstacle.position,this.position );
         if (playerToSnowball < p.radius + game.snowballRadius) {
           this.active = false;
           p.hp -= 10;

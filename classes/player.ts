@@ -2,44 +2,38 @@ import { Vector } from "./vector.js";
 import { Snowball } from "./snowball.js";
 import { Game } from "./game.js";
 import { Camera } from "./camera.js";
+import { Obstacle } from "./obstacle.js";
 
 export class Player {
-  username: string = "";
-  position: Vector = new Vector(50, 50);
-  velocity: Vector = new Vector(0, 0); // the direction the player is currently moving in
-  destination: Vector = new Vector(0, 0);
+  //playerName: string = "";
+  //obstacle: Obstacle
+  //position: Vector = new Vector(50, 50);
+  //velocity: Vector = new Vector(0, 0); // the direction the player is currently moving in
+  destination: Vector = new Vector(0, 0); 
   direction: Vector = new Vector(0, 0); // the last direction this player was known to be running in
   snowballs: Snowball[] = [];
   angle: number = 0; // rotation angle of the player(for drawing)
   target: Vector = new Vector(0, 0); // populate that during mouse movement
-  hp: number = 0;
-  hpMax: number = 0;
-  img: HTMLImageElement;
-  radius: number;
+  //hp: number = 0;
+  //hpMax: number = 0;  
+  //radius: number;
   killer: Player | null = null;
-  stamina: number = 0;
+  //stamina: number = 0;
 
-  constructor(
-    username: string,
-    position: Vector,
-    hp: number,
-    hpMax: number,
-    img: HTMLImageElement,
-    radius: number,
-    stamina: number
-  ) {
-    this.username = username;
-    this.position = position;
-    this.destination = this.position;
-    this.hp = hp;
+  constructor(    public playerName: string,    position: Vector,    public hp: number,    public hpMax: number,    public radius: number,    public stamina: number ,public obstacle:Obstacle     ) {
+    
+    //this.obstacle= this.game.obstacles[this.obstacles.length-1] //new Obstacle(position,0,radius,"",0,false,"dozers",1)
+    
+    this.destination = this.obstacle.position;
+    //this.hp = hp;
     this.hpMax = hpMax;
-    this.img = img;
+    
     this.radius = radius;
     this.stamina = stamina;
   }
   drawHealth(game: Game) {
     game.ctx?.save();
-    game.ctx?.translate(this.position.x, this.position.y);
+    game.ctx?.translate(this.obstacle.position.x, this.obstacle.position.y);
     game.ctx?.scale(1, -1);
 
     game.ctx!.fillStyle = "red";
@@ -55,7 +49,7 @@ export class Player {
 
   drawStamina(game: Game) {
     game.ctx?.save();
-    game.ctx?.translate(this.position.x, this.position.y);
+    game.ctx?.translate(this.obstacle.position.x, this.obstacle.position.y);
     game.ctx?.scale(1, -2.2);
     game.ctx!.fillStyle = "green";
     let width = (60 * this.stamina) / 100;
@@ -73,47 +67,50 @@ export class Player {
     game.ctx!.font = "25px Arial";
     game.ctx!.fillStyle = "black";
     game.ctx?.fillText(
-      this.username,
-      this.position.x + 5,
-      this.position.y + 50
+      this.playerName,
+      this.obstacle.position.x + 5,
+      this.obstacle.position.y + 50
     );
   }
-  draw(game: Game) {
-    game.ctx?.save();
-    let r = this.radius; //*1.4
-    //game.pctx is s second canvas/context we use to pre-rotate the player
-    game.pctx?.save();
-    game.pctx?.clearRect(0, 0, r * 2, r * 2);
-    game.pctx?.translate(r, r);
-    game.pctx?.rotate(this.angle);
-    game.pctx?.translate(-r, -r);
-    game.pctx?.drawImage(this.img, r * 0.2, r * 0.2, r * 1.8, r * 1.8);
-    game.pctx?.restore();
-    game.ctx!.translate(this.position.x, this.position.y);
-    game.ctx?.drawImage(game.pCanvas, -r, -r, r * 2, r * 2);
-    
-    //Debugging - comment out (don't remove)
-    // game.ctx.beginPath()
-    // game.ctx.strokeStyle="blue"
-    // game.ctx.arc(0,0,this.radius,0,6.28)
-    // game.ctx.stroke()
 
-    game.ctx?.restore();
+
+  // draw(game: Game) {
+  //   game.ctx?.save();
+  //   let r = this.radius; //*1.4
+  //   //game.pctx is s second canvas/context we use to pre-rotate the player
+  //   game.pctx?.save();
+  //   game.pctx?.clearRect(0, 0, r * 2, r * 2);
+  //   game.pctx?.translate(r, r);
+  //   game.pctx?.rotate(this.angle);
+  //   game.pctx?.translate(-r, -r);
+  //   game.pctx?.drawImage(this.img, r * 0.2, r * 0.2, r * 1.8, r * 1.8);
+  //   game.pctx?.restore();
+  //   game.ctx!.translate(this.position.x, this.position.y);
+  //   game.ctx?.drawImage(game.pCanvas, -r, -r, r * 2, r * 2);
+    
+  //   //Debugging - comment out (don't remove)
+  //   // game.ctx.beginPath()
+  //   // game.ctx.strokeStyle="blue"
+  //   // game.ctx.arc(0,0,this.radius,0,6.28)
+  //   // game.ctx.stroke()
+
+  //   game.ctx?.restore();
 
     
-  }
-  move() {
-    this.position = this.position.add(this.velocity.multiply(this.stamina / 130 + 0.4) );
+  // }
+
+  // move() {
+  //   this.position = this.position.add(this.velocity.multiply(this.stamina / 130 + 0.4) );
     
-    this.stamina -= this.velocity.length / 30  // burn stamina
-    this.stamina += 0.1 // regen stamina
+  //   this.stamina -= this.velocity.length / 30  // burn stamina
+  //   this.stamina += 0.1 // regen stamina
     
-    if(this.stamina <= 0 ){
-      this.stamina = 0
-    }else if(this.stamina > 100){
-      this.stamina = 100
-    }
-  }
+  //   if(this.stamina <= 0 ){
+  //     this.stamina = 0
+  //   }else if(this.stamina > 100){
+  //     this.stamina = 100
+  //   }
+  // }
 
   drawSnowballs(game: Game) {
     for (let i = 0; i < this.snowballs.length; i++) {
@@ -140,7 +137,7 @@ export class Player {
       game.ctx?.beginPath();
       game.ctx.lineWidth = (i + 1) * 2 - 2;
       game.ctx.moveTo(this.target.x, this.target.y);
-      game.ctx?.lineTo(this.position.x, this.position.y);
+      game.ctx?.lineTo(this.obstacle.position.x, this.obstacle.position.y);
       game.ctx.strokeStyle = "#000000";
       game.ctx.strokeStyle =
         "rgba(" +
@@ -153,21 +150,22 @@ export class Player {
       game.ctx.stroke();
     }
   }
-  runToPoint(destination: Vector) {
-    let p = this;
-    p.destination = destination;
-    // Do nothing if we are already at the point, otherwise we would get an division by 0 error
-    if (Vector.distanceBetween(p.position, p.destination) < 0.01) {
-      return;
-    }
-    let adjacent = p.destination.x - p.position.x;
-    let opposite = p.destination.y - p.position.y;
-    p.angle = -Math.atan2(-opposite, adjacent) - Math.PI / 2;
-    let hypotenuse = Vector.hypo(adjacent, opposite);
-    p.velocity.x = (adjacent / hypotenuse) * 5;
-    p.velocity.y = (opposite / hypotenuse) * 5;
-    p.direction = new Vector(p.velocity.x, p.velocity.y);
-  }
+
+  // runToPoint(destination: Vector) {
+  //   let p = this;
+  //   p.destination = destination;
+  //   // Do nothing if we are already at the point, otherwise we would get an division by 0 error
+  //   if (Vector.distanceBetween(p.position, p.destination) < 0.01) {
+  //     return;
+  //   }
+  //   let adjacent = p.destination.x - p.position.x;
+  //   let opposite = p.destination.y - p.position.y;
+  //   p.angle = -Math.atan2(-opposite, adjacent) - Math.PI / 2;
+  //   let hypotenuse = Vector.hypo(adjacent, opposite);
+  //   p.velocity.x = (adjacent / hypotenuse) * 5;
+  //   p.velocity.y = (opposite / hypotenuse) * 5;
+  //   p.direction = new Vector(p.velocity.x, p.velocity.y);
+  // }
 
   // shootSnowball(target: Vector, game: Game) {
   //   const p = game.players[0];
@@ -176,52 +174,54 @@ export class Player {
   //     p.snowballs.push(new Snowball(p.position, p.direction));
   //   }
   // }
-  pushOtherPlayersAway(game: Game) {
-    let isOverlap = false;
-    // for (let i = 0; i < game.players.length; i++)
-    for (let pName in game.players) {
-      const otherPlayer = game.players[pName];
-      if (otherPlayer != this) {
-        let dbt = Vector.distanceBetween(this.position, otherPlayer.position);
-        if (dbt < 0.01) {
-          otherPlayer.position.x += 2;
-        }
-        let overlap = (this.radius + otherPlayer.radius) - dbt;
-        if (overlap > 0) {
-          isOverlap = true;
-          let vectorBetween = this.position.subtract(otherPlayer.position);
-          let directionBetween = vectorBetween.normalise();
-          otherPlayer.position = otherPlayer.position.subtract(
-            directionBetween.multiply(overlap + 1)
-          );
-        }
-      }
-    }
-    return isOverlap;
-  }
-  movePlayerAroundObstacles(game: Game) {
-    for (let i = 0; i < game.obstacles.length; i++) {
-      const obstacle = game.obstacles[i];
-      if (obstacle.collideable) {
-        let dbt = Vector.distanceBetween(this.position, obstacle.position);
-        let overlap =  (obstacle.radius+this.radius)-dbt
-        if (overlap > 0) {
-          let vectorBetween = this.position.subtract(obstacle.position);
-          let directionBetween = vectorBetween.normalise();
-          this.position = this.position.add(directionBetween.multiply(overlap));          
-          this.runToPoint(this.destination);
-        }
-      }
-    }
-  }
+  // pushOtherPlayersAway(game: Game) {
+  //   let isOverlap = false;
+  //   // for (let i = 0; i < game.players.length; i++)
+  //   for (let pName in game.players) {
+  //     const otherPlayer = game.players[pName];
+  //     if (otherPlayer != this) {
+  //       let dbt = Vector.distanceBetween(this.position, otherPlayer.position);
+  //       if (dbt < 0.01) {
+  //         otherPlayer.position.x += 2;
+  //       }
+  //       let overlap = (this.radius + otherPlayer.radius) - dbt;
+  //       if (overlap > 0) {
+  //         isOverlap = true;
+  //         let vectorBetween = this.position.subtract(otherPlayer.position);
+  //         let directionBetween = vectorBetween.normalise();
+  //         otherPlayer.position = otherPlayer.position.subtract(
+  //           directionBetween.multiply(overlap + 1)
+  //         );
+  //       }
+  //     }
+  //   }
+  //   return isOverlap;
+  // }
+  // movePlayerAroundObstacles(game: Game) {
+  //   for (let i = 0; i < game.obstacles.length; i++) {
+  //     const obstacle = game.obstacles[i];
+  //     if (obstacle.collideable) {
+  //       let dbt = Vector.distanceBetween(this.position, obstacle.position);
+  //       let overlap =  (obstacle.radius+this.radius)-dbt
+  //       if (overlap > 0) {
+  //         let vectorBetween = this.position.subtract(obstacle.position);
+  //         let directionBetween = vectorBetween.normalise();
+  //         this.position = this.position.add(directionBetween.multiply(overlap));          
+  //         this.runToPoint(this.destination);
+  //       }
+  //     }
+  //   }
+  // }
 
-  fencePlayer(game:Game){
-    if (this.position.x<0){this.position.x=0}
-    if (this.position.y<0){this.position.y=0}
-    if (this.position.x>game.fieldWidth){this.position.x=game.fieldWidth}
-    if (this.position.y>game.fieldHeight){this.position.y=game.fieldHeight}
+  // fencePlayer(game:Game){
+  //   if (this.position.x<0){this.position.x=0}
+  //   if (this.position.y<0){this.position.y=0}
+  //   if (this.position.x>game.fieldWidth){this.position.x=game.fieldWidth}
+  //   if (this.position.y>game.fieldHeight){this.position.y=game.fieldHeight}
    
-  }
+  // }
+
+
   checkSnowballs(game: Game) {
     for (let s = 0; s < this.snowballs.length; s++) {
       let snowball = this.snowballs[s];
@@ -229,7 +229,7 @@ export class Player {
         snowball.checkAgainstPlayers(game, this);
         snowball.checkAgainstObstacles(game);
         if (
-          Vector.distanceBetween(snowball.position, this.position) >
+          Vector.distanceBetween(snowball.position, this.obstacle.position) >
           snowball.velocity.length * 100
         ) {
           snowball.active = false;
