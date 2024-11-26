@@ -48,6 +48,41 @@ export class Vector {
     return Vector.hypo(Math.abs(b.x - a.x), Math.abs(b.y - a.y));
   }
 
+  rotate(angle: number): Vector {
+    let x = this.x * Math.cos(angle) - this.y * Math.sin(angle);
+    let y = this.x * Math.sin(angle) + this.y * Math.cos(angle);
+    return new Vector(x, y);
+
+  }
+
+  dot(v: Vector): number {
+    return this.x * v.x + this.y * v.y;
+  }
+
+
+cross(b:Vector):number{ 
+    let a=this
+    return (a.x*b.y) - (a.y*b.x);        
+
+
+}
+
+closestPointOnLine(a:Vector,b:Vector):Vector{
+  const ab=(b.subtract(a))
+  const abn = ab.normalise()
+  const dp = this.subtract(a).dot(abn)  
+  return a.add(abn.multiply(dp))
+}
+
+distanceFromLine(a:Vector,b:Vector):number{                
+  return this.closestPointOnLine(a,b).distanceFrom(this)
+}
+
+clone():Vector{
+  return new Vector(this.x,this.y)
+}
+
+
   // reversed shooting
  static negate(r: any){
     return new Vector(-r.x,-r.y)

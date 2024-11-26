@@ -64,6 +64,14 @@
         }
       })
 
+      window.addEventListener("keyup", (e) => {
+        game.keyUp(e)        
+      });
+      window.addEventListener("keydown", (e) => {
+        game.keyDown(e)        
+      });
+
+
       // window.addEventListener('orientationchange', () => false);
 
       setInterval(snow, 100);
@@ -88,7 +96,7 @@
       function startBackgroundMusic() {
         backgroundMusic.play();
         backgroundMusic.loop = true;
-        backgroundMusic.volume = 0.05;
+        backgroundMusic.volume = 0 //0.05;
       }
     
     </script>
@@ -97,7 +105,7 @@
   <body>
     <div id="container">
       <div id="lobby">
-        <div id="title" class="font">❄️Snowballz❄️</div>
+        <div id="title" class="font">🪙Coin Dozer🪙</div>
         <input class="btn font" id="playerName" placeholder="Enter a player name" autocomplete="off" />
 
         <section id="host">

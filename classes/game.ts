@@ -5,6 +5,22 @@ import { Vector } from "./vector.js";
 import { Snowball } from "./snowball.js";
 import { fetchObject } from "./client.js";
 import { Sound } from "./sounds.js";
+import { Mass } from "./mass.js";
+import { Spring } from "./spring.js";
+import { Thing } from "./thing.js";
+
+
+
+enum modeEnum{
+  addingMass,
+  addingSpring,  
+  playing
+}
+
+type HighlightType = {
+  mass: number;
+  spring: number;
+}
 
 export class Game {
 
@@ -12,6 +28,7 @@ export class Game {
   players: Record<string, Player> = {};
   //player:Player  //player is a dozer - is an obstacle - Fuel is heath, stamina is engine temperature - weight adds traction - but costs fuel, damage
   obstacles: Obstacle[] = [];
+  things: Thing[] = [];
   //numPlayers: number;
   //playerRadius: number;
   canvas: HTMLCanvasElement;
@@ -24,26 +41,25 @@ export class Game {
   myName: string;
   //private playerPics: string[] = [];
   obstaclePics: Record<string, HTMLImageElement[]> = {}; //obstacle pics, by layer (each layer has many pics)
+  public masses:Mass[]=[]
 
   deathList:Player[]=[]
   lastThrow:number=0  //the milliseconds since time began
+  cursor:Vector = new Vector(0,0)
+  keyChange:boolean = false //has any key been pressed (or released)
+
+  mode:modeEnum=modeEnum.playing
+  springStart:number=-1 //index of the mass
+  currentThing:Thing|null=null
 
   //endpoint = "https://snowballz.org" //this is the *only* place this should appear
   endpoint = "http://localhost" //this is the *only* place this should appear
   serviceURL= this.endpoint + ":5050"
-  
 
-  constructor(
-    numPlayers: number,
-    playerRadius: number,
-    snowballRadius: number,
-    numObstacles: number,
-    canvasWidth: number,
-    canvasHeight: number,
-    myName: string,
-    public fieldWidth:number,
-    public fieldHeight:number
-  ) {
+  keyboard: Record<string, boolean> = {};
+  highlit:HighlightType = {mass:-1,spring:-1}
+
+  constructor(    numPlayers: number,    playerRadius: number,    snowballRadius: number,    numObstacles: number,    canvasWidth: number,    canvasHeight: number,    myName: string,    public fieldWidth:number,    public fieldHeight:number  ) {
     //this.numPlayers = numPlayers;
     //this.playerRadius = playerRadius;
     this.snowballRadius = snowballRadius;
@@ -73,6 +89,8 @@ export class Game {
     this.canvas.addEventListener("mouseup", (e) => this.mouseUp());
     this.canvas.addEventListener("touchend", (e) => this.mouseUp()); //we hook the touch events to the same listeners to provide touch support
 
+    this.canvas.addEventListener("pointermove", this.pointerMove)  //
+
     this.canvas.addEventListener("mousemove", (e) =>
       this.mouseMovement(e.clientX, e.clientY)
     );
@@ -80,56 +98,216 @@ export class Game {
       this.mouseMovement(e.touches[0].clientX, e.touches[0].clientY)
     ); //mouse move events do not fire when 'dragging' with touch so we have to implement touch support (it seems)
 
-    Sound.setup(["impact", "playerGasp", "throw"]);
+    this.test()
+
+    Sound.setup(["impact", "playerGasp", "throw","coin-flip","coin-drop"]);
     requestAnimationFrame(() => this.cycle());
     setInterval(() => {
       this.moveAll();
     }, (1 / 120) * 1000); //do our movement at 60fps (regardless of the device frame-rate)
   }
-  moveAll() {
+
+  test(){
+
+
+      this.masses.push(new Mass(new Vector(200,100),10))
+      this.masses.push(new Mass(new Vector(100,100),10))
+      this.masses.push(new Mass(new Vector(100,200),10))
+      const dozer = new Thing("dozers",0)
+      this.things.push(dozer)
+      dozer.springs.push(new Spring(this,0,1,true))
+      dozer.springs.push(new Spring(this,1,2,true))
+
+      const m=new  Mass(new Vector(150,150),5)
+
+      console.log("s1m",m.sideof(this,dozer.springs[0]))
+      console.log("s2m",m.sideof(this,dozer.springs[1]))
+      
+      const m2=new Mass(new Vector(50,50),10)
+      console.log("s1m2",m2.sideof(this,dozer.springs[0]))
+      console.log("s2m2",m2.sideof(this,dozer.springs[1]))
+
+
+      this.masses=[]
+      this.things=[]
+
+
+  }
+  async moveAll() {
     //for more consistent gameplay accross deveices that might be running at very different frame rates,
     //we move players and snowballs on a setInterval - rather than in RequestAnimationFrame
-    // for (let pName in this.players) {
-    //   const p = this.players[pName];
-    //   p.move();
-    //   p.moveSnowballs();
-    // }
+
+    if (this.anyPlayers() && this.masses.length>3 && this.mode==modeEnum.playing) {      
+
+      //inertia
+      //this.masses.forEach(m=>m.p.addIn(m.p.subtract(m.op))) //move all masses the same as they moved last time
+
+      //this.masses.forEach(m=>m.op=m.p.clone()) //record all mass positions
+
+      const me = this.players[this.myName]
+      //if (this.keyChange){
+//        this.keyChange=false
+        //find a new target based on the keys held
+        const fl=this.masses[2].p
+        const rl=this.masses[1].p
+        const rr=this.masses[0].p
+        const fr=this.masses[3].p
+
+        const lt=fl.subtract(rl).normalise().multiply(3) //left track
+        const rt=fr.subtract(rr).normalise().multiply(3) //right track
+          
+        if (this.keyboard["a"]){          
+          fl.addIn(lt)
+          rl.addIn(lt)          
+        }
+
+        if (this.keyboard["z"]){
+          fl.subIn(lt)
+          rl.subIn(lt)          
+        }
+
+        if (this.keyboard["k"]){
+          fr.addIn(rt)
+          rr.addIn(rt)
+        }
+
+      
+        if (this.keyboard["m"]){
+          fr.subIn(rt)
+          rr.subIn(rt)
+        }
+
+        // let payload = {
+        //   cmd: "runToPoint",
+        //   playerName: this.myName,
+        //   gameId: this.id,
+        //   params: {
+        //     position: me.obstacle.position,
+        //     to: me.obstacle.position.add(mv),            
+        //     toAngle: me.obstacle.angle+av,
+        //     health: me.hp,
+        //     stamina: me.stamina,
+            
+        //   },
+        // };
+        // let msgs = await fetchObject(this.serviceURL, payload);
+
+        // this.processMsgs(msgs); //just to display them
+
+
+
+
+      
+    }
+
+    for (let pName in this.players) {
+      const p = this.players[pName];
+      p.move();  //interpolates position and angle
+      p.moveSnowballs();
+    }
 
     //obstacles are not moved by velocities - they are just given a new position and resolveoverlaps is called
 
     const p=this.players[this.myName]
-    p.obstacle.position.addIn(new Vector(1,0.1)) //just to show it moving
+    if (p!=undefined){
+ //     p.obstacle.position.addIn(new Vector(1,0.1)) //just to show it moving
+      
+      if (this.mode==modeEnum.playing){
+        this.stretchSprings()
+        this.stretchSprings()
+        
+        do{
+        }while (this.resolvePenetrations()) //loop unit all mass-thing pepetrations are resolved
+           //masses are pushed out of things (and things away from masses)
+        this.resolveMassOverlaps()
+        this.tumbleCoins()
 
-    this.resolveOverlaps()
+
+        if (this.things.length){
+          // this.masses[this.things[0].springs[0].m1].p.addIn(new Vector(0.5,0)) //just to show it moving
+          // this.masses[this.things[0].springs[0].m2].p.addIn(new Vector(0.5,0)) //just to show it moving
+          // this.masses[this.things[0].springs[1].m2].p.addIn(new Vector(0.5,0)) //just to show it moving
+
+ //         this.masses[0].p.addIn(new Vector(-0.5,0)) //just to show it moving
+          
+        }
+      }
+    }
+
+
 
   }
 
-  resolveOverlaps(){
+  resolvePenetrations():boolean{
 
-    
-    //after control inputs - obstacles (and dozers) may be overlapping
-    do{
-      for (let o=0; o<this.obstacles.length; o++){
-        for (let i=0;i<this.obstacles.length;i++){
-          if (o!=i){
-            const a=this.obstacles[o]
-            const b=this.obstacles[i]
-            if (a.collideable && b.collideable){
-              const ap=a.position
-              const bp=b.position
-              let d = ap.distanceFrom(bp) //Vector.distanceBetween(a.position,b.position)
-              if (d<a.radius + b.radius){
-                let v = ap.subtract(bp).normalise().multiply(0.5)
-                ap.addIn(v) 
-                bp.subIn(v)
-              }
-            }
-          }
+    let penetrated=false
+    for (let i=0;i<this.masses.length;i++){
+      const m=this.masses[i]
+      for (let t=0;t<this.things.length;t++){
+        const thing=this.things[t]
+       if (m.penetrates(this, thing)) {penetrated=true}
+      }
+    }
+
+    return penetrated
+  }
+
+  stretchSprings(){
+    for (let t of this.things){
+      for (let s of t.springs){
+        s.stretch(this)
+      }
+    }
+  }
+
+  pointerMove(e: PointerEvent){ //fruitless attempt at two mice
+   // console.log(e.buttons)
+  }
+
+  tumbleCoins(){
+    for (let o=0; o<this.obstacles.length; o++){
+      const hole = this.obstacles[o].fallingInto
+      if ( hole !=null){
+        const coin = this.obstacles[o]
+        coin.moveTowards(hole.position,0.1)
+        coin.angle += 0.1
+        coin.depth +=0.1 //drives the falling aniumation
+        if (coin.depth>20){
+          coin.fallingInto=null
+          Sound.play("coin-drop", 0.2);
+          coin.enabled = false          
         }
       }
-    } while (this.obstaclesOverlap())
+    }
+  }
+
+  resolveMassOverlaps(){
+    
+    for (let o=0; o<this.masses.length; o++){
+      const a=this.masses[o]
+      for (let i=o+1;i<this.masses.length;i++){
+        const b=this.masses[i]            
+
+        // if (b.fallingInto == null {
+        //   if (a.position.distanceFrom(b.position)<a.radius){
+        //     b.fallingInto=a
+        //     Sound.play("coin-flip", 0.2);
+        //   }
+        // } else if (a.collideable && b.collideable){ //dozers are rectanglular
+
+        let d = a.p.distanceFrom(b.p) //Vector.distanceBetween(a.position,b.position)
+        let overlap = (a.r + b.r)-d
 
 
+        if (overlap >0 ){
+          //let v = ap.subtract(bp).normalise().multiply(0.5)
+          let delta = b.p.subtract(a.p).normalise().multiply(overlap)
+          let afix = .5 //b.mass/(a.mass+b.mass)                
+          a.p.subIn(delta.multiply(afix )) 
+          b.p.addIn(delta.multiply((1-afix) ))
+        }       
+      }
+    } 
   }
 
   obstaclesOverlap():boolean{
@@ -149,7 +327,7 @@ export class Game {
   }
 
 
-
+//NB - Physcis runs on a separate setInterval (see moveAll )
   cycle() {
   
     this.ctx?.resetTransform();
@@ -159,13 +337,25 @@ export class Game {
     
     //Draw the layers in ORDER
     this.drawObstacles("snow");
+    this.drawObstacles("holes")
     this.drawObstacles("puddles");
     this.drawObstacles("leaves");
-    this.drawObstacles("dozers"); //redundant ?
+    this.drawObstacles("coins");    
+
+    this.drawMasses()
+    this.drawHighlit()
+    this.drawSprings()
+    this.drawInsideSprings() //jest a test
     
+
+    this.drawThings()
+
+
+    this.drawObstacles("dozers"); //draws the dozers
+
     this.drawFence()
     //Note trees are drawn after (over) players
-    this.drawAndProcessPlayers()    
+    this.drawAndProcessPlayers() //does life bars etc    
     this.drawObstacles("trees");
 
     requestAnimationFrame(() => this.cycle());
@@ -220,18 +410,18 @@ export class Game {
         //p.runToPoint(new Vector(0, 0)); // If this player is dead, it will run home (position 0,0)
       }
       if (
-        Vector.distanceBetween(p.obstacle.position, p.destination) < 50 &&
+        Vector.distanceBetween(p.obstacle.position, p.to) < 50 &&
         this.mouseBtnDown == true
         )
       { //p.velocity.x = 0;
         //p.velocity.y = 0;
-        p.angle = -Math.atan2(
-          p.obstacle.position.x - p.target.x,
-          p.obstacle.position.y - p.target.y
+        p.obstacle.angle = -Math.atan2(
+          p.obstacle.position.x - this.cursor.x,
+          p.obstacle.position.y - this.cursor.y
           );
         p.drawAimLine(this);
       }
-      else if (Vector.distanceBetween(p.obstacle.position, p.destination) < 20) {
+      else if (Vector.distanceBetween(p.obstacle.position, p.to) < 20) {
         //p.velocity.x = 0;
         //p.velocity.y = 0;
       }
@@ -275,6 +465,68 @@ export class Game {
 
   displayLeaderBoard(){
     document.getElementById("death-div-id")!.style.display = "block"
+  }
+
+  drawHighlit(){
+    if (this.highlit.mass!=-1){
+      this.ctx.beginPath()
+      this.ctx.strokeStyle="yellow"
+      this.ctx.lineWidth=5
+      this.masses[this.highlit.mass].draw(this)
+      this.ctx.stroke()
+      this.ctx.lineWidth=1
+    }
+  }
+
+  drawMasses(){
+    this.ctx.beginPath()
+    this.ctx.strokeStyle="red"
+
+    for (let m of this.masses){
+      m.draw(this)
+    }
+    this.ctx.stroke()
+  }
+
+
+  drawThings(){  //the skins/shells of the things
+    for (let t of this.things){
+      t.draw(this)
+    }
+
+  }
+
+  drawInsideSprings(){
+
+    this.ctx.beginPath()
+    this.ctx.strokeStyle="magenta"
+
+    for (let o of this.things){
+      for (let s of o.springs){
+        if (s.contains(this,this.cursor)){
+          s.draw(this)
+        }
+      }
+    }
+
+    this.ctx.stroke()
+
+  }
+
+
+  drawSprings(){
+
+    this.ctx.beginPath()
+    this.ctx.strokeStyle="green"
+
+    for (let o of this.things){
+      for (let s of o.springs){
+        s.draw(this)
+      }
+    }
+
+    this.ctx.stroke()
+
   }
 
   drawFence(){
@@ -342,7 +594,7 @@ export class Game {
     let y = -tileSize * 2
     for (let i = 0; i< this.fieldWidth/tileSize +4; i++){
       for(let j = 0; j < this.fieldHeight/tileSize+4; j++){
-        let o = new Obstacle(new Vector(x,y),0,tileSize / 2,"lightblue",0,false,layer,1);
+        let o = new Obstacle(new Vector(x,y),0,tileSize / 2,"lightblue",0,false,layer,1,0);
         this.obstacles.push(o);
         x += tileSize
       }
@@ -350,17 +602,15 @@ export class Game {
       y += tileSize 
     }
   }
-  setupRandomLayer(layer: string, picList: string, extension: string, numObstacles: number, collideable: boolean, minRadius: number, maxRadius: number,drawScale:number){
+  setupRandomLayer(layer: string, picList: string, extension: string, numObstacles: number, collideable: boolean, minRadius: number, maxRadius: number,drawScale:number,mass:number){
     let numPics = this.setupPics(layer,picList,extension)
     for (let i = 0; i < numObstacles; i++) {
       let p = new Vector(
         Math.floor(Math.random() * this.fieldWidth),
         Math.floor(Math.random() * this.fieldHeight)
       );
-      let picIndex = Math.floor(
-        Math.random() * numPics
-      );
-      let o = new Obstacle(p,0,minRadius + Math.random() * (maxRadius- minRadius),"lightblue",picIndex,collideable,layer,drawScale);
+      let picIndex = Math.floor(        Math.random() * numPics      );
+      let o = new Obstacle(p,0,minRadius + Math.random() * (maxRadius- minRadius),"lightblue",picIndex,collideable,layer,drawScale,mass);
       this.obstacles.push(o);
     }
   }
@@ -369,35 +619,107 @@ export class Game {
     this.setupTiledLayer("snow", "snow", 512, ".jpg")
     //NB: Trees are drawn with a drawScale of 1.4 (ie.. substantially bigger than their 'collidable' circles)
     //this.setupRandomLayer("trees","trees,trees1,trees2,trees3,trees4,trees5,trees6,trees7,trees8,trees9,trees10,trees11,trees12,trees13,trees14,trees15,trees16,trees17,trees18",".png", 50, true,150,25,1.4)
-    this.setupRandomLayer("trees","trees1,trees5,trees9,trees11,trees14",".png", 50, true,150,25,1.4) //nick removed some of the more 'exotic' trees
-    this.setupRandomLayer("puddles", "puddle2",".png", 30, false,50,150,1)
-    this.setupRandomLayer("leaves", "leaf",".png", 150, false,10,10,1)
-    this.setupRandomLayer("dozers", "dozer",".png", 1, true,50,50,1)
+    this.setupRandomLayer("trees","trees1,trees5,trees9,trees11,trees14",".png", 1, true,25,100,1.4, 1000) //nick removed some of the more 'exotic' trees
+    //this.setupRandomLayer("puddles", "puddle2",".png", 30, false,50,150,1,0)
+    //this.setupRandomLayer("leaves", "leaf",".png", 150, false,10,10,1,0)
+    this.setupRandomLayer("coins", "coin",".png", 150, true,10,10,1,1)
+    this.setupRandomLayer("holes", "hole",".png", 5, false,150,300,1,1)    
+    
+    this.setupRandomLayer("dozers", "dozer",".png", 1, true,50,50,.8,5000)
     
 
+  }
+
+  keyUp(e: KeyboardEvent) {
+    this.keyboard[e.key] = false;   
+    this.keyChange=true
+  }
+
+  keyDown(e: KeyboardEvent) {
+    this.keyboard[e.key] = true;
+    this.keyChange=true
+
+    //if (e.key=="m"){this.mode=modeEnum.addingMass} 
+    if (e.key=="t"){this.mode=modeEnum.addingSpring;this.currentThing=new Thing("dozers",0);this.things.push(this.currentThing);console.log("added a thing");this.springStart=-1} //,-1this.cursor,0,10,"",0,false,"dozers",1,100)}
+    if (e.key=="s"){this.springStart=-1;}
+    if (e.key=="p"){
+      this.mode=modeEnum.playing;
+      for (let i=0;i<500;i++){
+        this.masses.push(new Mass(new Vector(Math.random()*this.fieldWidth,Math.random()* this.fieldHeight),10+Math.random()*20))
+      }
+    }
+
+
+  }
+
+  closestMass(p:Vector):number{
+    let closest:number=-1
+    //let closestDistance=within
+    for (let i=0;i<this.masses.length;i++){
+      let m= this.masses[i]
+      let d = m.p.distanceFrom(p)  
+      if (d<m.r){
+      //  closestDistance=d
+        return closest=i
+      }
+    }
+    return -1 //closest
   }
 
   async mouseDown(x: number, y: number) {
     console.log("md");
 
-    this.mouseMovement(x, y);
+
+    this.mouseMovement(x, y); //sets p.target
+
+    if (this.mode==modeEnum.addingMass){
+      this.masses.push(new Mass(this.cursor.clone(),10))
+    } else if (this.mode==modeEnum.addingSpring) {
+      //we are adding a spring to nowhere .. make a new mass
+      if (this.highlit.mass==-1){
+        console.log("Spring to/from nowhere - adding a mass")
+        this.masses.push(new Mass(this.cursor.clone(),10))
+        this.highlit.mass=this.masses.length-1
+      }
+
+      if (this.springStart==-1){ //starting a new spring 
+        console.log("Starting a new spring")
+        this.springStart=this.highlit.mass //closestMass(this.cursor)
+        console.log("Spring starts at mass",this.springStart)
+      } else{ //continuing the chain of springs
+        
+        this.currentThing!.springs.push(new Spring(this,this.springStart,this.highlit.mass,true))
+        console.log("Continued chain of springs from mass ",this.springStart," to ", this.highlit.mass)
+        console.log("Current thing has",this.currentThing!.springs.length,"springs")
+        this.springStart=this.highlit.mass
+      }      
+    }
 
     if (this.anyPlayers()) {
       const p = this.players[this.myName];
-      if (Vector.distanceBetween(p.obstacle.position, p.target) < 40) {
+      if (Vector.distanceBetween(p.obstacle.position, this.cursor) < 40) {
         this.isAiming = true;
         this.mouseBtnDown = true;
       } else {
-        // p.runToPoint(p.target);
+
+        
+        const adjacent = this.cursor.x - p.obstacle.position.x;
+        const opposite = this.cursor.y - p.obstacle.position.y;
+        const toAngle = -Math.atan2(-opposite, adjacent) - Math.PI / 2;
+
+        //p.runToPoint(this.cursor,toAngle); - this will happen due to the response from the server
+
         let payload = {
           cmd: "runToPoint",
           playerName: this.myName,
           gameId: this.id,
           params: {
-            destination: p.target,
             position: p.obstacle.position,
+            to: this.cursor,            
+            toAngle: toAngle,
             health: p.hp,
             stamina: p.stamina,
+            
           },
         };
         let msgs = await fetchObject(this.serviceURL, payload);
@@ -420,7 +742,7 @@ export class Game {
         if (this.isAiming) {
           const p=me.obstacle.position
           // let v: Vector = p.target.subtract(p.position).normalise().multiply(5)
-          let v: Vector = me.target.subtract(p).multiply(0.02);
+          let v: Vector = this.cursor.subtract(p).multiply(0.02);
 
           let payload = {
             cmd: "shootSnowball",
@@ -444,13 +766,16 @@ export class Game {
   }
 
   mouseMovement(x: number, y: number) {
-    console.log("mm");
+    //console.log("mm");
     if (this.anyPlayers()) {
       let p = this.players[this.myName];
-      p.target = new Vector(
+      this.cursor = new Vector(
         x + Camera.focus.x - this.canvas.width / 2,
         y + Camera.focus.y - this.canvas.height / 2
       );
+
+      this.highlit.mass=this.closestMass(this.cursor)
+
     }
   }
   addPlayer(playerName: string, p: Vector) {
@@ -513,7 +838,7 @@ export class Game {
           player.obstacle.position = Vector.trueVector(m.params.position); // recieve definitive stats from the original player
           player.hp = m.params.health; // recieve definitive stats from the original player
           player.stamina = m.params.stamina; // recieve definitive stats from the original player
-          //player.runToPoint(Vector.trueVector(m.params.destination));
+          player.runToPoint(Vector.trueVector(m.params.to),m.params.toAngle);
         } else if (m.cmd == "gameData") {
           this.obstacles = []; // remove our random trees [they are about to be replaced]
           for (let i = 0; i < m.params.trees.length; i++) {
@@ -526,7 +851,8 @@ export class Game {
                 o.picIndex,
                 o.collideable,
                 o.layer,
-                o.drawScale
+                o.drawScale,
+                o.mass
               )
             );
           }
@@ -555,6 +881,7 @@ export class Game {
     let msgs = await fetchObject(this.serviceURL, cmd); //result is an object containing an array of messages
     this.processMsgs(msgs);
   }
+
   anyPlayers(): boolean {
     return Object.keys(this.players).length > 0;
   }

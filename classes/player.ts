@@ -3,17 +3,29 @@ import { Snowball } from "./snowball.js";
 import { Game } from "./game.js";
 import { Camera } from "./camera.js";
 import { Obstacle } from "./obstacle.js";
+import { link } from "fs";
 
 export class Player {
   //playerName: string = "";
   //obstacle: Obstacle
   //position: Vector = new Vector(50, 50);
   //velocity: Vector = new Vector(0, 0); // the direction the player is currently moving in
-  destination: Vector = new Vector(0, 0); 
-  direction: Vector = new Vector(0, 0); // the last direction this player was known to be running in
+  
+
+  //we are constantly interpolating between these two thins
+  to: Vector = new Vector(0, 0); //where are we going
+  toAngle:number = 0; //where are we looking
+  from:Vector = new Vector(0,0)
+  fromAngle:number = 0
+  steps:number =100 //number of steps in which to move from from to to  (smaller numbers make it happen faster)
+  step:number = 0 //current step of the interpolation
+
+  //direction: Vector = new Vector(0, 0); // the last direction this player was known to be running in
+//  angle: number = 0; // rotation angle of the player(for drawing) in the obstacle
+
   snowballs: Snowball[] = [];
-  angle: number = 0; // rotation angle of the player(for drawing)
-  target: Vector = new Vector(0, 0); // populate that during mouse movement
+  
+  //target: Vector = new Vector(0, 0); // populate that during mouse movement
   //hp: number = 0;
   //hpMax: number = 0;  
   //radius: number;
@@ -24,9 +36,10 @@ export class Player {
     
     //this.obstacle= this.game.obstacles[this.obstacles.length-1] //new Obstacle(position,0,radius,"",0,false,"dozers",1)
     
-    this.destination = this.obstacle.position;
+    this.to = this.obstacle.position;
     //this.hp = hp;
     this.hpMax = hpMax;
+    
     
     this.radius = radius;
     this.stamina = stamina;
@@ -38,9 +51,7 @@ export class Player {
 
     game.ctx!.fillStyle = "red";
     let width = (60 * this.hp) / this.hpMax;
-    if (width < 0) {
-      width = 0;
-    }
+    if (width < 0) {      width = 0;    }
     game.ctx?.fillRect(-30, 30, width, 10);
     game.ctx!.strokeStyle = "black";
     game.ctx?.strokeRect(-30, 30, 60, 10);
@@ -99,18 +110,44 @@ export class Player {
     
   // }
 
-  // move() {
-  //   this.position = this.position.add(this.velocity.multiply(this.stamina / 130 + 0.4) );
+  runToPoint(to: Vector,toAngle:number) {
+    let p = this;
+    p.from = p.obstacle.position;
+    p.fromAngle = p.obstacle.angle;
+    p.to = to
+    p.toAngle=toAngle
+    p.step=0
+    // Do nothing if we are already at the point, otherwise we would get an division by 0 error
+    if (Vector.distanceBetween(p.obstacle.position, p.to) < 0.01) {
+      return;
+    }
+  }
+
+
+  move() {
     
-  //   this.stamina -= this.velocity.length / 30  // burn stamina
-  //   this.stamina += 0.1 // regen stamina
+    //this.position = this.position.add(this.velocity.multiply(this.stamina / 130 + 0.4) );
     
-  //   if(this.stamina <= 0 ){
-  //     this.stamina = 0
-  //   }else if(this.stamina > 100){
-  //     this.stamina = 100
-  //   }
-  // }
+    
+    if (this.step < this.steps) {
+      const fj=this.step/this.steps  //fraction of journey
+      const journey = this.to.subtract(this.from)
+      this.obstacle.position = this.from.add(journey.multiply(fj))
+      this.obstacle.angle = this.fromAngle + (this.toAngle-this.fromAngle)*fj
+      
+
+      this.step++    
+      this.stamina -= 1 //this.velocity.length / 30  // burn stamina
+    }
+
+    this.stamina += 0.1 // regen stamina
+    
+    if(this.stamina <= 0 ){
+      this.stamina = 0
+    }else if(this.stamina > 100){
+      this.stamina = 100
+    }
+  }
 
   drawSnowballs(game: Game) {
     for (let i = 0; i < this.snowballs.length; i++) {
@@ -136,7 +173,7 @@ export class Player {
     for (let i = 5; i >= 0; i--) {
       game.ctx?.beginPath();
       game.ctx.lineWidth = (i + 1) * 2 - 2;
-      game.ctx.moveTo(this.target.x, this.target.y);
+      game.ctx.moveTo(game.cursor.x, game.cursor.y);
       game.ctx?.lineTo(this.obstacle.position.x, this.obstacle.position.y);
       game.ctx.strokeStyle = "#000000";
       game.ctx.strokeStyle =
@@ -151,21 +188,15 @@ export class Player {
     }
   }
 
-  // runToPoint(destination: Vector) {
-  //   let p = this;
-  //   p.destination = destination;
-  //   // Do nothing if we are already at the point, otherwise we would get an division by 0 error
-  //   if (Vector.distanceBetween(p.position, p.destination) < 0.01) {
-  //     return;
-  //   }
-  //   let adjacent = p.destination.x - p.position.x;
-  //   let opposite = p.destination.y - p.position.y;
-  //   p.angle = -Math.atan2(-opposite, adjacent) - Math.PI / 2;
-  //   let hypotenuse = Vector.hypo(adjacent, opposite);
-  //   p.velocity.x = (adjacent / hypotenuse) * 5;
-  //   p.velocity.y = (opposite / hypotenuse) * 5;
-  //   p.direction = new Vector(p.velocity.x, p.velocity.y);
-  // }
+  
+    // let adjacent = p.to.x - p.obstacle.position.x;
+    // let opposite = p.to.y - p.obstacle.position.y;
+    // p.angle = -Math.atan2(-opposite, adjacent) - Math.PI / 2;
+    // let hypotenuse = Vector.hypo(adjacent, opposite);
+    // p.velocity.x = (adjacent / hypotenuse) * 5;
+    // p.velocity.y = (opposite / hypotenuse) * 5;
+    // p.direction = new Vector(p.velocity.x, p.velocity.y);
+  
 
   // shootSnowball(target: Vector, game: Game) {
   //   const p = game.players[0];
